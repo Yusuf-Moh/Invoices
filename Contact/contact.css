@@ -190,10 +190,6 @@ b {
     align-items: flex-start;
 }
 
-.form-container label {
-    margin-bottom: 10px;
-}
-
 .form-container input {
     width: 100%;
     display: flex;
