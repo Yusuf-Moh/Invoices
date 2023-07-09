@@ -46,26 +46,33 @@
 
                     <div id="organizationForm" class="form-container">
                         <form>
-                            <input type="text" id="firmenName" placeholder="Firmenname*" required>
+                            <input type="text" id="firmenName_organization" name="firmenName_organization"
+                                placeholder="Firmenname*" required>
 
-                            <input type="text" id="firmenAdresse" placeholder="Firmenadresse*" required>
+                            <input type="text" id="firmenAdresse_organization" name="firmenAdresse_organization"
+                                placeholder="Firmenadresse*" required>
 
-                            <input type="text" id="rechnungsKuerzel" placeholder="RechnungsKürzel*" required>
+                            <input type="text" id="rechnungsKuerzel_organization" name="rechnungsKuerzel_organization"
+                                placeholder="RechnungsKürzel*" required>
 
-                            <input type="text" id="PLZ" placeholder="PLZ*" required>
+                            <input type="text" id="PLZ_organization" name="PLZ_organization" placeholder="PLZ*"
+                                required>
 
-                            <input type="text" id="Ort" placeholder="Ort*" required>
+                            <input type="text" id="Ort_organization" name="Ort_organization" placeholder="Ort*"
+                                required>
 
-                            <input type="text" id="Vertragsdatum" placeholder="Vertragsdatum">
+                            <input type="text" id="Vertragsdatum_organization" name="Vertragsdatum_organization"
+                                placeholder="Vertragsdatum">
 
-                            <input type="text" id="Ansprechpartner" placeholder="Ansprechpartner (Vorname Nachname)">
+                            <input type="text" id="Ansprechpartner_organization" name="Ansprechpartner_organization"
+                                placeholder="Ansprechpartner (Vorname Nachname)">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender" id="male" value="male">
-                                <label for="male">Male</label>
+                                <input type="radio" name="gender_organization" id="male_organization" value="male">
+                                <label for="male_organization">Male</label>
 
-                                <input type="radio" name="gender" id="female" value="female">
-                                <label for="female">Female</label>
+                                <input type="radio" name="gender_organization" id="female_organization" value="female">
+                                <label for="female_organization">Female</label>
                             </div>
 
                             <button type="submit" class="sendNewContactData-Btn">Senden</button>
@@ -74,23 +81,27 @@
 
                     <div id="personForm" class="form-container">
                         <form>
-                            <input type="text" id="Ansprechpartner_Person" placeholder="Ansprechpartner* (Vorname Nachname)" required>
+                            <input type="text" id="Ansprechpartner_Person" name="Ansprechpartner_Person"
+                                placeholder="Ansprechpartner* (Vorname Nachname)" required>
 
-                            <input type="text" id="Adresse_Person" placeholder="Adresse*" required>
+                            <input type="text" id="Adresse_Person" name="Adresse_Person" placeholder="Adresse*"
+                                required>
 
-                            <input type="text" id="rechnungsKuerzel_Person" placeholder="RechnungsKürzel*" required>
+                            <input type="text" id="rechnungsKuerzel_Person" name="rechnungsKuerzel_Person"
+                                placeholder="RechnungsKürzel*" required>
 
-                            <input type="text" id="PLZ_Person" placeholder="PLZ*" required>
+                            <input type="text" id="PLZ_Person" name="PLZ_Person" placeholder="PLZ*" required>
 
-                            <input type="text" id="Ort_Person" placeholder="Ort*" required>
+                            <input type="text" id="Ort_Person" name="Ort_Person" placeholder="Ort*" required>
 
-                            <input type="text" id="Vertragsdatum_Person" placeholder="Vertragsdatum">
+                            <input type="text" id="Vertragsdatum_Person" name="Vertragsdatum_Person"
+                                placeholder="Vertragsdatum">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender" id="male_Person" value="male" required>
+                                <input type="radio" name="gender_person" id="male_Person" value="male" required>
                                 <label for="male_Person">Male*</label>
 
-                                <input type="radio" name="gender" id="female_Person" value="female" required>
+                                <input type="radio" name="gender_person" id="female_Person" value="female" required>
                                 <label for="female_Person">Female*</label>
                             </div>
 
