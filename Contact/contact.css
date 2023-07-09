@@ -134,6 +134,7 @@ b {
 .search input {
     border-radius: 5px;
     flex-grow: 1;
+    background-color: var(--color-background);
 }
 
 /* Distance between search icon and searchbar */
@@ -148,7 +149,7 @@ b {
 
 
 /* ============== Create new Contacts ============== */
-.createContat-Btn {
+.createContact-Btn {
     display: inline-block;
     background-color: var(--color-info-light);
     padding: var(--padding-btn);
@@ -261,9 +262,7 @@ input[type="radio"] {
     top: 50%;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    transition: top 0ms ease-in-out 0ms,
-        opacity 200ms ease-in-out 0ms,
-        transform 20ms ease-in-out 0ms;
+    transition: top 0ms ease-in-out 0ms, opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
 }
 
 .modal .modal-header {
