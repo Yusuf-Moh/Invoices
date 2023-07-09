@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kontakt</title>
+
+    <!--Link to Kontakt.css | Stylesheet-->
+    <link rel="stylesheet" href="./contact.css">
+    <!--Link to Material Icons-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Kontakte</h1>
+            <form action="/search" method="get" class="search-form">
+                <div class="search">
+                    <span class="material-icons-sharp">search</span>
+                    <input type="search" name="q" id="query" placeholder="Search..." autocomplete="off">
+                </div>
+            </form>
+        </div>
+
+
+        <div class="crud">
+            <div class="createContacts">
+                <!-- Trigger/Open The Modal -->
+                <button type="button" id="CreateContactModal" class="createContat-Btn">Kontakt erstellen</button>
+
+                <div class="modal" id="ContactModal">
+                    <!-- Modal content -->
+                    <div class="modal-header">
+                        <h2>Create Contact</h2>
+                        <span class="material-icons-sharp">close</span>
+                    </div>
+
+
+                    <div class="form">
+                        <button type="button" id="organization" class="organization">Organization</button>
+                        <button type="button" id="person" class="person">Person</button>
+
+                        <div id="organizationForm" class="form-container">
+                            <form>
+                                <label for="firmenName">Firmenname:</label>
+                                <input type="text" id="firmenName" required>
+
+                                <label for="firmenAdresse">Firmenadresse:</label>
+                                <input type="text" id="firmenAdresse" required>
+
+                                <label for="rechnungsKuerzel">RechnungsKürzel:</label>
+                                <input type="text" id="rechnungsKuerzel" required>
+
+                                <label for="PLZ">PLZ:</label>
+                                <input type="text" id="PLZ" required>
+
+                                <label for="Ort">Ort:</label>
+                                <input type="text" id="Ort" required>
+
+                                <label for="Vertragsdatum">Vertragsdatum:</label>
+                                <input type="text" id="Vertragsdatum">
+
+                                <label for="Ansprechpartner">Ansprechpartner:</label>
+                                <input type="text" id="Ansprechpartner">
+
+                                <div class="gender-container">
+                                    <input type="radio" name="gender" id="male" value="male">
+                                    <label for="male">Male</label>
+
+                                    <input type="radio" name="gender" id="female" value="female">
+                                    <label for="female">Female</label>
+                                </div>
+
+                                <button type="submit" class="sendNewContactData-Btn">Senden</button>
+                            </form>
+                        </div>
+
+                        <div id="personForm" class="form-container">
+                            <form>
+                                <label for="Ansprechpartner_Person">Ansprechpartner:</label>
+                                <input type="text" id="Ansprechpartner_Person" required>
+
+                                <label for="Adresse_Person">Adresse:</label>
+                                <input type="text" id="Adresse_Person" required>
+
+                                <label for="rechnungsKuerzel_Person">RechnungsKürzel:</label>
+                                <input type="text" id="rechnungsKuerzel_Person" required>
+
+                                <label for="PLZ_Person">PLZ:</label>
+                                <input type="text" id="PLZ_Person" required>
+
+                                <label for="Ort_Person">Ort:</label>
+                                <input type="text" id="Ort_Person" required>
+
+                                <label for="Vertragsdatum_Person">Vertragsdatum:</label>
+                                <input type="text" id="Vertragsdatum_Person">
+
+                                <div class="gender-container">
+                                    <input type="radio" name="gender" id="male_Person" value="male" required>
+                                    <label for="male_Person">Male</label>
+
+                                    <input type="radio" name="gender" id="female_Person" value="female" required>
+                                    <label for="female_Person">Female</label>
+                                </div>
+
+                                <button type="submit" class="sendNewContactData-Btn">Senden</button>
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+    <script src="index.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,278 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* root variables */
+:root {
+    --color-primary: #7780ec;
+    --color-danger: #ff7782;
+    --color-success: #41f1b6;
+    --color-warning: #ffbb55;
+    --color-white: #fff;
+    --color-info-dark: #7d8da1;
+    --color-info-light: #dce1eb;
+    --color-dark: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-primary-variant: #111e88;
+    --color-dark-variant: #677483;
+    --color-background: #f6f6f9;
+
+    --card-border-radius: 2rem;
+    --border-radius-1: 0.4rem;
+    --border-radius-2: 0.8rem;
+    --border-radius-3: 1.2rem;
+
+    --card-padding: 1.8rem;
+    --padding-1: 1.2rem;
+    --padding-btn: 10px;
+    --box-shadow: 0rem 2rem 3rem var(--color-light);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    appearance: none;
+    border: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 14px;
+}
+
+body {
+    width: 100vh;
+    height: 100vh;
+    font-family: poppins, sans-serif;
+    font-size: 0.88rem;
+    background: var(--color-background);
+    user-select: none;
+    overflow-x: none;
+    color: var(--color-dark);
+}
+
+.container {
+    display: grid;
+    width: 96%;
+    margin: 2rem auto;
+    gap: 1.8rem;
+}
+
+a {
+    color: var(--color-dark);
+}
+
+h1 {
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 1.4rem;
+}
+
+h3 {
+    font-size: 0.87rem;
+}
+
+h4 {
+    font-size: 0.8rem;
+}
+
+h5 {
+    font-size: 0.77rem;
+}
+
+p {
+    color: var(--color-dark-variant);
+}
+
+b {
+    color: var(--color-dark);
+}
+
+.primary {
+    color: var(--color-primary);
+}
+
+.danger {
+    color: var(--color-danger);
+}
+
+.success {
+    color: var(--color-success);
+}
+
+.warning {
+    color: var(--color-warning);
+}
+
+/* ============== Searchbar with h1 "Contact" ==============*/
+.header {
+    display: flex;
+}
+
+.search {
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 6px;
+    flex-grow: 1;
+    margin-left: 30px;
+}
+
+.search-form {
+    align-items: center;
+    flex-grow: 1;
+}
+
+.search span {
+    vertical-align: middle;
+}
+
+.search input {
+    border-radius: 5px;
+    flex-grow: 1;
+}
+
+/* Distance between search icon and searchbar */
+#query {
+    display: inline-block;
+    margin-left: 12px;
+    border: none;
+    outline: none;
+}
+
+/* ============== End of Searchbar ============== */
+
+
+/* ============== Create new Contacts ============== */
+.createContat-Btn {
+    display: inline-block;
+    background-color: var(--color-info-light);
+    padding: var(--padding-btn);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+}
+
+/* Form */
+.organization,
+.person,
+.sendNewContactData-Btn {
+    display: inline-block;
+    padding: var(--padding-btn);
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.sendNewContactData-Btn {
+    margin-top: 2rem;
+    margin-bottom: 0rem;
+    width: 100%;
+}
+
+.organization.clicked,
+.person.clicked {
+    background-color: var(--color-danger);
+}
+
+.form-container {
+    display: none;
+}
+
+.form-container form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.form-container label {
+    margin-bottom: 10px;
+}
+
+.form-container input {
+    width: 100%;
+    display: flex;
+    flex-grow: 1;
+    padding: 8px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius-1);
+}
+
+/* End of Form */
+
+/* ============== Radio Buttons for Gender Types at creating new Contacts ============== */
+
+input[type="radio"] {
+    appearance: auto;
+}
+
+.gender-container {
+    display: flex;
+    align-items: center;
+}
+
+.gender-container label {
+    margin-right: 10px;
+}
+
+.gender-container input[type="radio"] {
+    display: none;
+}
+
+.gender-container input[type="radio"]+label {
+    padding: 5px 10px;
+    background-color: #ebebeb;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.gender-container input[type="radio"]:checked+label {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+/* ============== End of Radio Buttons ============== */
+
+/* ============== Modal ==============*/
+
+.modal {
+    position: absolute;
+    /* For JS to "popup"*/
+    top: -150%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.25);
+
+    left: 50%;
+    width: 500px;
+    padding: 20px 30px;
+    background: var(--color-info-light);
+    box-shadow: 2px 2px 5px 5px var(--box-shadow);
+    border-radius: 10px;
+    transition: top 0ms ease-in-out 200ms,
+        opacity 200ms ease-in-out 0ms,
+        transform 600ms ease-in-out 200ms;
+}
+
+.modal.active {
+    top: 50%;
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+    transition: top 0ms ease-in-out 0ms,
+        opacity 200ms ease-in-out 0ms,
+        transform 20ms ease-in-out 0ms;
+}
+
+.modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+
+.modal .modal-header span {
+    margin-top: 3px;
+    cursor: pointer;
+}
