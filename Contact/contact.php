@@ -23,7 +23,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $gender_organization = null;
         }
 
-        insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
+        if (!checkIfValueExists('FirmenName', $firmenName_organization)) {
+            insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
+        }
     }
     // Code for Person"-Form
     elseif (isset($_POST["personSubmit"])) {
@@ -43,6 +45,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+function checkIfValueExists($columnName, $value)
+{
+    include('../dbPhp/dbOpenConnection.php'); // Verbindung öffnen
+
+    try {
+        // Prepare the SELECT-query
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM Kunden WHERE $columnName = :value");
+
+        // Bind the value to the parameter
+        $stmt->bindParam(':value', $value);
+
+        // Execute the query
+        $stmt->execute();
+
+        // Fetch the result
+        $result = $stmt->fetchColumn();
+
+        // Return true if the value exists, otherwise return false
+        $exists = ($result > 0);
+
+        include('../dbPhp/dbCLoseConnection.php'); // Verbindung schließen
+
+        return $exists;
+    } catch (PDOException $e) {
+        echo "Fehler: " . $e->getMessage();
+        return false;
+    }
+}
 
 
 function insertOrganizationDataIntoKundenTable($firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
