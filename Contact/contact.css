@@ -135,6 +135,7 @@ b {
     border-radius: 5px;
     flex-grow: 1;
     background-color: var(--color-background);
+    width: 100%;
 }
 
 /* Distance between search icon and searchbar */
