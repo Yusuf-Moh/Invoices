@@ -4,6 +4,7 @@
 :root {
     --color-primary: #7780ec;
     --color-danger: #ff7782;
+    --color-error: #e77968;
     --color-success: #41f1b6;
     --color-warning: #ffbb55;
     --color-white: #fff;
@@ -42,8 +43,11 @@ html {
 }
 
 body {
+    /*
+    Errors with searchbar not compleltly to the right
     width: 100vh;
     height: 100vh;
+    */
     font-family: poppins, sans-serif;
     font-size: 0.88rem;
     background: var(--color-background);
@@ -269,6 +273,27 @@ input[type="radio"] {
 }
 
 .modal .modal-header span {
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.message{
+    color: var(--color-dark);
+    margin-bottom: 1rem;
+    border-radius: var(--border-radius-1);
+    padding: 8px;
+    display: flex;
+    justify-content: space-between;
+}
+.success {
+    background: var(--color-success);
+}
+
+.error {
+    background: var(--color-error);
+}
+
+.message span {
     margin-top: 3px;
     cursor: pointer;
 }

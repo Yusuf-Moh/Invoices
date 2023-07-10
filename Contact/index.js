@@ -35,3 +35,9 @@ document.querySelector("#CreateContactModal").addEventListener("click", function
 document.querySelector(".modal .modal-header span").addEventListener("click", function () {
     document.querySelector(".modal").classList.remove("active");
 });
+
+
+//Error or Success Message 
+document.querySelector(".message span").addEventListener("click", function(){
+    document.getElementById('message').style.display = 'none';
+});

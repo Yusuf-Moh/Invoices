@@ -27,8 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
             $messageType = "success";
             $message = "Erfolgreich Daten in die Datenbank hinzugefügt";
-        }
-        else{
+        } else {
             $messageType = "error";
         }
     }
@@ -176,8 +175,9 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
         <!--Create New Contact with Button to open Modal-->
         <div class="createContacts">
 
-            <div class="message <?php echo $messageType; ?>">
-                <?php echo $message; ?>
+            <div class="message error" id = "message">
+                <h2>Erfolgreich Daten in Datenbank hinzugefügt</h2>
+                <span class="material-icons-sharp">close</span>
             </div>
 
             <!-- Trigger/Open The Modal -->
