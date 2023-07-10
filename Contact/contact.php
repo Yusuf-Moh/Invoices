@@ -25,6 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if (!checkIfValueExists('FirmenName', $firmenName_organization)) {
             insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
+            $messageType = "success";
+            $message = "Erfolgreich Daten in die Datenbank hinzugefügt";
+        }
+        else{
+            $messageType = "error";
         }
     }
     // Code for Person"-Form
@@ -170,8 +175,14 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
 
         <!--Create New Contact with Button to open Modal-->
         <div class="createContacts">
+
+            <div class="message <?php echo $messageType; ?>">
+                <?php echo $message; ?>
+            </div>
+
             <!-- Trigger/Open The Modal -->
             <button type="button" id="CreateContactModal" class="createContact-Btn">Kontakt erstellen</button>
+
 
             <div class="modal" id="ContactModal">
                 <!-- Modal content -->
