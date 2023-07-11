@@ -41,8 +41,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
             $messageType = "error";
             //Extension: Which company the existing Rechnungskürzel was assigned to for $message
-            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank:";
+            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
         }
+        //storing the php variable to js
+        echo "<script>";
+        echo "var messageType = '$messageType';";
+        echo "var firmenName_organization = '$firmenName_organization';";
+        echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
+        echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
+        echo "var PLZ_organization = '$PLZ_organization';";
+        echo "var Ort_organization = '$Ort_organization';";
+        echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
+        echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
+        echo "var gender_organization = '$gender_organization';";
+        echo "</script>";
         $showMessage = "flex";
     }
     // Code for Person"-Form
@@ -212,7 +224,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
 
                     <div id="organizationForm" class="form-container">
                         <form method="POST">
-                            <input type="text" id="firmenName_organization" name="firmenName_organization" placeholder="Firmenname*" required>
+                            <input type="text" id="firmenName_organization" name="firmenName_organization" placeholder="Firmenname*" value = "" required>
 
                             <input type="text" id="firmenAdresse_organization" name="firmenAdresse_organization" placeholder="Firmenadresse*" required>
 

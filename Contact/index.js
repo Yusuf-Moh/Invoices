@@ -44,18 +44,35 @@ closeBtn.addEventListener("click", function () {
     document.getElementById('message').style.display = 'none';
 });
 
-// Store the messagetype from php in js
-// var messageType = "<?php echo $messageType; ?>";
-// var submitButton = document.getElementById('organizationSubmitBtn');
-
-// submitButton.addEventListener('click', function (event) {
-
-//     if (messageType === "error") {
-//         // Modal open
-//         event.preventDefault(); // Blockiert das Standardverhalten des Buttons
-//         document.querySelector(".modal").classList.add("active");
-//         alert(messageType);
-//     }
-// });
 
 
+var submitButton = document.getElementById('organizationSubmitBtn');
+var messageDiv = document.getElementById('message');
+
+var messageType;
+
+//Organization-Form all input values:
+var firmenName_organization, firmenAdresse_organization, rechnungsKuerzel_organization, PLZ_organization, Ort_organization, Vertragsdatum_organization, Ansprechpartner_organization;
+var gender_organization;
+var maleRadio_organization = document.getElementById("male_organization");
+var femaleRadio_organization = document.getElementById("female_organization");
+
+//radio buttons are abit special to insert value into the input field
+
+if (organizationBtn.classList.contains('clicked')) {
+    if (messageType == "error") {
+        document.querySelector(".modal").classList.add("active");
+        document.getElementById("firmenName_organization").value = firmenName_organization;
+        document.getElementById("firmenAdresse_organization").value = firmenAdresse_organization;
+        document.getElementById("rechnungsKuerzel_organization").value = rechnungsKuerzel_organization;
+        document.getElementById("PLZ_organization").value = PLZ_organization;
+        document.getElementById("Ort_organization").value = Ort_organization;
+        document.getElementById("Vertragsdatum_organization").value = Vertragsdatum_organization;
+        document.getElementById("Ansprechpartner_organization").value = Ansprechpartner_organization;
+        if (gender_organization == "M") {
+            maleRadio_organization.checked = true;
+        } else if (gender_organization == "F") {
+            femaleRadio_organization.checked = true;
+        }
+    }
+}
