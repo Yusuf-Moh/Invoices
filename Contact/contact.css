@@ -282,7 +282,7 @@ input[type="radio"] {
     margin-bottom: 1rem;
     border-radius: var(--border-radius-1);
     padding: 8px;
-    display: flex;
+    display: none;
     justify-content: space-between;
 }
 .success {

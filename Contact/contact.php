@@ -1,4 +1,7 @@
 <?php
+$message = "";
+$messageType = "";
+$showMessage = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Storing the information in the variables
@@ -13,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
         $gender_organization = $_POST['gender_organization'];
 
+        //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
         if ($Vertragsdatum_organization == "") {
             $Vertragsdatum_organization = null;
         }
@@ -23,13 +27,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $gender_organization = null;
         }
 
-        if (!checkIfValueExists('FirmenName', $firmenName_organization)) {
+        //Checking if Firmenname and/or Rechnungskürzel already exisit in DB because it is not allowed to have multiple same type of them
+        if (!checkIfValueExists('FirmenName', $firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
             insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
             $messageType = "success";
-            $message = "Erfolgreich Daten in die Datenbank hinzugefügt";
-        } else {
+            $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+        } elseif (checkIfValueExists('FirmenName', $firmenName_organization) && checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
             $messageType = "error";
+            $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
+        } elseif (checkIfValueExists('FirmenName', $firmenName_organization)) {
+            $messageType = "error";
+            $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
+        } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
+            $messageType = "error";
+            //Extension: Which company the existing Rechnungskürzel was assigned to for $message
+            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank:";
         }
+        $showMessage = "flex";
     }
     // Code for Person"-Form
     elseif (isset($_POST["personSubmit"])) {
@@ -175,8 +189,8 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
         <!--Create New Contact with Button to open Modal-->
         <div class="createContacts">
 
-            <div class="message error" id = "message">
-                <h2>Erfolgreich Daten in Datenbank hinzugefügt</h2>
+            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage ?>">
+                <h2><?php echo $message; ?></h2>
                 <span class="material-icons-sharp">close</span>
             </div>
 
@@ -220,7 +234,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                                 <label for="female_organization">Female</label>
                             </div>
 
-                            <button type="submit" name="organizationSubmit" class="sendNewContactData-Btn">Senden</button>
+                            <button type="submit" name="organizationSubmit" class="sendNewContactData-Btn" id="organizationSubmitBtn">Senden</button>
                         </form>
                     </div>
 
