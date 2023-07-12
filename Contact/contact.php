@@ -65,13 +65,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $PLZ_Person = $_POST['PLZ_Person'];
         $Ort_Person = $_POST['Ort_Person'];
         $Vertragsdatum_Person = $_POST['Vertragsdatum_Person'];
-        $gender_person = $_POST['gender_person'];
+        $gender_Person = $_POST['gender_person'];
 
         if ($Vertragsdatum_Person == "") {
             $Vertragsdatum_Person = null;
         }
 
-        insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
+        if (!checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
+            insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
+            $messageType = "success";
+            $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+        } else if (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
+            $messageType = "error";
+            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+        }
+
+        //storing the php variable to js
+        echo "<script>";
+        echo "var bShowPersonModal = true;";
+        echo "var messageType = '$messageType';";
+        echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
+        echo "var Adresse_Person = '$Adresse_Person';";
+        echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
+        echo "var PLZ_Person = '$PLZ_Person';";
+        echo "var Ort_Person = '$Ort_Person';";
+        echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
+        echo "var gender_Person = '$gender_Person';";
+        echo "</script>";
+        $showMessage = "flex";
     }
 }
 
@@ -224,7 +245,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
 
                     <div id="organizationForm" class="form-container">
                         <form method="POST">
-                            <input type="text" id="firmenName_organization" name="firmenName_organization" placeholder="Firmenname*" value = "" required>
+                            <input type="text" id="firmenName_organization" name="firmenName_organization" placeholder="Firmenname*" value="" required>
 
                             <input type="text" id="firmenAdresse_organization" name="firmenAdresse_organization" placeholder="Firmenadresse*" required>
 
