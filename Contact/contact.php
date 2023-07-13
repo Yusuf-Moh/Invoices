@@ -2,6 +2,8 @@
 $message = "";
 $messageType = "";
 $showMessage = "";
+// $insertOrganizationDataIntoJS;
+// $insertPersonDataIntoJS;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     //Storing the information in the variables
@@ -32,29 +34,36 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
             $messageType = "success";
             $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+            $insertPersonDataIntoJS = false;
         } elseif (checkIfValueExists('FirmenName', $firmenName_organization) && checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
             $messageType = "error";
             $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
+            $insertOrganizationDataIntoJS = true;
         } elseif (checkIfValueExists('FirmenName', $firmenName_organization)) {
             $messageType = "error";
             $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
+            $insertOrganizationDataIntoJS = true;
         } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
             $messageType = "error";
             //Extension: Which company the existing Rechnungskürzel was assigned to for $message
             $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+            $insertOrganizationDataIntoJS = true;
         }
-        //storing the php variable to js
-        echo "<script>";
-        echo "var messageType = '$messageType';";
-        echo "var firmenName_organization = '$firmenName_organization';";
-        echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
-        echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
-        echo "var PLZ_organization = '$PLZ_organization';";
-        echo "var Ort_organization = '$Ort_organization';";
-        echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
-        echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
-        echo "var gender_organization = '$gender_organization';";
-        echo "</script>";
+
+        if ($insertOrganizationDataIntoJS) {
+            //storing the php variable to js
+            echo "<script>";
+            echo "var messageType = '$messageType';";
+            echo "var firmenName_organization = '$firmenName_organization';";
+            echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
+            echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
+            echo "var PLZ_organization = '$PLZ_organization';";
+            echo "var Ort_organization = '$Ort_organization';";
+            echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
+            echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
+            echo "var gender_organization = '$gender_organization';";
+            echo "</script>";
+        }
         $showMessage = "flex";
     }
     // Code for Person"-Form
@@ -75,23 +84,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
             $messageType = "success";
             $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+            $insertPersonDataIntoJS = false;
         } else if (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
             $messageType = "error";
             $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+            $insertPersonDataIntoJS = true;
         }
 
-        //storing the php variable to js
-        echo "<script>";
-        echo "var bShowPersonModal = true;";
-        echo "var messageType = '$messageType';";
-        echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
-        echo "var Adresse_Person = '$Adresse_Person';";
-        echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
-        echo "var PLZ_Person = '$PLZ_Person';";
-        echo "var Ort_Person = '$Ort_Person';";
-        echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
-        echo "var gender_Person = '$gender_Person';";
-        echo "</script>";
+        if ($insertPersonDataIntoJS) {
+            //storing the php variable to js
+            echo "<script>";
+            echo "var bShowPersonModal = true;";
+            echo "var messageType = '$messageType';";
+            echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
+            echo "var Adresse_Person = '$Adresse_Person';";
+            echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
+            echo "var PLZ_Person = '$PLZ_Person';";
+            echo "var Ort_Person = '$Ort_Person';";
+            echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
+            echo "var gender_Person = '$gender_Person';";
+            echo "</script>";
+        }
         $showMessage = "flex";
     }
 }
@@ -148,8 +161,7 @@ function insertOrganizationDataIntoKundenTable($firmenName, $Adresse, $rechnungs
         // Execute the query
         $stmt->execute();
 
-        echo "Daten erfolgreich eingefügt.";
-        header("Refresh:0");
+        // header("Refresh:0");
     } catch (PDOException $e) {
         echo "Fehler: " . $e->getMessage();
     }
@@ -178,8 +190,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
         // Execute the query
         $stmt->execute();
 
-        echo "Daten erfolgreich eingefügt.";
-        header("Refresh:0");
+        // header("Refresh:0");
     } catch (PDOException $e) {
         echo "Fehler: " . $e->getMessage();
     }
@@ -301,8 +312,58 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
         </div>
         <!-- End of Create Contacts with Modal -->
 
+        <!-- Beginning of the Crud Table -->
         <div class="crud">
+            <div class="crud-table">
+                <table class="table">
+                    <thead>
+                        <th>Firmenname</th>
+                        <th>Adresse</th>
+                        <th>Rechnungskürzel</th>
+                        <th>PLZ</th>
+                        <th>Ort</th>
+                        <th>Vertragsdatum</th>
+                        <th>Ansprechpartner</th>
+                        <th>Gender</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                        <!-- PHP to load all rows of the contacts -->
+                        <?php
+                        include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                        $stmt = $conn->prepare("SELECT * FROM `kunden`");
+                        $stmt->execute();
+                        $result = $stmt->fetchAll();
+                        foreach ($result as $row) {
+                        ?>
+                            <tr>
+                                <td><?php echo $row['FirmenName']; ?></td>
+                                <td><?php echo $row['Adresse']; ?></td>
+                                <td><?php echo $row['RechnungsKürzel']; ?></td>
+                                <td><?php echo $row['PLZ']; ?></td>
+                                <td><?php echo $row['Ort']; ?></td>
+                                <td><?php echo $row['VertragsDatum']; ?></td>
+                                <td><?php echo $row['Name_Ansprechpartner']; ?></td>
+                                <td><?php
+                                    if ($row['Gender'] == "M") {
+                                        echo "Male";
+                                    } elseif ($row['Gender'] == "F") {
+                                        echo "Female";
+                                    } else {
+                                        echo $row['Gender'];
+                                    } 
+                                ?></td>
+                                
+                                <td><button class="CrudUpdate">Update</button><button class="CrudDelete">Delete</button></td>
+                            </tr>
+                        <?php
+                        }
 
+                        include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
     </div>

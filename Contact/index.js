@@ -107,3 +107,11 @@ if (personBtn.classList.contains('clicked')) {
         }
     }
 }
+
+
+
+// Detect page reloads
+if (performance.navigation.type === 1) {
+    // Page reload detected, do the redirect to the same page
+    window.location.replace('contact.php');
+  }

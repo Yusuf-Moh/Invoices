@@ -5,7 +5,7 @@
     --color-primary: #7780ec;
     --color-danger: #ff7782;
     --color-error: #e77968;
-    --color-success: #41f1b6;
+    --color-success: #8bf38b;
     --color-warning: #ffbb55;
     --color-white: #fff;
     --color-info-dark: #7d8da1;
@@ -277,7 +277,7 @@ input[type="radio"] {
     cursor: pointer;
 }
 
-.message{
+.message {
     color: var(--color-dark);
     margin-bottom: 1rem;
     border-radius: var(--border-radius-1);
@@ -285,6 +285,7 @@ input[type="radio"] {
     display: none;
     justify-content: space-between;
 }
+
 .success {
     background: var(--color-success);
 }
@@ -296,4 +297,47 @@ input[type="radio"] {
 .message span {
     margin-top: 3px;
     cursor: pointer;
+}
+
+/* Crud table css */
+.crud .crud-table table {
+    border-collapse: collapse;
+    width: 100%;
+    /* doesnt work */
+    /* overflow-x: auto; */
+}
+
+.crud .crud-table table th,
+td {
+    text-align: left;
+    padding: 8px;
+    /* border-bottom: 1px solid #ddd; */
+    border: 1px solid #ddd;
+    color: var(--color-dark);
+
+}
+
+.crud .crud-table table tr:nth-child(even) {
+    background-color: var(--color-white);
+}
+
+.crud .crud-table table th {
+    background-color: var(--color-primary);
+}
+
+.crud .crud-table .CrudUpdate,
+.CrudDelete {
+    display: inline-block;
+    padding: var(--padding-btn);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    margin: 1px;
+}
+
+.crud .crud-table .CrudUpdate {
+    background-color: var(--color-success);
+}
+
+.crud .crud-table .CrudDelete {
+    background-color: var(--color-danger);
 }
