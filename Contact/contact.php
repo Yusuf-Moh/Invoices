@@ -34,6 +34,9 @@ function reset_vars(){
     global $saveUpdate_Organization, $saveUpdate_Person;
     $saveUpdate_Organization = "saveOrganization";
     $saveUpdate_Person = "savePerson";
+
+    global $modalHeadline;
+    $modalHeadline = "Erstelle Kontakt";
 }
 
 
@@ -147,20 +150,143 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case 'edit':
-                echo  $_POST['KundenID']; //gibt kundenid vom entsprechenden clicked btn
-                // $messageType = "edit";
-                // $message = "Editieren Sie Ihre Daten";
+                $messageType = "edit";
+                $message = "Editieren Sie Ihre Daten";
+                $modalHeadline = "Update Kontakt";
+                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                $KundenID = $_POST['KundenID'];
+                $query = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
+                $stmt = $conn->prepare($query);
+                $stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
+                $stmt->execute();
 
-                // query = Select * from Kunden where KundenID ....
-                // spalte Organization und person sollen überprüft werden, welche von denen true sind. Nur eins von beiden kann true sein.
-                // zwei if abfragen, in welches Modal (organization oder Person) anzeigt werden soll. Die Daten sollen in das Modal eingefügt werden. Anschließend soll der Button Senden zu Update umgeändert werden.
-                // saveUpdate_Person und Organization müssen also einen anderen wert bekommen zb UpdatePerson oder so.
-                // dann in Update soll überprüft werden ob es die geänderten werte bereits gibt in der DB. Wichtig zu beachten ist das der nicht geänderte wert bei der überprüfung nicht mit eingeschlossen werden soll
+                $result = [];
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if($result['organization']== '1'){
+                    $saveUpdate_Organization = "updateOrganization";
+                    
+                    $firmenName_organization = $result['FirmenName'];
+                    $firmenAdresse_organization = $result['Adresse'];
+                    $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
+                    $PLZ_organization = $result['PLZ'];
+                    $Ort_organization = $result['Ort'];
+                    $Vertragsdatum_organization = $result['VertragsDatum'];
+                    $Ansprechpartner_organization = $result['Name_Ansprechpartner'];
+                    $gender_organization = $result['Gender'];
+
+                    echo "<script>";
+                    echo "var messageType = '$messageType';";
+                    echo "var firmenName_organization = '$firmenName_organization';";
+                    echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
+                    echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
+                    echo "var PLZ_organization = '$PLZ_organization';";
+                    echo "var Ort_organization = '$Ort_organization';";
+                    echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
+                    echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
+                    echo "var gender_organization = '$gender_organization';";
+                    echo "</script>";
+                }
+                elseif($result['person']=='1'){
+                    $saveUpdate_Person = "updatePerson";
+                    
+                    $Ansprechpartner_Person = $result['Name_Ansprechpartner'];
+                    $Adresse_Person = $result['Adresse'];
+                    $rechnungsKuerzel_Person = $result['RechnungsKürzel'];
+                    $PLZ_Person = $result['PLZ'];
+                    $Ort_Person = $result['Ort'];
+                    $Vertragsdatum_Person = $result['VertragsDatum'];
+                    $gender_Person = $result['Gender'];
+
+                    echo "<script>";
+                    echo "var bShowPersonModal = true;";
+                    echo "var messageType = '$messageType';";
+                    echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
+                    echo "var Adresse_Person = '$Adresse_Person';";
+                    echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
+                    echo "var PLZ_Person = '$PLZ_Person';";
+                    echo "var Ort_Person = '$Ort_Person';";
+                    echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
+                    echo "var gender_Person = '$gender_Person';";
+                    echo "</script>";
+                }
+                $showMessage = "flex";
+
+                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
+                
+            // dann in Update soll überprüft werden ob es die geänderten werte bereits gibt in der DB. Wichtig zu beachten ist das der nicht geänderte wert bei der überprüfung nicht mit eingeschlossen werden soll
+            case 'updateOrganization':
+
+                $updated_firmenName_organization = $_POST['firmenName_organization'];
+                $updated_firmenAdresse_organization = $_POST['firmenAdresse_organization'];
+                $updated_rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
+                $updated_PLZ_organization = $_POST['PLZ_organization'];
+                $updated_Ort_organization = $_POST['Ort_organization'];
+                $updated_Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
+                $updated_Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
+                $updated_gender_organization = $_POST['gender_organization'];
+
+                //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
+                if ($updated_Vertragsdatum_organization == "") {
+                    $updated_Vertragsdatum_organization = null;
+                }
+                if ($updated_Ansprechpartner_organization == "") {
+                    $updated_Ansprechpartner_organization = null;
+                }
+                if ($updated_gender_organization != "M" && $updated_gender_organization != "F") {
+                    $updated_gender_organization = null;
+                }
+
+                //check if both values have not been changed
+                if($firmenName_organization == $updated_firmenName_organization&&$rechnungsKuerzel_organization==$updated_rechnungsKuerzel_organization){
+                    $message = "Daten wurden nicht geändert!";
+                    echo "option1";
+                }// check if both values have been changed
+                elseif($firmenName_organization != $updated_firmenName_organization&&$rechnungsKuerzel_organization!=$updated_rechnungsKuerzel_organization){
+                    //FirmenName and Rechnungskürzel doesnt exist in DB
+                    echo "option2";
+                    if(!checkIfValueExists('FirmenName', $updated_firmenName_organization)&&!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                        updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
+                        $message = "Daten wurden erfolgreich bearbeitet!";
+                    }//FirmenName and Rechnungskürzel both exist in DB
+                    elseif(checkIfValueExists('FirmenName', $updated_firmenName_organization)&&checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                        $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
+                    }//FirmenName exist in DB
+                    elseif(checkIfValueExists('FirmenName', $updated_firmenName_organization)){
+                        $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
+                    }
+                    elseif(checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
+                        $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+                    }
+                }//check if firmenname only got changed
+                elseif($firmenName_organization != $updated_firmenName_organization){
+                    echo "option3";
+                    if(!checkIfValueExists('FirmenName', $updated_firmenName_organization)){
+                        $message = "Daten wurden erfolgreich bearbeitet!";
+                        updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
+                    }
+                    else{
+                        $message = "Fehler: Firmenname exisitiert bereits in der Datenbank.";
+                    }
+                }//check if rechnungskürzel only got changed
+                elseif($rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization){
+                    echo "option4";
+                    if(!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                        $message = "Daten wurden erfolgreich bearbeitet!";
+                        updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
+                    }
+                    else{
+                        $message = "Fehler: Rechnungskürzel existiert bereits in der Datenbank.";
+                    }
+                }
+            break;
             
-            case 'update':
+            case 'updatePerson':
+
                 break;
-            
+
+
             case 'search':
                 //sql_query umändern
                 break;
@@ -260,6 +386,60 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
     include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
 }
 
+function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender) {
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
+
+    try {
+        // Prepare the UPDATE-Abfrage
+        $stmt = $conn->prepare("UPDATE kunden SET FirmenName = :firmenName, Adresse = :Adresse, RechnungsKürzel = :rechnungsKuerzel, PLZ = :plz, Ort = :ort, VertragsDatum = :vertragsDatum, Name_Ansprechpartner = :ansprechpartner, Gender = :gender WHERE ID = :id");
+
+        // Bind the variables on parameters
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':firmenName', $firmenName);
+        $stmt->bindParam(':Adresse', $Adresse);
+        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
+        $stmt->bindParam(':plz', $PLZ);
+        $stmt->bindParam(':ort', $Ort);
+        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
+        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
+        $stmt->bindParam(':gender', $gender);
+
+        $stmt->execute();
+
+    } catch (PDOException $e) {
+        echo "Fehler: " . $e->getMessage();
+    }
+
+    include('../dbPhp/dbCloseConnection.php'); // dbConnection schließen
+}
+
+
+function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender) {
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
+
+    try {
+        // Prepare the UPDATE-Abfrage
+        $stmt = $conn->prepare("UPDATE kunden SET Adresse = :Adresse, RechnungsKürzel = :rechnungsKuerzel, PLZ = :plz, Ort = :ort, VertragsDatum = :vertragsDatum, Name_Ansprechpartner = :ansprechpartner, Gender = :gender WHERE ID = :id");
+
+        // Bind the variables on parameters
+        $stmt->bindParam(':id', $id);
+        $stmt->bindParam(':Adresse', $Adresse);
+        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
+        $stmt->bindParam(':plz', $PLZ);
+        $stmt->bindParam(':ort', $Ort);
+        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
+        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
+        $stmt->bindParam(':gender', $gender);
+
+        $stmt->execute();
+
+    } catch (PDOException $e) {
+        echo "Fehler: " . $e->getMessage();
+    }
+
+    include('../dbPhp/dbCloseConnection.php'); // dbConnection schließen
+}
+
 ?>
 
 
@@ -306,7 +486,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
             <div class="modal" id="ContactModal">
                 <!-- Modal content -->
                 <div class="modal-header">
-                    <h2>Create Contact</h2>
+                    <h2><?php echo $modalHeadline; ?></h2>
                     <span class="material-icons-sharp">close</span>
                 </div>
 
@@ -339,7 +519,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                                 <label for="female_organization">Female</label>
                             </div>
 
-                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Organization; ?>" class="sendNewContactData-Btn" id="organizationSubmitBtn"><?php if($saveUpdate_Organization == "saveOrganization"){echo "Senden";}?></button>
+                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Organization; ?>" class="sendNewContactData-Btn" id="organizationSubmitBtn"><?php if($saveUpdate_Organization == "saveOrganization"){echo "Senden";}elseif($saveUpdate_Organization == "updateOrganization"){echo "Update";}?></button>
                         </form>
                     </div>
 
@@ -365,7 +545,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                                 <label for="female_Person">Female*</label>
                             </div>
 
-                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Person; ?>" class="sendNewContactData-Btn"><?php if($saveUpdate_Person == "savePerson"){echo "Senden";} ?></button>
+                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Person; ?>" class="sendNewContactData-Btn"><?php if($saveUpdate_Person == "savePerson"){echo "Senden";}elseif($saveUpdate_Person == "updatePerson"){echo "Update";} ?></button>
                         </form>
                     </div>
                 </div>

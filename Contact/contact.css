@@ -294,6 +294,10 @@ input[type="radio"] {
     background: var(--color-error);
 }
 
+.edit {
+    background: var(--color-warning);
+}
+
 .message span {
     margin-top: 3px;
     cursor: pointer;
@@ -314,7 +318,7 @@ td {
     /* border-bottom: 1px solid #ddd; */
     border: 1px solid #ddd;
     color: var(--color-dark);
-
+    font-size: 16px;
 }
 
 .crud .crud-table table tr:nth-child(even) {
