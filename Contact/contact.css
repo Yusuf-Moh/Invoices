@@ -325,7 +325,7 @@ td {
     background-color: var(--color-primary);
 }
 
-.crud .crud-table .CrudUpdate,
+.crud .crud-table .CrudEdit,
 .CrudDelete {
     display: inline-block;
     padding: var(--padding-btn);
@@ -334,7 +334,7 @@ td {
     margin: 1px;
 }
 
-.crud .crud-table .CrudUpdate {
+.crud .crud-table .CrudEdit {
     background-color: var(--color-success);
 }
 

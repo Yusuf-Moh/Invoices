@@ -1,111 +1,173 @@
 <?php
-$message = "";
-$messageType = "";
-$showMessage = "";
-// $insertOrganizationDataIntoJS;
-// $insertPersonDataIntoJS;
+function reset_vars(){
+
+    global $KundenID;
+    $KundenID = null;
+
+    global $firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization;
+    $firmenName_organization = null;
+    $firmenAdresse_organization = null;
+    $rechnungsKuerzel_organization = null;
+    $PLZ_organization = null;
+    $Ort_organization = null;
+    $Vertragsdatum_organization = null;
+    $Ansprechpartner_organization = null;
+    $gender_organization = null;
+
+    global $Ansprechpartner_Person, $Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $gender_Person;
+    $Ansprechpartner_Person = null;
+    $Adresse_Person = null;
+    $rechnungsKuerzel_Person = null;
+    $PLZ_Person = null;
+    $Ort_Person = null;
+    $Vertragsdatum_Person = null;
+    $gender_Person = null;
+    
+    global $sql_query;
+    $sql_query = "SELECT * FROM `kunden`";
+
+    global $message, $messageType, $showMessage;
+    $message = "";
+    $messageType = "";
+    $showMessage = "";
+    
+    global $saveUpdate_Organization, $saveUpdate_Person;
+    $saveUpdate_Organization = "saveOrganization";
+    $saveUpdate_Person = "savePerson";
+}
+
+
+//reset of every variables.
+reset_vars();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    //Storing the information in the variables
-    //Code for Organization-Form
-    if (isset($_POST['organizationSubmit'])) {
-        $firmenName_organization = $_POST['firmenName_organization'];
-        $firmenAdresse_organization = $_POST['firmenAdresse_organization'];
-        $rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
-        $PLZ_organization = $_POST['PLZ_organization'];
-        $Ort_organization = $_POST['Ort_organization'];
-        $Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
-        $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-        $gender_organization = $_POST['gender_organization'];
+    
+    if (isset($_POST['button'])) {
+        $action = $_POST['button'];
+        switch ($action) {
+            case 'saveOrganization':
+                $firmenName_organization = $_POST['firmenName_organization'];
+                $firmenAdresse_organization = $_POST['firmenAdresse_organization'];
+                $rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
+                $PLZ_organization = $_POST['PLZ_organization'];
+                $Ort_organization = $_POST['Ort_organization'];
+                $Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
+                $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
+                $gender_organization = $_POST['gender_organization'];
+        
+                //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
+                if ($Vertragsdatum_organization == "") {
+                    $Vertragsdatum_organization = null;
+                }
+                if ($Ansprechpartner_organization == "") {
+                    $Ansprechpartner_organization = null;
+                }
+                if ($gender_organization != "M" && $gender_organization != "F") {
+                    $gender_organization = null;
+                }
+        
+                //Checking if Firmenname and/or Rechnungskürzel already exisit in DB because it is not allowed to have multiple same type of them
+                if (!checkIfValueExists('FirmenName', $firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
+                    insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
+                    $messageType = "success";
+                    $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+                    $insertOrganizationDataIntoJS = false;
+                } elseif (checkIfValueExists('FirmenName', $firmenName_organization) && checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
+                    $messageType = "error";
+                    $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
+                    $insertOrganizationDataIntoJS = true;
+                } elseif (checkIfValueExists('FirmenName', $firmenName_organization)) {
+                    $messageType = "error";
+                    $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
+                    $insertOrganizationDataIntoJS = true;
+                } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
+                    $messageType = "error";
+                    //Extension: Which company the existing Rechnungskürzel was assigned to for $message
+                    $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+                    $insertOrganizationDataIntoJS = true;
+                }
+        
+                if ($insertOrganizationDataIntoJS) {
+                    //storing the php variable to js
+                    echo "<script>";
+                    echo "var messageType = '$messageType';";
+                    echo "var firmenName_organization = '$firmenName_organization';";
+                    echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
+                    echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
+                    echo "var PLZ_organization = '$PLZ_organization';";
+                    echo "var Ort_organization = '$Ort_organization';";
+                    echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
+                    echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
+                    echo "var gender_organization = '$gender_organization';";
+                    echo "</script>";
+                }
+                $showMessage = "flex";
 
-        //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
-        if ($Vertragsdatum_organization == "") {
-            $Vertragsdatum_organization = null;
-        }
-        if ($Ansprechpartner_organization == "") {
-            $Ansprechpartner_organization = null;
-        }
-        if ($gender_organization != "M" && $gender_organization != "F") {
-            $gender_organization = null;
-        }
+                break;
+            
+            case 'savePerson':
+                $Ansprechpartner_Person = $_POST['Ansprechpartner_Person'];
+                $Adresse_Person = $_POST['Adresse_Person'];
+                $rechnungsKuerzel_Person = $_POST['rechnungsKuerzel_Person'];
+                $PLZ_Person = $_POST['PLZ_Person'];
+                $Ort_Person = $_POST['Ort_Person'];
+                $Vertragsdatum_Person = $_POST['Vertragsdatum_Person'];
+                $gender_Person = $_POST['gender_person'];
+        
+                if ($Vertragsdatum_Person == "") {
+                    $Vertragsdatum_Person = null;
+                }
+        
+                if (!checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
+                    insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
+                    $messageType = "success";
+                    $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
+                    $insertPersonDataIntoJS = false;
+                } else if (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
+                    $messageType = "error";
+                    $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
+                    $insertPersonDataIntoJS = true;
+                }
+        
+                if ($insertPersonDataIntoJS) {
+                    //storing the php variable to js
+                    echo "<script>";
+                    echo "var bShowPersonModal = true;";
+                    echo "var messageType = '$messageType';";
+                    echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
+                    echo "var Adresse_Person = '$Adresse_Person';";
+                    echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
+                    echo "var PLZ_Person = '$PLZ_Person';";
+                    echo "var Ort_Person = '$Ort_Person';";
+                    echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
+                    echo "var gender_Person = '$gender_Person';";
+                    echo "</script>";
+                }
+                $showMessage = "flex";
+                break;
 
-        //Checking if Firmenname and/or Rechnungskürzel already exisit in DB because it is not allowed to have multiple same type of them
-        if (!checkIfValueExists('FirmenName', $firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-            insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
-            $messageType = "success";
-            $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
-            $insertPersonDataIntoJS = false;
-        } elseif (checkIfValueExists('FirmenName', $firmenName_organization) && checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-            $messageType = "error";
-            $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
-            $insertOrganizationDataIntoJS = true;
-        } elseif (checkIfValueExists('FirmenName', $firmenName_organization)) {
-            $messageType = "error";
-            $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
-            $insertOrganizationDataIntoJS = true;
-        } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-            $messageType = "error";
-            //Extension: Which company the existing Rechnungskürzel was assigned to for $message
-            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
-            $insertOrganizationDataIntoJS = true;
-        }
+            case 'edit':
+                echo  $_POST['KundenID']; //gibt kundenid vom entsprechenden clicked btn
+                // $messageType = "edit";
+                // $message = "Editieren Sie Ihre Daten";
 
-        if ($insertOrganizationDataIntoJS) {
-            //storing the php variable to js
-            echo "<script>";
-            echo "var messageType = '$messageType';";
-            echo "var firmenName_organization = '$firmenName_organization';";
-            echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
-            echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
-            echo "var PLZ_organization = '$PLZ_organization';";
-            echo "var Ort_organization = '$Ort_organization';";
-            echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
-            echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
-            echo "var gender_organization = '$gender_organization';";
-            echo "</script>";
-        }
-        $showMessage = "flex";
-    }
-    // Code for Person"-Form
-    elseif (isset($_POST["personSubmit"])) {
-        $Ansprechpartner_Person = $_POST['Ansprechpartner_Person'];
-        $Adresse_Person = $_POST['Adresse_Person'];
-        $rechnungsKuerzel_Person = $_POST['rechnungsKuerzel_Person'];
-        $PLZ_Person = $_POST['PLZ_Person'];
-        $Ort_Person = $_POST['Ort_Person'];
-        $Vertragsdatum_Person = $_POST['Vertragsdatum_Person'];
-        $gender_Person = $_POST['gender_person'];
+                // query = Select * from Kunden where KundenID ....
+                // spalte Organization und person sollen überprüft werden, welche von denen true sind. Nur eins von beiden kann true sein.
+                // zwei if abfragen, in welches Modal (organization oder Person) anzeigt werden soll. Die Daten sollen in das Modal eingefügt werden. Anschließend soll der Button Senden zu Update umgeändert werden.
+                // saveUpdate_Person und Organization müssen also einen anderen wert bekommen zb UpdatePerson oder so.
+                // dann in Update soll überprüft werden ob es die geänderten werte bereits gibt in der DB. Wichtig zu beachten ist das der nicht geänderte wert bei der überprüfung nicht mit eingeschlossen werden soll
+                break;
+            
+            case 'update':
+                break;
+            
+            case 'search':
+                //sql_query umändern
+                break;
 
-        if ($Vertragsdatum_Person == "") {
-            $Vertragsdatum_Person = null;
+            case 'delete':
+                break;
         }
-
-        if (!checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
-            insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
-            $messageType = "success";
-            $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
-            $insertPersonDataIntoJS = false;
-        } else if (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
-            $messageType = "error";
-            $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
-            $insertPersonDataIntoJS = true;
-        }
-
-        if ($insertPersonDataIntoJS) {
-            //storing the php variable to js
-            echo "<script>";
-            echo "var bShowPersonModal = true;";
-            echo "var messageType = '$messageType';";
-            echo "var Ansprechpartner_Person = '$Ansprechpartner_Person';";
-            echo "var Adresse_Person = '$Adresse_Person';";
-            echo "var rechnungsKuerzel_Person = '$rechnungsKuerzel_Person';";
-            echo "var PLZ_Person = '$PLZ_Person';";
-            echo "var Ort_Person = '$Ort_Person';";
-            echo "var Vertragsdatum_Person = '$Vertragsdatum_Person';";
-            echo "var gender_Person = '$gender_Person';";
-            echo "</script>";
-        }
-        $showMessage = "flex";
     }
 }
 
@@ -229,7 +291,6 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
         </div>
 
 
-
         <!--Create New Contact with Button to open Modal-->
         <div class="createContacts">
 
@@ -278,7 +339,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                                 <label for="female_organization">Female</label>
                             </div>
 
-                            <button type="submit" name="organizationSubmit" class="sendNewContactData-Btn" id="organizationSubmitBtn">Senden</button>
+                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Organization; ?>" class="sendNewContactData-Btn" id="organizationSubmitBtn"><?php if($saveUpdate_Organization == "saveOrganization"){echo "Senden";}?></button>
                         </form>
                     </div>
 
@@ -304,7 +365,7 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                                 <label for="female_Person">Female*</label>
                             </div>
 
-                            <button type="submit" name="personSubmit" class="sendNewContactData-Btn">Senden</button>
+                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Person; ?>" class="sendNewContactData-Btn"><?php if($saveUpdate_Person == "savePerson"){echo "Senden";} ?></button>
                         </form>
                     </div>
                 </div>
@@ -331,30 +392,35 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
                         <!-- PHP to load all rows of the contacts -->
                         <?php
                         include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                        $stmt = $conn->prepare("SELECT * FROM `kunden`");
+                        $stmt = $conn->prepare($sql_query);
                         $stmt->execute();
                         $result = $stmt->fetchAll();
                         foreach ($result as $row) {
                         ?>
                             <tr>
-                                <td><?php echo $row['FirmenName']; ?></td>
-                                <td><?php echo $row['Adresse']; ?></td>
-                                <td><?php echo $row['RechnungsKürzel']; ?></td>
-                                <td><?php echo $row['PLZ']; ?></td>
-                                <td><?php echo $row['Ort']; ?></td>
-                                <td><?php echo $row['VertragsDatum']; ?></td>
-                                <td><?php echo $row['Name_Ansprechpartner']; ?></td>
+                                <td><?php echo htmlspecialchars($row['FirmenName']); ?></td>
+                                <td><?php echo htmlspecialchars($row['Adresse']); ?></td>
+                                <td><?php echo htmlspecialchars($row['RechnungsKürzel']); ?></td>
+                                <td><?php echo htmlspecialchars($row['PLZ']); ?></td>
+                                <td><?php echo htmlspecialchars($row['Ort']); ?></td>
+                                <td><?php echo htmlspecialchars($row['VertragsDatum']); ?></td>
+                                <td><?php echo htmlspecialchars($row['Name_Ansprechpartner']); ?></td>
                                 <td><?php
                                     if ($row['Gender'] == "M") {
-                                        echo "Male";
+                                        echo htmlspecialchars("Male");
                                     } elseif ($row['Gender'] == "F") {
-                                        echo "Female";
+                                        echo htmlspecialchars("Female");
                                     } else {
-                                        echo $row['Gender'];
-                                    } 
-                                ?></td>
-                                
-                                <td><button class="CrudUpdate">Update</button><button class="CrudDelete">Delete</button></td>
+                                        echo htmlspecialchars($row['Gender']);
+                                    }
+                                    ?></td>
+                                <td>
+                                    <form method="post">
+                                        <input type="hidden" name="KundenID" value=<?php echo htmlspecialchars($row['KundenID']); ?>>
+                                        <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
+                                        <button type="submit" class="CrudDelete" name="button" value="delete">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
                         <?php
                         }
