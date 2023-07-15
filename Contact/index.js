@@ -119,15 +119,8 @@ document.querySelector("#CreateContactModal").addEventListener("click", function
 // Modal close 
 document.querySelector(".modal .modal-header span").addEventListener("click", function () {
     document.querySelector(".modal").classList.remove("active");
+    window.location.replace('contact.php');
 
-    if(messageType == "edit"){
-        messageType = "";
-        document.getElementById('message').style.display = 'none';
-        
-
-        
-        // window.location.replace('contact.php');
-    }
 });
 
 

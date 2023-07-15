@@ -51,7 +51,7 @@ body {
     font-family: poppins, sans-serif;
     font-size: 0.88rem;
     background: var(--color-background);
-    user-select: none;
+    /* user-select: none; */
     overflow-x: none;
     color: var(--color-dark);
 }
@@ -298,12 +298,16 @@ input[type="radio"] {
     background: var(--color-warning);
 }
 
+.errorUpdate{
+    background: var(--color-danger);
+}
+
 .message span {
     margin-top: 3px;
     cursor: pointer;
 }
 
-/* Crud table css */
+/* ========================= Crud table css ========================= */
 .crud .crud-table table {
     border-collapse: collapse;
     width: 100%;
@@ -325,10 +329,12 @@ td {
     background-color: var(--color-white);
 }
 
+/* head of table */
 .crud .crud-table table th {
     background-color: var(--color-primary);
 }
 
+/* edit and error btn */
 .crud .crud-table .CrudEdit,
 .CrudDelete {
     display: inline-block;
@@ -338,10 +344,12 @@ td {
     margin: 1px;
 }
 
+/* Edit btn */
 .crud .crud-table .CrudEdit {
     background-color: var(--color-success);
 }
 
+/* Delete btn */
 .crud .crud-table .CrudDelete {
     background-color: var(--color-danger);
 }
