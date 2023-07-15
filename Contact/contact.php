@@ -1,8 +1,8 @@
 <?php
-function reset_vars(){
+function reset_vars()
+{
 
     global $KundenID;
-    $KundenID = null;
 
     global $firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization;
     $firmenName_organization = null;
@@ -22,7 +22,7 @@ function reset_vars(){
     $Ort_Person = null;
     $Vertragsdatum_Person = null;
     $gender_Person = null;
-    
+
     global $sql_query;
     $sql_query = "SELECT * FROM `kunden`";
 
@@ -30,7 +30,7 @@ function reset_vars(){
     $message = "";
     $messageType = "";
     $showMessage = "";
-    
+
     global $saveUpdate_Organization, $saveUpdate_Person;
     $saveUpdate_Organization = "saveOrganization";
     $saveUpdate_Person = "savePerson";
@@ -44,7 +44,7 @@ function reset_vars(){
 reset_vars();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
+
     if (isset($_POST['button'])) {
         $action = $_POST['button'];
         switch ($action) {
@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
                 $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
                 $gender_organization = $_POST['gender_organization'];
-        
+
                 //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
                 if ($Vertragsdatum_organization == "") {
                     $Vertragsdatum_organization = null;
@@ -68,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($gender_organization != "M" && $gender_organization != "F") {
                     $gender_organization = null;
                 }
-        
+
                 //Checking if Firmenname and/or Rechnungskürzel already exisit in DB because it is not allowed to have multiple same type of them
                 if (!checkIfValueExists('FirmenName', $firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
                     insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
                     $insertOrganizationDataIntoJS = true;
                 }
-        
+
                 if ($insertOrganizationDataIntoJS) {
                     //storing the php variable to js
                     echo "<script>";
@@ -107,7 +107,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $showMessage = "flex";
 
                 break;
-            
+
             case 'savePerson':
                 $Ansprechpartner_Person = $_POST['Ansprechpartner_Person'];
                 $Adresse_Person = $_POST['Adresse_Person'];
@@ -116,11 +116,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Ort_Person = $_POST['Ort_Person'];
                 $Vertragsdatum_Person = $_POST['Vertragsdatum_Person'];
                 $gender_Person = $_POST['gender_person'];
-        
+
                 if ($Vertragsdatum_Person == "") {
                     $Vertragsdatum_Person = null;
                 }
-        
+
                 if (!checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
                     insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
                     $messageType = "success";
@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
                     $insertPersonDataIntoJS = true;
                 }
-        
+
                 if ($insertPersonDataIntoJS) {
                     //storing the php variable to js
                     echo "<script>";
@@ -163,9 +163,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $result = [];
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if($result['organization']== '1'){
+                if ($result['organization'] == '1') {
                     $saveUpdate_Organization = "updateOrganization";
-                    
+
                     $firmenName_organization = $result['FirmenName'];
                     $firmenAdresse_organization = $result['Adresse'];
                     $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
@@ -186,10 +186,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
                     echo "var gender_organization = '$gender_organization';";
                     echo "</script>";
-                }
-                elseif($result['person']=='1'){
+                } elseif ($result['person'] == '1') {
                     $saveUpdate_Person = "updatePerson";
-                    
+
                     $Ansprechpartner_Person = $result['Name_Ansprechpartner'];
                     $Adresse_Person = $result['Adresse'];
                     $rechnungsKuerzel_Person = $result['RechnungsKürzel'];
@@ -214,10 +213,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
-                
-            // dann in Update soll überprüft werden ob es die geänderten werte bereits gibt in der DB. Wichtig zu beachten ist das der nicht geänderte wert bei der überprüfung nicht mit eingeschlossen werden soll
+
             case 'updateOrganization':
 
+                //values of the DB
+                $KundenID = $_POST['kID'];
+
+                $firmenName_organization = $_POST['firmenName_org'];
+                $firmenAdresse_organization = $_POST['firmenAdresse_org'];
+                $rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_org'];
+                $PLZ_organization = $_POST['PLZ_org'];
+                $Ort_organization = $_POST['Ort_org'];
+                $Vertragsdatum_organization = $_POST['Vertragsdatum_org'];
+                $Ansprechpartner_organization = $_POST['Ansprechpartner_org'];
+                $gender_organization = $_POST['gender_org'];
+
+                //Values of the inputfield
                 $updated_firmenName_organization = $_POST['firmenName_organization'];
                 $updated_firmenAdresse_organization = $_POST['firmenAdresse_organization'];
                 $updated_rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
@@ -239,51 +250,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 //check if both values have not been changed
-                if($firmenName_organization == $updated_firmenName_organization&&$rechnungsKuerzel_organization==$updated_rechnungsKuerzel_organization){
+                if ($firmenName_organization == $updated_firmenName_organization && $rechnungsKuerzel_organization == $updated_rechnungsKuerzel_organization) {
                     $message = "Daten wurden nicht geändert!";
                     echo "option1";
-                }// check if both values have been changed
-                elseif($firmenName_organization != $updated_firmenName_organization&&$rechnungsKuerzel_organization!=$updated_rechnungsKuerzel_organization){
+                } // check if both values have been changed
+                elseif ($firmenName_organization != $updated_firmenName_organization && $rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
                     //FirmenName and Rechnungskürzel doesnt exist in DB
                     echo "option2";
-                    if(!checkIfValueExists('FirmenName', $updated_firmenName_organization)&&!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                    if (!checkIfValueExists('FirmenName', $updated_firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
                         updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
                         $message = "Daten wurden erfolgreich bearbeitet!";
-                    }//FirmenName and Rechnungskürzel both exist in DB
-                    elseif(checkIfValueExists('FirmenName', $updated_firmenName_organization)&&checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                    } //FirmenName and Rechnungskürzel both exist in DB
+                    elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization) && checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
                         $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
-                    }//FirmenName exist in DB
-                    elseif(checkIfValueExists('FirmenName', $updated_firmenName_organization)){
+                    } //FirmenName exist in DB
+                    elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
                         $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
-                    }
-                    elseif(checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
+                    } elseif (checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
                         $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
                     }
-                }//check if firmenname only got changed
-                elseif($firmenName_organization != $updated_firmenName_organization){
+                } //check if firmenname only got changed
+                elseif ($firmenName_organization != $updated_firmenName_organization) {
                     echo "option3";
-                    if(!checkIfValueExists('FirmenName', $updated_firmenName_organization)){
+                    if (!checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
                         $message = "Daten wurden erfolgreich bearbeitet!";
                         updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                    }
-                    else{
+                    } else {
                         $message = "Fehler: Firmenname exisitiert bereits in der Datenbank.";
                     }
-                }//check if rechnungskürzel only got changed
-                elseif($rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization){
+                } //check if rechnungskürzel only got changed
+                elseif ($rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
                     echo "option4";
-                    if(!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)){
+                    if (!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
                         $message = "Daten wurden erfolgreich bearbeitet!";
                         updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                    }
-                    else{
+                    } else {
                         $message = "Fehler: Rechnungskürzel existiert bereits in der Datenbank.";
                     }
                 }
-            break;
-            
-            case 'updatePerson':
+                break;
 
+            case 'updatePerson':
+                $KundenID = $_POST['kID'];
+                echo $KundenID;
                 break;
 
 
@@ -386,7 +395,8 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
     include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
 }
 
-function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender) {
+function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
+{
     include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
 
     try {
@@ -405,7 +415,6 @@ function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rech
         $stmt->bindParam(':gender', $gender);
 
         $stmt->execute();
-
     } catch (PDOException $e) {
         echo "Fehler: " . $e->getMessage();
     }
@@ -414,7 +423,8 @@ function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rech
 }
 
 
-function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender) {
+function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
+{
     include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
 
     try {
@@ -432,7 +442,6 @@ function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ,
         $stmt->bindParam(':gender', $gender);
 
         $stmt->execute();
-
     } catch (PDOException $e) {
         echo "Fehler: " . $e->getMessage();
     }
@@ -462,7 +471,7 @@ function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ,
     <div class="container">
         <div class="header">
             <h1>Kontakte</h1>
-            <form action="/search" method="get" class="search-form">
+            <form method="POST" class="search-form">
                 <div class="search">
                     <span class="material-icons-sharp">search</span>
                     <input type="search" name="q" id="query" placeholder="Search..." autocomplete="off">
@@ -519,7 +528,22 @@ function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ,
                                 <label for="female_organization">Female</label>
                             </div>
 
-                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Organization; ?>" class="sendNewContactData-Btn" id="organizationSubmitBtn"><?php if($saveUpdate_Organization == "saveOrganization"){echo "Senden";}elseif($saveUpdate_Organization == "updateOrganization"){echo "Update";}?></button>
+                            <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
+                            <input type="hidden" name="kID" value="<?php echo htmlspecialchars($KundenID); ?>">
+                            <input type="hidden" name="firmenName_org" value="<?php echo htmlspecialchars($firmenName_organization); ?>">
+                            <input type="hidden" name="firmenAdresse_org" value="<?php echo htmlspecialchars($firmenAdresse_organization); ?>">
+                            <input type="hidden" name="rechnungsKuerzel_org" value=<?php echo htmlspecialchars($rechnungsKuerzel_organization); ?>>
+                            <input type="hidden" name="PLZ_org" value="<?php echo htmlspecialchars($PLZ_organization); ?>">
+                            <input type="hidden" name="Ort_org" value="<?php echo htmlspecialchars($Ort_organization); ?>">
+                            <input type="hidden" name="Vertragsdatum_org" value=<?php echo htmlspecialchars($Vertragsdatum_organization); ?>>
+                            <input type="hidden" name="Ansprechpartner_org" value=<?php echo htmlspecialchars($Ansprechpartner_organization); ?>>
+                            <input type="hidden" name="gender_org" value="<?php echo htmlspecialchars($gender_organization); ?>">
+
+                            <button type="submit" name="button" value="<?php echo $saveUpdate_Organization; ?>" class="sendNewContactData-Btn" id="organizationSubmitBtn"><?php if ($saveUpdate_Organization == "saveOrganization") {
+                                                                                                                                                                                echo "Senden";
+                                                                                                                                                                            } elseif ($saveUpdate_Organization == "updateOrganization") {
+                                                                                                                                                                                echo "Update";
+                                                                                                                                                                            } ?></button>
                         </form>
                     </div>
 
@@ -545,7 +569,13 @@ function updatePersonDataIntoKundenTable($id, $Adresse, $rechnungsKuerzel, $PLZ,
                                 <label for="female_Person">Female*</label>
                             </div>
 
-                            <button type="submit" name="button" value = "<?php echo $saveUpdate_Person; ?>" class="sendNewContactData-Btn"><?php if($saveUpdate_Person == "savePerson"){echo "Senden";}elseif($saveUpdate_Person == "updatePerson"){echo "Update";} ?></button>
+                            <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
+                            <input type="text" name="kID" value=<?php echo htmlspecialchars($KundenID); ?>>
+                            <button type="submit" name="button" value="<?php echo $saveUpdate_Person; ?>" class="sendNewContactData-Btn"><?php if ($saveUpdate_Person == "savePerson") {
+                                                                                                                                                echo "Senden";
+                                                                                                                                            } elseif ($saveUpdate_Person == "updatePerson") {
+                                                                                                                                                echo "Update";
+                                                                                                                                            } ?></button>
                         </form>
                     </div>
                 </div>
