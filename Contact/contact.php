@@ -123,7 +123,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 if (!checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_Person)) {
-                    insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_person);
+                    insertPersonDataIntoKundenTable($Adresse_Person, $rechnungsKuerzel_Person, $PLZ_Person, $Ort_Person, $Vertragsdatum_Person, $Ansprechpartner_Person, $gender_Person);
                     $messageType = "success";
                     $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
                     $insertPersonDataIntoJS = false;
@@ -387,6 +387,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             case 'search':
                 //sql_query umändern
+                echo "hallo";
                 break;
 
             case 'delete':
@@ -431,8 +432,8 @@ function insertOrganizationDataIntoKundenTable($firmenName, $Adresse, $rechnungs
 
     try {
         // Prepeare the INSERT-query
-        $stmt = $conn->prepare("INSERT INTO kunden (FirmenName, Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender)
-                                   VALUES (:firmenName, :Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender)");
+        $stmt = $conn->prepare("INSERT INTO kunden (FirmenName, Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender, organization)
+                                   VALUES (:firmenName, :Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender, 1)");
 
         // Bind Values to the parameters
         $stmt->bindParam(':firmenName', $firmenName);
@@ -461,8 +462,8 @@ function insertPersonDataIntoKundenTable($Adresse, $rechnungsKuerzel, $PLZ, $Ort
 
     try {
         // Prepeare the INSERT-query
-        $stmt = $conn->prepare("INSERT INTO kunden (Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender)
-                               VALUES (:Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender)");
+        $stmt = $conn->prepare("INSERT INTO kunden (Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender, person)
+                               VALUES (:Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender, 1)");
 
         // Bind Values to the parameters
         $stmt->bindParam(':Adresse', $Adresse);
@@ -589,7 +590,7 @@ function checkPersonDataChangedValues($Ansprechpartner_Person, $updated_Ansprech
             <form method="POST" class="search-form">
                 <div class="search">
                     <span class="material-icons-sharp">search</span>
-                    <input type="search" name="q" id="query" placeholder="Search..." autocomplete="off">
+                    <input type="search" name="button" id="search" class="Search-Input" value="search" placeholder="Search..." autocomplete="off">
                 </div>
             </form>
         </div>
