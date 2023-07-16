@@ -117,18 +117,56 @@ b {
     display: flex;
 }
 
+.header-search {
+    width: 100%;
+}
+
+.buttons-container{
+    display: flex;
+    justify-content: left;
+}
+
+.search-buttons {
+    display: flex;
+}
+
+.search-buttons button {
+    display: inline-block;
+    background-color: var(--color-info-light);
+    padding: var(--padding-btn);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    margin-right: 8px;
+}
+
+.search-buttons button:last-child{
+    margin-right: 0px;
+}
+
+/* hier muss der code verbessert werden */
+.buttons-container .search-buttons button.clicked{
+    background-color: red;
+}
+
+
+.WebsiteHeadline {
+    margin-right: 30px;
+}
+
 .search {
     display: flex;
     border: 1px solid #ccc;
     border-radius: 10px;
     padding: 6px;
     flex-grow: 1;
-    margin-left: 30px;
+    /* margin-left: 30px; */
+    margin-bottom: 8px;
 }
 
 .search-form {
     align-items: center;
     flex-grow: 1;
+    /* display: flex; */
 }
 
 .search span {
@@ -298,7 +336,7 @@ input[type="radio"] {
     background: var(--color-warning);
 }
 
-.errorUpdate{
+.errorUpdate {
     background: var(--color-danger);
 }
 

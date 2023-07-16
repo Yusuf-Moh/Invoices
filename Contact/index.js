@@ -129,3 +129,47 @@ if (performance.navigation.type === 1) {
     // Page reload detected, do the redirect to the same page
     window.location.replace('contact.php');
 }
+
+
+
+
+// Select Search-Input-Element
+var searchInput = document.getElementById('search');
+
+// Event-Listener for Keydown
+searchInput.addEventListener('keydown', function(event) {
+  // Check, if the holding key is the enter-key
+  if (event.key === 'Enter') {
+    // Select and Click Button-Element for switchcase in php
+    var searchButton = document.getElementById('searchButton');
+    searchButton.click();
+  }
+});
+
+
+
+
+
+// Search-Btns
+
+function changeBackground(button) {
+    var buttonState = localStorage.getItem(button.value);
+    if (buttonState === 'clicked') {
+        button.classList.remove('clicked');
+        localStorage.setItem(button.value, 'unclicked');
+    } else {
+        button.classList.add('clicked');
+        localStorage.setItem(button.value, 'clicked');
+    }
+}
+
+// Prüfe den Zustand der Buttons beim Laden der Seite
+document.addEventListener('DOMContentLoaded', function() {
+    var buttons = document.querySelectorAll('.search-buttons button');
+    buttons.forEach(function(button) {
+        var buttonState = localStorage.getItem(button.value);
+        if (buttonState === 'clicked') {
+            button.classList.add('clicked');
+        }
+    });
+});
