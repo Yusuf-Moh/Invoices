@@ -40,6 +40,9 @@ function reset_vars()
 
     global $modalHeadline;
     $modalHeadline = "Erstelle Kontakt";
+    
+    global $showMessage;
+    $showMessage = "none";
 }
 
 global $Firmenname_StateSearchButton, $Adresse_StateSearchButton, $RechnungsKürzel_StateSearchButton, $PLZ_StateSearchButton, $Ort_StateSearchButton, $Vertragsdatum_StateSearchButton, $Ansprechpartner_StateSearchButton, $Gender_StateSearchButton;
