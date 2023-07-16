@@ -29,6 +29,9 @@ function reset_vars()
     global $sql_query;
     $sql_query = "SELECT * FROM `kunden`";
 
+    global $param;
+    $param = [];
+
     global $message, $messageType, $showMessage;
     $message = "";
     $messageType = "";
@@ -97,7 +100,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($Ansprechpartner_organization == "") {
                     $Ansprechpartner_organization = null;
                 }
-                if ($gender_organization != "M" && $gender_organization != "F") {
+                if ($gender_organization != "Male" && $gender_organization != "Female") {
                     $gender_organization = null;
                 }
 
@@ -287,7 +290,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if ($updated_Ansprechpartner_organization == "") {
                     $updated_Ansprechpartner_organization = null;
                 }
-                if ($updated_gender_organization != "M" && $updated_gender_organization != "F") {
+                if ($updated_gender_organization != "Male" && $updated_gender_organization != "Female") {
                     $updated_gender_organization = null;
                 }
 
@@ -507,6 +510,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             case 'search':
                 reset_vars();
+                $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
 
                 //If any of the Filter Buttons are active/clicked
                 if ($_POST['Firmenname_StateSearchButton'] == "true" || $_POST['Adresse_StateSearchButton'] == "true" || $_POST['RechnungsKürzel_StateSearchButton'] == "true" || $_POST['PLZ_StateSearchButton'] == "true" || $_POST['Ort_StateSearchButton'] == "true" || $_POST['Vertragsdatum_StateSearchButton'] == "true" || $_POST['Ansprechpartner_StateSearchButton'] == "true" || $_POST['Gender_StateSearchButton'] == "true") {
@@ -537,7 +541,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
 
                     if ($_POST['Ansprechpartner_StateSearchButton'] == "true") {
-                        $sql_query .= " Ansprechpartner LIKE :search_string OR";
+                        $sql_query .= " Name_Ansprechpartner LIKE :search_string OR";
                     }
 
                     if ($_POST['Gender_StateSearchButton'] == "true") {
@@ -547,10 +551,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     // Delete the last "AND" of the Query
                     $sql_query = rtrim($sql_query, "OR");
                 } else {
-                    $sql_query = "SELECT * FROM `kunden`";
+                    $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";
                 }
-
-                $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
+                $param = ['search_string' => $contentSearchbar];
                 break;
 
             case 'delete':
@@ -558,6 +561,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
+include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+$stmt = $conn->prepare($sql_query);
+$stmt->execute($param);
+$result = $stmt->fetchAll();
 
 function checkIfValueExists($columnName, $value)
 {
@@ -834,10 +841,10 @@ function setSessionVariableFalse($session)
                             <input type="text" id="Ansprechpartner_organization" name="Ansprechpartner_organization" placeholder="Ansprechpartner (Vorname Nachname)">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender_organization" id="male_organization" value="M">
+                                <input type="radio" name="gender_organization" id="male_organization" value="Male">
                                 <label for="male_organization">Male</label>
 
-                                <input type="radio" name="gender_organization" id="female_organization" value="F">
+                                <input type="radio" name="gender_organization" id="female_organization" value="Female">
                                 <label for="female_organization">Female</label>
                             </div>
 
@@ -907,10 +914,7 @@ function setSessionVariableFalse($session)
                     <tbody>
                         <!-- PHP to load all rows of the contacts -->
                         <?php
-                        include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                        $stmt = $conn->prepare($sql_query);
-                        $stmt->execute();
-                        $result = $stmt->fetchAll();
+
                         foreach ($result as $row) {
                         ?>
                             <tr>

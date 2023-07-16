@@ -74,9 +74,9 @@ if (organizationBtn.classList.contains('clicked')) {
         document.getElementById("Ort_organization").value = Ort_organization;
         document.getElementById("Vertragsdatum_organization").value = Vertragsdatum_organization;
         document.getElementById("Ansprechpartner_organization").value = Ansprechpartner_organization;
-        if (gender_organization == "M") {
+        if (gender_organization == "Male") {
             maleRadio_organization.checked = true;
-        } else if (gender_organization == "F") {
+        } else if (gender_organization == "Female") {
             femaleRadio_organization.checked = true;
         }
 
@@ -98,9 +98,9 @@ if (personBtn.classList.contains('clicked')) {
         document.getElementById("PLZ_Person").value = PLZ_Person;
         document.getElementById("Ort_Person").value = Ort_Person;
         document.getElementById("Vertragsdatum_Person").value = Vertragsdatum_Person;
-        if (gender_Person == "M") {
+        if (gender_Person == "Male") {
             maleRadio_Person.checked = true;
-        } else if (gender_Person == "F") {
+        } else if (gender_Person == "Female") {
             femaleRadio_Person.checked = true;
         }
 
