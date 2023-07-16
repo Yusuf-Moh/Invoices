@@ -336,9 +336,10 @@ input[type="radio"] {
     background: var(--color-warning);
 }
 
-.errorUpdate {
+.errorUpdate, .errorDelete {
     background: var(--color-danger);
 }
+
 
 .message span {
     margin-top: 3px;

@@ -557,6 +557,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case 'delete':
+                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                $KundenID = $_POST['KundenID'];
+                $sql = "DELETE FROM kunden WHERE KundenID=:KundenID";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute(['KundenID'=>$KundenID]);
+
+                if($stmt->rowCount()>0){
+                    $message = $stmt->rowCount() . " Datensatz gelöscht!";
+                    $messageType = "success";
+                }else{
+                    $message = "Datensatz wurde nicht gelöscht!";
+                    $messageType = "errorDelete";
+                }
+                $showMessage = "flex";
+                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
         }
     }
