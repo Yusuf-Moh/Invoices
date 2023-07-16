@@ -40,12 +40,13 @@ function reset_vars()
 
     global $modalHeadline;
     $modalHeadline = "Erstelle Kontakt";
-    
+
     global $showMessage;
     $showMessage = "none";
 }
 
 global $Firmenname_StateSearchButton, $Adresse_StateSearchButton, $RechnungsKürzel_StateSearchButton, $PLZ_StateSearchButton, $Ort_StateSearchButton, $Vertragsdatum_StateSearchButton, $Ansprechpartner_StateSearchButton, $Gender_StateSearchButton;
+
 global $restart;
 $restart = false;
 
@@ -58,7 +59,7 @@ setSessionVariableFalse('Vertragsdatum_StateSearchButton');
 setSessionVariableFalse('Ansprechpartner_StateSearchButton');
 setSessionVariableFalse('Gender_StateSearchButton');
 
-if($restart){
+if ($restart) {
     header("Refresh:0");
 }
 
@@ -418,10 +419,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_FirmenName':
                 $Firmenname_StateSearchButton = $_POST['Firmenname_StateSearchButton'];
 
-                if($Firmenname_StateSearchButton == "false"){
+                if ($Firmenname_StateSearchButton == "false") {
                     $Firmenname_StateSearchButton = "true";
                     $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
-                }else if($Firmenname_StateSearchButton == "true"){
+                } else if ($Firmenname_StateSearchButton == "true") {
                     $Firmenname_StateSearchButton = "false";
                     $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
                 }
@@ -429,10 +430,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_Adresse':
                 $Adresse_StateSearchButton = $_POST['Adresse_StateSearchButton'];
 
-                if($Adresse_StateSearchButton == "false"){
+                if ($Adresse_StateSearchButton == "false") {
                     $Adresse_StateSearchButton = "true";
                     $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
-                }elseif($Adresse_StateSearchButton == "true"){
+                } elseif ($Adresse_StateSearchButton == "true") {
                     $Adresse_StateSearchButton = "false";
                     $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
                 }
@@ -440,10 +441,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_RechnungsKürzel':
                 $RechnungsKürzel_StateSearchButton = $_POST['RechnungsKürzel_StateSearchButton'];
 
-                if($RechnungsKürzel_StateSearchButton == "false"){
+                if ($RechnungsKürzel_StateSearchButton == "false") {
                     $RechnungsKürzel_StateSearchButton = "true";
                     $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
-                }elseif($RechnungsKürzel_StateSearchButton == "true"){
+                } elseif ($RechnungsKürzel_StateSearchButton == "true") {
                     $RechnungsKürzel_StateSearchButton = "false";
                     $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
                 }
@@ -451,10 +452,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_PLZ':
                 $PLZ_StateSearchButton = $_POST['PLZ_StateSearchButton'];
 
-                if($PLZ_StateSearchButton == "false"){
+                if ($PLZ_StateSearchButton == "false") {
                     $PLZ_StateSearchButton = "true";
                     $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
-                }elseif($PLZ_StateSearchButton == "true"){
+                } elseif ($PLZ_StateSearchButton == "true") {
                     $PLZ_StateSearchButton = "false";
                     $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
                 }
@@ -462,10 +463,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_Ort':
                 $Ort_StateSearchButton = $_POST['Ort_StateSearchButton'];
 
-                if($Ort_StateSearchButton == "false"){
+                if ($Ort_StateSearchButton == "false") {
                     $Ort_StateSearchButton = "true";
                     $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
-                }elseif($Ort_StateSearchButton == "true"){
+                } elseif ($Ort_StateSearchButton == "true") {
                     $Ort_StateSearchButton = "false";
                     $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
                 }
@@ -473,10 +474,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_Vertragsdatum':
                 $Vertragsdatum_StateSearchButton = $_POST['Vertragsdatum_StateSearchButton'];
 
-                if($Vertragsdatum_StateSearchButton == "false"){
+                if ($Vertragsdatum_StateSearchButton == "false") {
                     $Vertragsdatum_StateSearchButton = "true";
                     $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
-                }elseif($Vertragsdatum_StateSearchButton == "true"){
+                } elseif ($Vertragsdatum_StateSearchButton == "true") {
                     $Vertragsdatum_StateSearchButton = "false";
                     $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
                 }
@@ -484,10 +485,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_Ansprechpartner':
                 $Ansprechpartner_StateSearchButton = $_POST['Ansprechpartner_StateSearchButton'];
 
-                if($Ansprechpartner_StateSearchButton == "false"){
+                if ($Ansprechpartner_StateSearchButton == "false") {
                     $Ansprechpartner_StateSearchButton = "true";
                     $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
-                }elseif($Ansprechpartner_StateSearchButton == "true"){
+                } elseif ($Ansprechpartner_StateSearchButton == "true") {
                     $Ansprechpartner_StateSearchButton = "false";
                     $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
                 }
@@ -495,19 +496,61 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'Search_Gender':
                 $Gender_StateSearchButton = $_POST['Gender_StateSearchButton'];
 
-                if($Gender_StateSearchButton == "false"){
+                if ($Gender_StateSearchButton == "false") {
                     $Gender_StateSearchButton = "true";
                     $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
-                }elseif($Gender_StateSearchButton == "true"){
+                } elseif ($Gender_StateSearchButton == "true") {
                     $Gender_StateSearchButton = "false";
                     $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
                 }
                 break;
 
             case 'search':
-                //sql_query umändern
                 reset_vars();
-                $contentSearchbar = $_POST['Search-Input'];
+
+                //If any of the Filter Buttons are active/clicked
+                if ($_POST['Firmenname_StateSearchButton'] == "true" || $_POST['Adresse_StateSearchButton'] == "true" || $_POST['RechnungsKürzel_StateSearchButton'] == "true" || $_POST['PLZ_StateSearchButton'] == "true" || $_POST['Ort_StateSearchButton'] == "true" || $_POST['Vertragsdatum_StateSearchButton'] == "true" || $_POST['Ansprechpartner_StateSearchButton'] == "true" || $_POST['Gender_StateSearchButton'] == "true") {
+                    $sql_query = "SELECT * FROM `kunden` WHERE";
+
+                    if ($_POST['Firmenname_StateSearchButton'] == "true") {
+                        $sql_query .= " Firmenname LIKE :search_string OR";
+                    }
+
+                    if ($_POST['Adresse_StateSearchButton'] == "true") {
+                        $sql_query .= " Adresse LIKE :search_string OR";
+                    }
+
+                    if ($_POST['RechnungsKürzel_StateSearchButton'] == "true") {
+                        $sql_query .= " RechnungsKürzel LIKE :search_string OR";
+                    }
+
+                    if ($_POST['PLZ_StateSearchButton'] == "true") {
+                        $sql_query .= " PLZ LIKE :search_string OR";
+                    }
+
+                    if ($_POST['Ort_StateSearchButton'] == "true") {
+                        $sql_query .= " Ort LIKE :search_string OR";
+                    }
+
+                    if ($_POST['Vertragsdatum_StateSearchButton'] == "true") {
+                        $sql_query .= " Vertragsdatum LIKE :search_string OR";
+                    }
+
+                    if ($_POST['Ansprechpartner_StateSearchButton'] == "true") {
+                        $sql_query .= " Ansprechpartner LIKE :search_string OR";
+                    }
+
+                    if ($_POST['Gender_StateSearchButton'] == "true") {
+                        $sql_query .= " Gender LIKE :search_string OR";
+                    }
+
+                    // Delete the last "AND" of the Query
+                    $sql_query = rtrim($sql_query, "OR");
+                } else {
+                    $sql_query = "SELECT * FROM `kunden`";
+                }
+
+                $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
                 break;
 
             case 'delete':
@@ -686,8 +729,9 @@ function checkPersonDataChangedValues($Ansprechpartner_Person, $updated_Ansprech
     }
 }
 
-function setSessionVariableFalse($session){
-    if($_SESSION[$session] != "false" && $_SESSION[$session] != "true"){
+function setSessionVariableFalse($session)
+{
+    if ($_SESSION[$session] != "false" && $_SESSION[$session] != "true") {
         $_SESSION[$session] = "false";
         $restart = true;
     }
@@ -734,14 +778,14 @@ function setSessionVariableFalse($session){
                                 <button type="submit" name="button" value="Search_Gender" onclick="changeBackground(this)">Gender</button>
                             </div>
                         </div>
-                        <input type="hidden" name = "Firmenname_StateSearchButton" value = "<?php echo $Firmenname_StateSearchButton; ?>">
-                        <input type="hidden" name = "Adresse_StateSearchButton" value = "<?php echo $Adresse_StateSearchButton; ?>">
-                        <input type="hidden" name = "RechnungsKürzel_StateSearchButton" value = "<?php echo $RechnungsKürzel_StateSearchButton; ?>">
-                        <input type="hidden" name = "PLZ_StateSearchButton" value = "<?php echo $PLZ_StateSearchButton; ?>">
-                        <input type="hidden" name = "Ort_StateSearchButton" value = "<?php echo $Ort_StateSearchButton; ?>">
-                        <input type="hidden" name = "Vertragsdatum_StateSearchButton" value = "<?php echo $Vertragsdatum_StateSearchButton; ?>">
-                        <input type="hidden" name = "Ansprechpartner_StateSearchButton" value = "<?php echo $Ansprechpartner_StateSearchButton; ?>">
-                        <input type="hidden" name = "Gender_StateSearchButton" value = "<?php echo $Gender_StateSearchButton; ?>">
+                        <input type="hidden" name="Firmenname_StateSearchButton" value="<?php echo $Firmenname_StateSearchButton; ?>">
+                        <input type="hidden" name="Adresse_StateSearchButton" value="<?php echo $Adresse_StateSearchButton; ?>">
+                        <input type="hidden" name="RechnungsKürzel_StateSearchButton" value="<?php echo $RechnungsKürzel_StateSearchButton; ?>">
+                        <input type="hidden" name="PLZ_StateSearchButton" value="<?php echo $PLZ_StateSearchButton; ?>">
+                        <input type="hidden" name="Ort_StateSearchButton" value="<?php echo $Ort_StateSearchButton; ?>">
+                        <input type="hidden" name="Vertragsdatum_StateSearchButton" value="<?php echo $Vertragsdatum_StateSearchButton; ?>">
+                        <input type="hidden" name="Ansprechpartner_StateSearchButton" value="<?php echo $Ansprechpartner_StateSearchButton; ?>">
+                        <input type="hidden" name="Gender_StateSearchButton" value="<?php echo $Gender_StateSearchButton; ?>">
 
                     </form>
                 </div>
