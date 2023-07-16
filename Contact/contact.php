@@ -889,10 +889,10 @@ function setSessionVariableFalse($session)
                             <input type="text" id="Vertragsdatum_Person" name="Vertragsdatum_Person" placeholder="Vertragsdatum">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender_person" id="male_Person" value="M" required>
+                                <input type="radio" name="gender_person" id="male_Person" value="Male" required>
                                 <label for="male_Person">Male*</label>
 
-                                <input type="radio" name="gender_person" id="female_Person" value="F" required>
+                                <input type="radio" name="gender_person" id="female_Person" value="Female" required>
                                 <label for="female_Person">Female*</label>
                             </div>
 
