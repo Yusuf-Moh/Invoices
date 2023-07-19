@@ -27,10 +27,10 @@ function reset_vars()
     $gender_Person = null;
 
     global $sql_query;
-    $sql_query = "SELECT * FROM `kunden`";
+    // $sql_query = "SELECT * FROM `kunden`";
 
     global $param;
-    $param = [];
+    // $param = [];
 
     global $message, $messageType, $showMessage;
     $message = "";
@@ -62,6 +62,16 @@ setSessionVariableFalse('Vertragsdatum_StateSearchButton');
 setSessionVariableFalse('Ansprechpartner_StateSearchButton');
 setSessionVariableFalse('Gender_StateSearchButton');
 
+if ($_SESSION['sql_query'] == "") {
+    $_SESSION['sql_query'] = "SELECT * FROM `kunden`";
+    $restart = true;
+}
+
+if ($_SESSION['param'] == "") {
+    $_SESSION['param'] = [];
+    $restart = true;
+}
+
 if ($restart) {
     header("Refresh:0");
 }
@@ -74,6 +84,9 @@ $Ort_StateSearchButton = $_SESSION['Ort_StateSearchButton'];
 $Vertragsdatum_StateSearchButton = $_SESSION['Vertragsdatum_StateSearchButton'];
 $Ansprechpartner_StateSearchButton = $_SESSION['Ansprechpartner_StateSearchButton'];
 $Gender_StateSearchButton = $_SESSION['Gender_StateSearchButton'];
+
+$sql_query = $_SESSION['sql_query'];
+$param = $_SESSION['param'];
 
 //reset of every variables.
 reset_vars();
@@ -424,88 +437,104 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 if ($Firmenname_StateSearchButton == "false") {
                     $Firmenname_StateSearchButton = "true";
-                    $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
                 } else if ($Firmenname_StateSearchButton == "true") {
                     $Firmenname_StateSearchButton = "false";
-                    $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
                 }
+                $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_Adresse':
                 $Adresse_StateSearchButton = $_POST['Adresse_StateSearchButton'];
 
                 if ($Adresse_StateSearchButton == "false") {
                     $Adresse_StateSearchButton = "true";
-                    $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
                 } elseif ($Adresse_StateSearchButton == "true") {
                     $Adresse_StateSearchButton = "false";
-                    $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
                 }
+                $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_RechnungsKürzel':
                 $RechnungsKürzel_StateSearchButton = $_POST['RechnungsKürzel_StateSearchButton'];
 
                 if ($RechnungsKürzel_StateSearchButton == "false") {
                     $RechnungsKürzel_StateSearchButton = "true";
-                    $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
                 } elseif ($RechnungsKürzel_StateSearchButton == "true") {
                     $RechnungsKürzel_StateSearchButton = "false";
-                    $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
                 }
+                $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_PLZ':
                 $PLZ_StateSearchButton = $_POST['PLZ_StateSearchButton'];
 
                 if ($PLZ_StateSearchButton == "false") {
                     $PLZ_StateSearchButton = "true";
-                    $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
                 } elseif ($PLZ_StateSearchButton == "true") {
                     $PLZ_StateSearchButton = "false";
-                    $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
                 }
+                $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_Ort':
                 $Ort_StateSearchButton = $_POST['Ort_StateSearchButton'];
 
                 if ($Ort_StateSearchButton == "false") {
                     $Ort_StateSearchButton = "true";
-                    $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
                 } elseif ($Ort_StateSearchButton == "true") {
                     $Ort_StateSearchButton = "false";
-                    $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
                 }
+                $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_Vertragsdatum':
                 $Vertragsdatum_StateSearchButton = $_POST['Vertragsdatum_StateSearchButton'];
 
                 if ($Vertragsdatum_StateSearchButton == "false") {
                     $Vertragsdatum_StateSearchButton = "true";
-                    $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
                 } elseif ($Vertragsdatum_StateSearchButton == "true") {
                     $Vertragsdatum_StateSearchButton = "false";
-                    $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
                 }
+                $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_Ansprechpartner':
                 $Ansprechpartner_StateSearchButton = $_POST['Ansprechpartner_StateSearchButton'];
 
                 if ($Ansprechpartner_StateSearchButton == "false") {
                     $Ansprechpartner_StateSearchButton = "true";
-                    $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
                 } elseif ($Ansprechpartner_StateSearchButton == "true") {
                     $Ansprechpartner_StateSearchButton = "false";
-                    $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
                 }
+                $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
+
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
             case 'Search_Gender':
                 $Gender_StateSearchButton = $_POST['Gender_StateSearchButton'];
 
                 if ($Gender_StateSearchButton == "false") {
                     $Gender_StateSearchButton = "true";
-                    $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
                 } elseif ($Gender_StateSearchButton == "true") {
                     $Gender_StateSearchButton = "false";
-                    $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
                 }
+                $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
+                
+                $sql_query = "SELECT * FROM `kunden`";
+                $param = [];
                 break;
 
             case 'search':
@@ -561,12 +590,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $KundenID = $_POST['KundenID'];
                 $sql = "DELETE FROM kunden WHERE KundenID=:KundenID";
                 $stmt = $conn->prepare($sql);
-                $stmt->execute(['KundenID'=>$KundenID]);
+                $stmt->execute(['KundenID' => $KundenID]);
 
-                if($stmt->rowCount()>0){
+                if ($stmt->rowCount() > 0) {
                     $message = $stmt->rowCount() . " Datensatz gelöscht!";
                     $messageType = "success";
-                }else{
+                } else {
                     $message = "Datensatz wurde nicht gelöscht!";
                     $messageType = "errorDelete";
                 }
@@ -574,6 +603,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
         }
+        $_SESSION['sql_query'] = $sql_query;
+        $_SESSION['param'] = $param;
     }
 }
 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
@@ -758,6 +789,7 @@ function setSessionVariableFalse($session)
         $restart = true;
     }
 }
+
 ?>
 
 
