@@ -67,7 +67,6 @@ searchInput.addEventListener('keydown', function (event) {
 
 
 // Search-Btns
-
 function changeBackground(button) {
     var buttonState = localStorage.getItem(button.value);
     if (buttonState === 'clicked') {
@@ -121,15 +120,66 @@ function handleDropdownChange() {
 }
 
 // Add an event listener to the dropdown list
-
 const dropdown = document.getElementById('customerList');
 dropdown.addEventListener('change', handleDropdownChange);
 
-// Event listener to hide customer details when focus is lost and click occurs outside the elements
+
+// Event listener to hide customer details when click occurs outside the elements
 document.addEventListener('click', function (event) {
-    const formContainer = document.querySelector('.form-container');
+    const formContainer = document.querySelector('.modal');
 
     if (!formContainer.contains(event.target)) {
         document.getElementById("customer-details").style.display = "none";
     }
 });
+
+
+
+
+//Dynamic Inputfields for Leistung
+
+$(document).ready(function () {
+    //existing inputfield with add leistung
+    var count = 1;
+
+    // Function to update the +/- span visibility
+    function updateLeistungButtons() {
+        var leistungContainers = $('.leistungen .leistung-container');
+
+        leistungContainers.each(function (index) {
+            var addSpan = $(this).find('.add-leistung');
+            var removeSpan = $(this).find('.remove-leistung');
+
+            removeSpan.show();
+
+            if (index === 0) {
+                addSpan.show();
+                removeSpan.hide();
+            }
+        });
+    }
+
+    $(document).on('click', '.add-leistung', function () {
+        count++;
+        var leistungenContainer = $(this).closest('.leistungen');
+        leistungenContainer.append(add_leistung_inputfield(count));
+        updateLeistungButtons();
+    });
+
+    $(document).on('click', '.remove-leistung', function () {
+        count--;
+        var leistungenContainer = $(this).closest('.leistung-container');
+        leistungenContainer.remove();
+        updateLeistungButtons();
+    });
+});
+
+function add_leistung_inputfield(count) {
+    var html = '';
+    html += '<div class="leistung-container">';
+    html += '<input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>';
+    html += '<span class="material-icons-sharp remove-leistung">remove</span>';
+    html += '</div>';
+    //   (count > 1)
+    return html;
+}

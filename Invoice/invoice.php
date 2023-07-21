@@ -88,63 +88,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $action = $_POST['button'];
         switch ($action) {
             case 'save':
-                $firmenName_organization = $_POST['firmenName_organization'];
-                $firmenAdresse_organization = $_POST['firmenAdresse_organization'];
-                $rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
-                $PLZ_organization = $_POST['PLZ_organization'];
-                $Ort_organization = $_POST['Ort_organization'];
-                $Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
-                $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-                $gender_organization = $_POST['gender_organization'];
 
-                //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
-                if ($Vertragsdatum_organization == "") {
-                    $Vertragsdatum_organization = null;
+                $storeLeistung = "|";
+                $leistungen = $_POST['leistung'];
+                foreach ($leistungen as $leistung) {
+                    $storeLeistung .= $leistung;
+                    $storeLeistung .= "|";
                 }
-                if ($Ansprechpartner_organization == "") {
-                    $Ansprechpartner_organization = null;
-                }
-                if ($gender_organization != "Male" && $gender_organization != "Female") {
-                    $gender_organization = null;
-                }
-
-                //Checking if Firmenname and/or Rechnungskürzel already exisit in DB because it is not allowed to have multiple same type of them
-                if (!checkIfValueExists('FirmenName', $firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-                    insertOrganizationDataIntoKundenTable($firmenName_organization, $firmenAdresse_organization, $rechnungsKuerzel_organization, $PLZ_organization, $Ort_organization, $Vertragsdatum_organization, $Ansprechpartner_organization, $gender_organization);
-                    $messageType = "success";
-                    $message = "Erfolgreich Werte in die Datenbank hinzugefügt.";
-                    $insertOrganizationDataIntoJS = false;
-                } elseif (checkIfValueExists('FirmenName', $firmenName_organization) && checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-                    $messageType = "error";
-                    $message = "Fehler: Firmenname und Rechnungskürzel existieren bereits in der Datenbank.";
-                    $insertOrganizationDataIntoJS = true;
-                } elseif (checkIfValueExists('FirmenName', $firmenName_organization)) {
-                    $messageType = "error";
-                    $message = "Fehler: Firmenname existiert bereits in der Datenbank.";
-                    $insertOrganizationDataIntoJS = true;
-                } elseif (checkIfValueExists('RechnungsKürzel', $rechnungsKuerzel_organization)) {
-                    $messageType = "error";
-                    //Extension: Which company the existing Rechnungskürzel was assigned to for $message
-                    $message = "Fehler: Rechnungskürzel exisitiert bereits in der Datenbank.";
-                    $insertOrganizationDataIntoJS = true;
-                }
-
-                if ($insertOrganizationDataIntoJS) {
-                    //storing the php variable to js
-                    echo "<script>";
-                    echo "var messageType = '$messageType';";
-                    echo "var firmenName_organization = '$firmenName_organization';";
-                    echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
-                    echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
-                    echo "var PLZ_organization = '$PLZ_organization';";
-                    echo "var Ort_organization = '$Ort_organization';";
-                    echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
-                    echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
-                    echo "var gender_organization = '$gender_organization';";
-                    echo "</script>";
-                }
-                $showMessage = "flex";
-
+                echo $storeLeistung;
                 break;
 
 
@@ -705,8 +656,14 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
-                        <input type="text" id="firmenName_organization" name="firmenName_organization" placeholder="Firmenname*" value="" required>
-
+                        <div class="leistungen">
+                            <div class="leistung-container">
+                                <input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>
+                                <span class="material-icons-sharp add-leistung">add</span>
+                            </div>
+                        </div>
+                        <input type="text" name="leistungsstraße[]" class="leistungsstraße-input" placeholder="Leistungsstraße*" value="" required>
+                        <!-- Dynamic Inputfields Leistung -->
 
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
@@ -782,6 +739,7 @@ function setSessionVariableFalse($session)
 
 
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./index.js"></script>
 </body>
 

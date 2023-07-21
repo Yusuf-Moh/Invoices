@@ -200,6 +200,8 @@ b {
     cursor: pointer;
 }
 
+
+/* ============== Modal ==============*/
 /* Form */
 .sendNewInvoiceData-Btn {
     display: inline-block;
@@ -230,11 +232,6 @@ b {
     margin-bottom: 20px;
     border-radius: var(--border-radius-1);
 }
-
-/* End of Form */
-
-
-/* ============== Modal ==============*/
 
 .modal {
     position: absolute;
@@ -304,16 +301,27 @@ b {
     border-radius: 4px;
 }
 
-
-/* Style für das innere Div (für PLZ und Ort)
-.plz-ort {
-    margin-top: 5px;
-} */
-
-
 /* Style für die Span-Elemente in der customer-details Klasse */
 .customer-details span {
     font-weight: normal;
+}
+
+.leistungen {
+    display: contents;
+}
+
+.leistungen .leistung-container {
+    display: flex;
+    width: 100%;
+}
+
+.leistungen .leistung-container input {
+    width: 100%;
+    display: flex;
+    flex-grow: 1;
+    padding: 8px;
+    margin-bottom: 20px;
+    border-radius: var(--border-radius-1);
 }
 
 /* ============== END OF Modal ==============*/
