@@ -154,19 +154,31 @@ $(document).ready(function () {
 
             removeSpan.show();
 
+            let LeistungsstraßeSpan = $(this).find('.add-leistungsstraße');
+
+            if (!LeistungsstraßeSpan.length) {
+                $(this).append('<span class="material-icons-sharp add-leistungsstraße">add</span>');
+            }
+
+            LeistungsstraßeSpan.show();
+
+            var lastLeistungContainer = leistungContainers.last();
+            var lastLeistungsstraßeSpan = lastLeistungContainer.find('.add-leistungsstraße');
+            lastLeistungsstraßeSpan.hide();
+
+
             if (index === 0) {
                 addSpan.show();
                 removeSpan.hide();
 
-                
-                //add "span add leistungsstraße" to add inputfield leistungsstraße
                 if (leistungContainers.length > 0 && !addedAddLeistungsstraße) {
-                    $(this).append('<span class="material-icons-sharp add-leistungsstraße">add</span>');
+                    LeistungsstraßeSpan.show();
                     addedAddLeistungsstraße = true;
-                } //Remove "span add Leistungsstraße" when one Inputfield is given
+                }
+
+                //Remove "span add Leistungsstraße" when one Inputfield is given
                 else if (leistungContainers.length == 1) {
-                    let removeLeistungsstraßeSpan = $(this).find('.add-leistungsstraße');
-                    removeLeistungsstraßeSpan.remove();
+                    LeistungsstraßeSpan.hide();
                     addedAddLeistungsstraße = false;
                 }
             }
