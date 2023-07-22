@@ -310,12 +310,18 @@ b {
     display: contents;
 }
 
-.leistungen .leistung-container {
+.leistung-leistungsstraße {
+    display: contents;
+}
+
+.leistung-container,
+.leistungsstraße-container {
     display: flex;
     width: 100%;
 }
 
-.leistungen .leistung-container input {
+.leistung-container input,
+.leistungsstraße-container input {
     width: 100%;
     display: flex;
     flex-grow: 1;
@@ -323,6 +329,8 @@ b {
     margin-bottom: 20px;
     border-radius: var(--border-radius-1);
 }
+
+/* Leistungsstraße Container */
 
 /* ============== END OF Modal ==============*/
 

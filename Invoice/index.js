@@ -145,7 +145,7 @@ $(document).ready(function () {
 
     // Function to update the +/- span visibility
     function updateLeistungButtons() {
-        var leistungContainers = $('.leistungen .leistung-container');
+        var leistungContainers = $('.leistungen .leistung-leistungsstraße .leistung-container');
 
 
         leistungContainers.each(function (index) {
@@ -194,18 +194,40 @@ $(document).ready(function () {
 
     $(document).on('click', '.remove-leistung', function () {
         count--;
-        var leistungenContainer = $(this).closest('.leistung-container');
+        var leistungenContainer = $(this).closest('.leistung-leistungsstraße');
         leistungenContainer.remove();
         updateLeistungButtons();
     });
+
+
+    $(document).on('click', '.add-leistungsstraße', function () {
+        //Inputfield with Leisutng; the add leistungsstraße should be hidden
+        //Inputfield leistungsstraße is getting added with a remove span to remove the inputfield
+        //clicked remove inputfield leistungsstraße => remove inputfield leistungsstraße; span add leistungsstraße at inputfield leistung should be shown again
+
+        var leistungContainer = $(this).closest('.leistung-leistungsstraße');
+        leistungContainer.append(add_leistungsstraße_inputfield);
+
+    });
+
 });
 
 function add_leistung_inputfield(count) {
-    var html = '';
+    var html = '<div class="leistung-leistungsstraße">';
     html += '<div class="leistung-container">';
     html += '<input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>';
     html += '<span class="material-icons-sharp remove-leistung">remove</span>';
     html += '</div>';
+    html += '</div>';
     //   (count > 1)
+    return html;
+}
+
+function add_leistungsstraße_inputfield() {
+    var html = '';
+    html += '<div class="leistungsstraße-container">'
+    html += '<input type="text" name="leistungsstraße[]" class="leistungsstraße-input" placeholder="Leistungsstraße*" value="" required>';
+    html += '<span class="material-icons-sharp remove-leistungsstraße">remove</span>';
+    html += '</div>';
     return html;
 }
