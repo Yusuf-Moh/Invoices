@@ -655,17 +655,17 @@ function setSessionVariableFalse($session)
                                 <span id="ort"></span>
                             </div>
                         </div>
-
+                        
+                        <!-- Dynamic Inputfields Leistung -->
                         <div class="leistungen">
                             <div class="leistung-leistungsstraße">
                                 <div class="leistung-container">
                                     <input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>
                                     <span class="material-icons-sharp add-leistung">add</span>
+                                    <span class="material-icons-sharp add-leistungsstraße">add</span>
                                 </div>
                             </div>
                         </div>
-                        <input type="text" name="leistungsstraße[]" class="leistungsstraße-input" placeholder="Leistungsstraße*" value="" required>
-                        <!-- Dynamic Inputfields Leistung -->
 
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">

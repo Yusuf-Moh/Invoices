@@ -141,46 +141,35 @@ document.addEventListener('click', function (event) {
 $(document).ready(function () {
     //existing inputfield with add leistung
     var count = 1;
-    var addedAddLeistungsstraße = false;
 
     // Function to update the +/- span visibility
     function updateLeistungButtons() {
         var leistungContainers = $('.leistungen .leistung-leistungsstraße .leistung-container');
 
-
         leistungContainers.each(function (index) {
+            //Search for addLeistung and removeLeistung span
             var addSpan = $(this).find('.add-leistung');
             var removeSpan = $(this).find('.remove-leistung');
 
             removeSpan.show();
 
             let LeistungsstraßeSpan = $(this).find('.add-leistungsstraße');
-
-            if (!LeistungsstraßeSpan.length) {
-                $(this).append('<span class="material-icons-sharp add-leistungsstraße">add</span>');
-            }
-
             LeistungsstraßeSpan.show();
 
-            var lastLeistungContainer = leistungContainers.last();
-            var lastLeistungsstraßeSpan = lastLeistungContainer.find('.add-leistungsstraße');
-            lastLeistungsstraßeSpan.hide();
-
+            //check if there is a div leistungsstraße-container => Inputfield leistungsstraße
+            let leistungsstraßeContainer = $(this).parent().find('.leistungsstraße-container');
+            if (!leistungsstraßeContainer.length) {
+                //if there isnt a div, the span should be shown
+                LeistungsstraßeSpan.show();
+            }
+            else {
+                //otherwise it should be hidden
+                LeistungsstraßeSpan.hide();
+            }
 
             if (index === 0) {
                 addSpan.show();
                 removeSpan.hide();
-
-                if (leistungContainers.length > 0 && !addedAddLeistungsstraße) {
-                    LeistungsstraßeSpan.show();
-                    addedAddLeistungsstraße = true;
-                }
-
-                //Remove "span add Leistungsstraße" when one Inputfield is given
-                else if (leistungContainers.length == 1) {
-                    LeistungsstraßeSpan.hide();
-                    addedAddLeistungsstraße = false;
-                }
             }
         });
     }
@@ -208,6 +197,13 @@ $(document).ready(function () {
         var leistungContainer = $(this).closest('.leistung-leistungsstraße');
         leistungContainer.append(add_leistungsstraße_inputfield);
 
+        updateLeistungButtons();
+    });
+
+    $(document).on('click', '.remove-leistungsstraße', function(){
+        var leistungenstraßeContainer = $(this).closest('.leistungsstraße-container');
+        leistungenstraßeContainer.remove();
+        updateLeistungButtons();
     });
 
 });
@@ -217,6 +213,7 @@ function add_leistung_inputfield(count) {
     html += '<div class="leistung-container">';
     html += '<input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>';
     html += '<span class="material-icons-sharp remove-leistung">remove</span>';
+    html += '<span class="material-icons-sharp add-leistungsstraße">add</span>';
     html += '</div>';
     html += '</div>';
     //   (count > 1)
