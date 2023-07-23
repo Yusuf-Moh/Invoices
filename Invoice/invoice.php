@@ -89,13 +89,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         switch ($action) {
             case 'save':
 
-                $storeLeistung = "|";
-                $leistungen = $_POST['leistung'];
-                foreach ($leistungen as $leistung) {
-                    $storeLeistung .= $leistung;
-                    $storeLeistung .= "|";
-                }
-                echo $storeLeistung;
+                // $storeLeistung = "|";
+                // $leistungen = $_POST['leistung'];
+
+                // foreach ($leistungen as $leistung) {
+                //     $storeLeistung .= $leistung;
+                //     $storeLeistung .= "|";
+                // }
+                // echo $storeLeistung;
+
+                $leistung = $_POST('leistung-saveData');
+                $leistungstraße = $_POST('leistungsstraße-saveData');
+
+                echo $leistung;
+                echo $leistungstraße;
                 break;
 
 
@@ -655,7 +662,7 @@ function setSessionVariableFalse($session)
                                 <span id="ort"></span>
                             </div>
                         </div>
-                        
+
                         <!-- Dynamic Inputfields Leistung -->
                         <div class="leistungen">
                             <div class="leistung-leistungsstraße">
@@ -667,14 +674,17 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
+                        <input type="hidden" name="leistung-saveData" id="leistung-saveData">
+                        <input type="hidden" name="leistungsstraße-saveData" id="leistungsstraße-saveData">
+
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 
-                        <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn"><?php if ($saveUpdate == "save") {
-                                                                                                                                    echo "Senden";
-                                                                                                                                } elseif ($saveUpdate == "update") {
-                                                                                                                                    echo "Update";
-                                                                                                                                } ?></button>
+                        <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
+                                                                                                                                                                    echo "Senden";
+                                                                                                                                                                } elseif ($saveUpdate == "update") {
+                                                                                                                                                                    echo "Update";
+                                                                                                                                                                } ?></button>
                     </form>
                 </div>
             </div>

@@ -103,7 +103,7 @@ function setCustomerId() {
 
 // Function to handle the change event of the dropdown list
 function handleDropdownChange() {
-    // Get the selected option
+    // Get the selected option and show the
     const select = document.getElementById('customerList');
     const selectedOption = select.options[select.selectedIndex];
 
@@ -116,6 +116,7 @@ function handleDropdownChange() {
         document.getElementById('plz').textContent = selectedOption.dataset.plz || '';
         document.getElementById('ort').textContent = selectedOption.dataset.ort || '';
     }
+    setCustomerId();
 
 }
 
@@ -177,7 +178,7 @@ $(document).ready(function () {
     $(document).on('click', '.add-leistung', function () {
         count++;
         var leistungenContainer = $(this).closest('.leistungen');
-        leistungenContainer.append(add_leistung_inputfield(count));
+        leistungenContainer.append(add_leistung_inputfield());
         updateLeistungButtons();
     });
 
@@ -190,25 +191,82 @@ $(document).ready(function () {
 
 
     $(document).on('click', '.add-leistungsstraße', function () {
-        //Inputfield with Leisutng; the add leistungsstraße should be hidden
-        //Inputfield leistungsstraße is getting added with a remove span to remove the inputfield
-        //clicked remove inputfield leistungsstraße => remove inputfield leistungsstraße; span add leistungsstraße at inputfield leistung should be shown again
-
         var leistungContainer = $(this).closest('.leistung-leistungsstraße');
         leistungContainer.append(add_leistungsstraße_inputfield);
 
         updateLeistungButtons();
     });
 
-    $(document).on('click', '.remove-leistungsstraße', function(){
+    $(document).on('click', '.remove-leistungsstraße', function () {
         var leistungenstraßeContainer = $(this).closest('.leistungsstraße-container');
         leistungenstraßeContainer.remove();
         updateLeistungButtons();
     });
 
+
+    // Daten werden wie in einem Array ähnlichen Synatax geschrieben, um
+    // erstens die verschiedenen Leistungen zu der Leistungsstraße einzuordnen
+    // zweitens um das in der Datenbank zu speichern
+    function saveData() {
+        var container = $('.leistungen .leistung-leistungsstraße');
+
+        let leistung = '|';
+        let leistungsstraße = '|';
+
+        //Schleife durch alle Div Leistung-Leistungsstraße 
+        container.each(function () {
+            //speichern den inhalt von leistung inputfeld
+            let leistungInput = $(this).find('.leistung-input').val().trim();
+            leistung += leistungInput + ', ';
+
+            //wenn es den div leistungsstraße-container gibt, soll das trenzeichen | dem string leistung hinzugefügt werden
+            let leistungsstraßeContainer = $(this).find('.leistungsstraße-container');
+            if (leistungsstraßeContainer.length) {
+                leistung = leistung.trim().replace(/,\s*$/, '');
+                leistung += "|;|";
+                //speicher den leistungsstraße-input in die variable leistungsstraße
+                leistungsstraße += leistungsstraßeContainer.find('.leistungsstraße-input').val().trim() + "|;|";
+            }
+        });
+
+        // überflüssige Kommas oder leerzeichen sollen,
+        // bei Leistung mit '|' geplaced werden
+        // bei leistungsstraße soll das nur entfernt werden
+        leistung = leistung.trim().replace(/,\s*$/, '|');
+        leistungsstraße = leistungsstraße.trim().replace(/,\s*$/, '');
+
+        //Falls Leistung und Leistungsstraße mit ;| endet, soll dies gelöscht werden
+        if (leistung.endsWith(';|')) {
+            leistung = leistung.slice(0, -2);
+        }
+        if (leistungsstraße.endsWith(';|')) {
+            leistungsstraße = leistungsstraße.slice(0, -2);
+        }
+
+        // Wenn Leistungsstraße nicht vorhanden ist, soll er mit einem | hinzugefügt werden (||)
+        if (leistungsstraße == '|') {
+            leistungsstraße += '|';
+        }
+
+        // Zur Überprüfung des Synatxs
+        console.log(leistung);
+        console.log(leistungsstraße);
+
+        //Werte werden in die Inputfields gespeichert damit man die Werte in PHP nutzen kann.
+        $('#leistung-saveData').val(leistung);
+        $('#leistungsstraße-saveData').val(leistungsstraße);
+
+    }
+
+    //When save btn is clicked, the data should be stored
+    $('#save').on('click', function (e) {
+        e.preventDefault();
+        saveData();
+    });
+
 });
 
-function add_leistung_inputfield(count) {
+function add_leistung_inputfield() {
     var html = '<div class="leistung-leistungsstraße">';
     html += '<div class="leistung-container">';
     html += '<input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>';
@@ -216,7 +274,6 @@ function add_leistung_inputfield(count) {
     html += '<span class="material-icons-sharp add-leistungsstraße">add</span>';
     html += '</div>';
     html += '</div>';
-    //   (count > 1)
     return html;
 }
 
