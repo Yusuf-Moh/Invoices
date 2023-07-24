@@ -546,7 +546,7 @@ function setSessionVariableFalse($session)
     <link rel="stylesheet" href="./invoice.css">
     <!--Link to Material Icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-
+    <!-- <link rel="stylesheet" type="text/css" href="../ckeditor/sample/styles.css"> -->
 </head>
 
 <body>
@@ -651,8 +651,8 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
-                        <!-- Inputfields Leistung and Leistungsstraße -->
-                        <div class="leistungen">
+                        <!-- ckEditor 5 CustomBuild -->
+                        <div class="leistungEditor" id="leistungEditor">
 
                         </div>
 
@@ -683,7 +683,7 @@ function setSessionVariableFalse($session)
                             <input type="checkbox" name="monatlicheRechnung" id="monatlicheRechnung">
                             <label for="monatlicheRechnung">Monatliche Rechnung</label>
                         </div>
-                        
+
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 
@@ -760,6 +760,15 @@ function setSessionVariableFalse($session)
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./index.js"></script>
+    <!-- Rich Text Editor ckEditor 5 CustomBuild -->
+    <script src="../ckeditor/build/ckeditor.js"></script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#leistungEditor'))
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 </body>
 
 </html>

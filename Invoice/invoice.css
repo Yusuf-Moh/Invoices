@@ -31,12 +31,13 @@
 
 * {
     margin: 0;
-    padding: 0;
     outline: 0;
     appearance: none;
     border: 0;
-    text-decoration: none;
-    list-style: none;
+    /* getting conflicts with the ckEditor 5 */
+    /* padding: 0; */
+    /* text-decoration: none; */
+    /* list-style: none; */
     box-sizing: border-box;
 }
 
@@ -180,6 +181,11 @@ b {
     flex-grow: 1;
     background-color: var(--color-background);
     width: 100%;
+    padding: 0;
+}
+
+.search button {
+    padding: 0;
 }
 
 /* Distance between search icon and searchbar */
@@ -244,7 +250,7 @@ b {
     transform: translate(-50%, -50%) scale(1.25);
 
     left: 50%;
-    width: 500px;
+    width: 800px;
     padding: 20px 30px;
     background: var(--color-info-light);
     box-shadow: 2px 2px 5px 5px var(--box-shadow);
@@ -315,9 +321,10 @@ b {
 
 /* ================= START OF Style for the Leistungen and Leistungsstraße Customer =========================*/
 
-.leistungen {
-    display: contents;
-}
+/* .leistungEditor {
+    width: 100%;
+} */
+/* ckEditor doing the styling everything on its own. Only thing I added is width: 100%; ckeditor/build/ckeditor.js (.ck.ck-editor{position:relative;width:100%;}) */
 
 /* ================= END OF Style for the Leistungen and Leistungsstraße Customer =========================*/
 

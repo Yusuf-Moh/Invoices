@@ -97,6 +97,7 @@ document.querySelector(".modal .modal-header span").addEventListener("click", fu
 });
 
 
+
 // KundenID stored in the hidden Inputfield "selectedKundenID"
 function setCustomerId() {
     // Das ausgewählte Element im <select> abrufen
@@ -106,8 +107,6 @@ function setCustomerId() {
     // Den Wert des Hidden Input-Felds setzen
     document.getElementById('selectedKundenID').value = selectedValue;
 }
-
-
 // Function to handle the change event of the dropdown list
 function handleDropdownChange() {
     // Get the selected option and show the
@@ -126,11 +125,9 @@ function handleDropdownChange() {
     setCustomerId();
 
 }
-
 // Add an event listener to the dropdown list
 const dropdown = document.getElementById('customerList');
 dropdown.addEventListener('change', handleDropdownChange);
-
 
 // Event listener to hide customer details when click occurs outside the elements
 document.addEventListener('click', function (event) {
@@ -144,8 +141,7 @@ document.addEventListener('click', function (event) {
 
 
 
-//Dynamic Inputfields for Leistung
-
+//jQuery code:
 $(document).ready(function () {
 
     //Storing the currentYear and write the value in the inputfield RechnungsJahr
