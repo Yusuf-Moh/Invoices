@@ -89,20 +89,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         switch ($action) {
             case 'save':
 
-                // $storeLeistung = "|";
-                // $leistungen = $_POST['leistung'];
-
-                // foreach ($leistungen as $leistung) {
-                //     $storeLeistung .= $leistung;
-                //     $storeLeistung .= "|";
-                // }
-                // echo $storeLeistung;
-
-                $leistung = $_POST('leistung-saveData');
-                $leistungstraße = $_POST('leistungsstraße-saveData');
-
-                echo $leistung;
-                echo $leistungstraße;
                 break;
 
 
@@ -622,7 +608,9 @@ function setSessionVariableFalse($session)
 
                 <div class="form-container">
 
-                    <form method="POST">
+                    <form method="POST" id="form-modal">
+
+                        <!-- DropDown List for Customers -->
 
                         <label for="customerList">Wähle einen Kunden:</label>
                         <select name="customerList" id="customerList" required>
@@ -663,20 +651,39 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
-                        <!-- Dynamic Inputfields Leistung -->
+                        <!-- Inputfields Leistung and Leistungsstraße -->
                         <div class="leistungen">
-                            <div class="leistung-leistungsstraße">
-                                <div class="leistung-container">
-                                    <input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>
-                                    <span class="material-icons-sharp add-leistung">add</span>
-                                    <span class="material-icons-sharp add-leistungsstraße">add</span>
-                                </div>
+
+                        </div>
+
+                        <div class="abrechnungsart">
+                            <label for="AbrechnungsartList">Wähle die Abrechnungsart aus</label>
+                            <div class="Abrechnungsart-container" onchange="toggleInputField()">
+                                <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                                <select name="AbrechnungsartList" id="AbrechnungsartList" required>
+                                    <option value="Pauschal">Pauschal</option>
+                                    <option value="Stunden">Stunden</option>
+                                </select>
                             </div>
                         </div>
 
-                        <input type="hidden" name="leistung-saveData" id="leistung-saveData">
-                        <input type="hidden" name="leistungsstraße-saveData" id="leistungsstraße-saveData">
+                        <div class="preis">
+                            <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="any" required>
+                        </div>
 
+                        <div class="datum">
+                            <label for="RechnungsDatum">Wähle Rechnungsdatum, Monat(Jahr) für die Rechnung aus:</label>
+                            <div class="RechnungsDatum">
+                                <input type="date" name="RechnungsDatum" id="RechnungsDatum">
+                                <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr">
+                            </div>
+                        </div>
+
+                        <div class="monatlicheRechnung">
+                            <input type="checkbox" name="monatlicheRechnung" id="monatlicheRechnung">
+                            <label for="monatlicheRechnung">Monatliche Rechnung</label>
+                        </div>
+                        
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 

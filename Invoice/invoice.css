@@ -228,6 +228,7 @@ b {
 
 .form-container input {
     width: 100%;
+    height: 35px;
     display: flex;
     flex-grow: 1;
     padding: 8px;
@@ -271,15 +272,16 @@ b {
     cursor: pointer;
 }
 
-/* ================= Style für die Dropdown-Liste =========================*/
+/* ================= Style for the Dropdown-List Customer =========================*/
 #customerList {
     width: 100%;
     height: 35px;
     font-size: 16px;
     border: 1px solid #ccc;
     border-radius: 4px;
-    padding: 5px;
+    padding: 8px;
     margin-bottom: 10px;
+    appearance: auto;
 }
 
 /* Style für die ausgewählte Option */
@@ -308,40 +310,75 @@ b {
     font-weight: normal;
 }
 
+/* ================= END OF Style for the Dropdown-List Customer =========================*/
+
+
+/* ================= START OF Style for the Leistungen and Leistungsstraße Customer =========================*/
+
 .leistungen {
     display: contents;
 }
 
-.leistung-leistungsstraße {
-    display: contents;
+/* ================= END OF Style for the Leistungen and Leistungsstraße Customer =========================*/
+
+
+
+/* ================= Style for the Dropdown-List Abrechnungsart =========================*/
+
+#AbrechnungsartList {
+    width: 100%;
+    height: 35px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 8px;
+    margin-bottom: 10px;
+    appearance: auto;
 }
 
-.leistung-container,
-.leistungsstraße-container {
+.abrechnungsart,
+.preis {
+    display: contents;
+
+}
+
+.Abrechnungsart-container {
     display: flex;
     width: 100%;
 }
 
-.leistung-container input {
-    border: 1px solid var(--color-leistungInput);
+/* ================= END OF Style for the Dropdown-List Abrechnungsart =========================*/
 
+
+/* ================= Style for the Datum (RechnungsDatum, Monat, Jahr)  =========================*/
+
+.datum {
+    display: contents;
 }
 
-.add-leistung,
-.remove-leistung {
-    color: var(--color-leistungInput);
+.RechnungsDatum {
+    display: flex;
+    gap: 10px;
+    width: 100%;
 }
 
-.leistungsstraße-container input {
-    border: 1px solid var(--color-leistungstraßeInput);
+/* ================= END OF THE Style for the Datum (RechnungsDatum, Monat, Jahr)  =========================*/
+
+/* ================= Style for the checkbox Monatliche Rechnung  =========================*/
+
+.monatlicheRechnung {
+    display: flex;
+    gap: 4px;
 }
 
-.add-leistungsstraße,
-.remove-leistungsstraße {
-    color: var(--color-leistungstraßeInput);
+.monatlicheRechnung input {
+    appearance: auto;
+    width: 18px;
+    height: 18px;
+    margin-bottom: 0;
 }
 
-/* Leistungsstraße Container */
+/* ================= END OF THE Style for the checkbox Monatliche Rechnung  =========================*/
 
 /* ============== END OF Modal ==============*/
 
