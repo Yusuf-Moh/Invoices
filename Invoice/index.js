@@ -93,7 +93,6 @@ document.querySelector("#CreateInvoiceModal").addEventListener("click", function
 document.querySelector(".modal .modal-header span").addEventListener("click", function () {
     document.querySelector(".modal").classList.remove("active");
     window.location.replace('invoice.php');
-
 });
 
 
@@ -143,8 +142,12 @@ document.addEventListener('click', function (event) {
 
 //jQuery code:
 $(document).ready(function () {
+    //Storing the current Month Year (Format: MMMM JJJJ) and write the value in the inputfield RechnungsMonatJahr
+    setRechnungsMonatJahrCurrentMonthYear();
+});
 
-    //Storing the currentYear and write the value in the inputfield RechnungsJahr
+
+function setRechnungsMonatJahrCurrentMonthYear() {
     // Set the current year and month as default values for the "RechnungsJahr" and "RechnungsMonat" input fields
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
@@ -157,43 +160,7 @@ $(document).ready(function () {
 
     // Assign the values to the input fields
     $('#RechnungsMonatJahr').val(currentYear + '-' + currentMonth);
-
-
-
-    //When save btn is clicked, the data should be stored
-    $('#save').on('click', function (e) {
-        e.preventDefault();
-
-        var form = $('#form-modal')[0];
-        if (form.checkValidity()) {
-            saveData();
-            form.submit();
-        }
-    });
-
-});
-
-function add_leistung_inputfield() {
-    var html = '<div class="leistung-leistungsstraße">';
-    html += '<div class="leistung-container">';
-    html += '<input type="text" name="leistung[]" class="leistung-input" placeholder="Leistung*" value="" required>';
-    html += '<span class="material-icons-sharp remove-leistung">remove</span>';
-    html += '<span class="material-icons-sharp add-leistungsstraße">add</span>';
-    html += '</div>';
-    html += '</div>';
-    return html;
 }
-
-function add_leistungsstraße_inputfield() {
-    var html = '';
-    html += '<div class="leistungsstraße-container">'
-    html += '<input type="text" name="leistungsstraße[]" class="leistungsstraße-input" placeholder="Leistungsstraße*" value="" required>';
-    html += '<span class="material-icons-sharp remove-leistungsstraße">remove</span>';
-    html += '</div>';
-    return html;
-}
-
-
 //Toggle the Inputfield at the Dropdownliste ABrechnungsart
 function toggleInputField() {
     var selectElement = document.getElementById("AbrechnungsartList");
@@ -201,9 +168,11 @@ function toggleInputField() {
 
     if (selectElement.value === "Stunden") {
         inputElement.style.display = "block"; // Display the input field if "Stunden" is selected
+        inputElement.required = true; // Set the "required" attribute to true
     } else {
         inputElement.style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
         inputElement.value = ""; // Set the input field value to empty when hiding it
+        inputElement.required = false; // Set the "required" attribute to false
     }
 }
 

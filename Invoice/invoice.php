@@ -592,7 +592,7 @@ function setSessionVariableFalse($session)
         <div class="createInvoices">
 
             <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage ?>">
-                <h2><?php echo $message; ?></h2>
+                <h2 id="messageText"><?php echo $message; ?></h2>
                 <span class="material-icons-sharp">close</span>
             </div>
 
@@ -611,49 +611,51 @@ function setSessionVariableFalse($session)
                     <form method="POST" id="form-modal">
 
                         <!-- DropDown List for Customers -->
+                        <div class="kundenListe">
+                            <label for="customerList">Wähle einen Kunden:</label>
+                            <select name="customerList" id="customerList" required>
+                                <option value="" class="firstSelectedOption">Bitte auswählen</option>
+                                <?php
+                                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                                $sql_customer = "SELECT KundenID, FirmenName, Name_Ansprechpartner, RechnungsKürzel, Adresse, PLZ, Ort, person, organization FROM kunden ORDER BY organization DESC, CASE WHEN organization = 1 THEN FirmenName ELSE Name_Ansprechpartner END;";
+                                $stmt = $conn->prepare($sql_customer);
+                                $stmt->execute();
+                                $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        <label for="customerList">Wähle einen Kunden:</label>
-                        <select name="customerList" id="customerList" required>
-                            <option value="" class="firstSelectedOption">Bitte auswählen</option>
-                            <?php
-                            include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                            $sql_customer = "SELECT KundenID, FirmenName, Name_Ansprechpartner, RechnungsKürzel, Adresse, PLZ, Ort, person, organization FROM kunden ORDER BY organization DESC, CASE WHEN organization = 1 THEN FirmenName ELSE Name_Ansprechpartner END;";
-                            $stmt = $conn->prepare($sql_customer);
-                            $stmt->execute();
-                            $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                foreach ($customer as $row) {
 
-                            foreach ($customer as $row) {
-
-                                if ($row['organization'] == 1) {
-                                    $name = htmlspecialchars($row['FirmenName']);
-                                    echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
-                                } elseif ($row['person'] == 1) {
-                                    $name = htmlspecialchars($row['Name_Ansprechpartner']);
-                                    echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                                    if ($row['organization'] == 1) {
+                                        $name = htmlspecialchars($row['FirmenName']);
+                                        echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                                    } elseif ($row['person'] == 1) {
+                                        $name = htmlspecialchars($row['Name_Ansprechpartner']);
+                                        echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                                    }
                                 }
-                            }
 
-                            include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
-                            ?>
+                                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                                ?>
 
-                        </select>
+                            </select>
 
-                        <div class="customer-details" id="customer-details">
-                            <div class="rechnungskuerzel">
-                                <span id="rechnungskuerzel"></span>
-                                <label> (Rechnungskürzel)</label>
-                            </div>
-                            <span id="adresse"></span>
+                            <div class="customer-details" id="customer-details">
+                                <div class="rechnungskuerzel">
+                                    <span id="rechnungskuerzel"></span>
+                                    <label> (Rechnungskürzel)</label>
+                                </div>
+                                <span id="adresse"></span>
 
-                            <div class="plz-ort">
-                                <span id="plz"></span>
-                                <span id="ort"></span>
+                                <div class="plz-ort">
+                                    <span id="plz"></span>
+                                    <span id="ort"></span>
+                                </div>
                             </div>
                         </div>
 
                         <!-- ckEditor 5 CustomBuild -->
-                        <div class="leistungEditor" id="leistungEditor">
-
+                        <div class="leistung">
+                            <label>Leistung und ggf. Leistungsstraße:</label>
+                            <div class="leistungEditor" id="leistungEditor"></div>
                         </div>
 
                         <div class="abrechnungsart">
@@ -672,7 +674,7 @@ function setSessionVariableFalse($session)
                         </div>
 
                         <div class="datum">
-                            <label for="RechnungsDatum">Wähle Rechnungsdatum, Monat(Jahr) für die Rechnung aus:</label>
+                            <label for="RechnungsDatum">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
                             <div class="RechnungsDatum">
                                 <input type="date" name="RechnungsDatum" id="RechnungsDatum" required>
                                 <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr" required>
@@ -763,13 +765,31 @@ function setSessionVariableFalse($session)
     <!-- Rich Text Editor ckEditor 5 CustomBuild -->
     <script src="../ckeditor/build/ckeditor.js"></script>
     <script>
+        //Add ckEditor 5 Custom Builds
         ClassicEditor
             .create(document.querySelector('#leistungEditor'))
             .then(editor => {
+                //default font is Arial
                 const fontFamily = editor.commands.get('fontFamily');
                 fontFamily.execute({
                     value: 'Arial, Helvetica, sans-serif'
                 });
+
+                //Check if ckEditor 5 has an empty input so we can simulate the required
+                document.getElementById('form-modal').addEventListener('submit', function(event) {
+                    const editorData = editor.getData();
+                    const messageDiv = document.getElementById('message');
+                    const messageText = document.getElementById('messageText');
+
+                    if (editorData.trim() === '' || editorData == '') {
+                        event.preventDefault();
+                        messageDiv.style.display = 'flex';
+                        messageText.innerText = 'Leere Eingabe für die Leistung';
+                        // Error Message Style
+                        messageDiv.classList.add('error');
+                    }
+                });
+
             })
             .catch(error => {
                 console.error(error);
