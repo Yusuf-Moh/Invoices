@@ -668,14 +668,14 @@ function setSessionVariableFalse($session)
                         </div>
 
                         <div class="preis">
-                            <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="any" required>
+                            <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
                         </div>
 
                         <div class="datum">
                             <label for="RechnungsDatum">Wähle Rechnungsdatum, Monat(Jahr) für die Rechnung aus:</label>
                             <div class="RechnungsDatum">
-                                <input type="date" name="RechnungsDatum" id="RechnungsDatum">
-                                <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr">
+                                <input type="date" name="RechnungsDatum" id="RechnungsDatum" required>
+                                <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr" required>
                             </div>
                         </div>
 
@@ -765,6 +765,12 @@ function setSessionVariableFalse($session)
     <script>
         ClassicEditor
             .create(document.querySelector('#leistungEditor'))
+            .then(editor => {
+                const fontFamily = editor.commands.get('fontFamily');
+                fontFamily.execute({
+                    value: 'Arial, Helvetica, sans-serif'
+                });
+            })
             .catch(error => {
                 console.error(error);
             });
