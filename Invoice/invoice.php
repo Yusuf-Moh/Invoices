@@ -599,7 +599,11 @@ function setSessionVariableFalse($session)
                                     </tr>
                                 </tbody>
                                 <tfoot>
-
+                                    <tr>
+                                        <td colspan="3" class="add-row">
+                                            <label for="addLeistung" onclick="addDienstleiistungsRow()">+ Hinzufügen weitere Leistung</label>
+                                        </td>
+                                    </tr>
                                 </tfoot>
                             </table>
                         </div>

@@ -337,6 +337,12 @@ b {
     vertical-align: text-bottom;
 }
 
+/* Style for the tfoot label */
+.dienstleistungs-details tfoot .add-row label {
+    color: rgb(103, 103, 196);
+    cursor: pointer;
+}
+
 /* ckEditor doing the styling everything on its own. Only thing I added is width: 100%; ckeditor/build/ckeditor.js (.ck.ck-editor{position:relative;width:100%;}) */
 
 /* ================= END OF Style for the Leistungen and Leistungsstraße Customer =========================*/
