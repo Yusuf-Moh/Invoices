@@ -88,7 +88,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $action = $_POST['button'];
         switch ($action) {
             case 'save':
+                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                //KundenID from hidden inputfield
+                $KundenID = $_POST['selectedKundenID'];
+                // Storing the content from the LeistungEditor
+                $Leistung = $_POST['leistungEditor'];
+                //Abrechnungsart
+                $AbrechnungsartList = $_POST['AbrechnungsartList'];
+                if ($AbrechnungsartList == 'Pauschal') {
+                    $abrechnungsart = "Pauschal";
+                } else if ($AbrechnungsartList == "Stunden") {
+                    // Storing the value from the inputfield
+                    $abrechnungsart = $_POST['Stunden'];
+                }
 
+                //Nettopreis
+                $nettoPreis = $_POST['nettoPreis'];
+
+                // Rechnungsdatum
+                $Rechnungsdatum = $_POST['RechnungsDatum'];
+                $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
+
+                // Storing the value of the checkbox 
+                $monatlicheRechnung = "0";
+                if (isset($_POST['monatlicheRechnung'])) {
+                    $monatlicheRechnung = "1";
+                }
+
+                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
 
@@ -655,7 +682,7 @@ function setSessionVariableFalse($session)
                         <!-- ckEditor 5 CustomBuild -->
                         <div class="leistung">
                             <label>Leistung und ggf. Leistungsstraße:</label>
-                            <div class="leistungEditor" id="leistungEditor"></div>
+                            <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor"></textarea>
                         </div>
 
                         <div class="abrechnungsart">
