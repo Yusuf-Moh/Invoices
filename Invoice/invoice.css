@@ -250,7 +250,7 @@ b {
     transform: translate(-50%, -50%) scale(1.25);
 
     left: 50%;
-    width: 800px;
+    width: 1200px;
     padding: 20px 30px;
     background: var(--color-info-light);
     box-shadow: 2px 2px 5px 5px var(--box-shadow);
@@ -280,7 +280,7 @@ b {
 
 /* ================= Style for the Dropdown-List Customer =========================*/
 .kundenListe {
-    display: contents;
+    display: block;
 }
 
 #customerList {
@@ -325,9 +325,16 @@ b {
 
 /* ================= START OF Style for the Leistungen and Leistungsstraße Customer =========================*/
 
-.leistung {
-    display: contents;
-    width: 100%;
+.dienstleistungs-details {
+    display: block;
+}
+
+.dienstleistungs-details table th,
+.dienstleistungs-details table td {
+    text-align: left;
+    color: var(--color-dark);
+    padding: 0 10px 0 0;
+    vertical-align: text-bottom;
 }
 
 /* ckEditor doing the styling everything on its own. Only thing I added is width: 100%; ckeditor/build/ckeditor.js (.ck.ck-editor{position:relative;width:100%;}) */
@@ -349,16 +356,6 @@ b {
     appearance: auto;
 }
 
-.abrechnungsart,
-.preis {
-    display: contents;
-
-}
-
-.Abrechnungsart-container {
-    display: flex;
-    width: 100%;
-}
 
 /* ================= END OF Style for the Dropdown-List Abrechnungsart =========================*/
 
@@ -382,6 +379,7 @@ b {
 .monatlicheRechnung {
     display: flex;
     gap: 4px;
+    margin-top: 10px;
 }
 
 .monatlicheRechnung input {
@@ -436,7 +434,7 @@ b {
 }
 
 .crud .crud-table table th,
-td {
+.crud .crud-table table td {
     text-align: left;
     padding: 8px;
     /* border-bottom: 1px solid #ddd; */

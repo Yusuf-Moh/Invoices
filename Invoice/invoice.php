@@ -39,19 +39,10 @@ function reset_vars()
     $showMessage = "none";
 }
 
-global $Firmenname_StateSearchButton, $Adresse_StateSearchButton, $RechnungsKürzel_StateSearchButton, $PLZ_StateSearchButton, $Ort_StateSearchButton, $Vertragsdatum_StateSearchButton, $Ansprechpartner_StateSearchButton, $Gender_StateSearchButton;
 
 global $restart;
 $restart = false;
 
-setSessionVariableFalse('Firmenname_StateSearchButton');
-setSessionVariableFalse('Adresse_StateSearchButton');
-setSessionVariableFalse('RechnungsKürzel_StateSearchButton');
-setSessionVariableFalse('PLZ_StateSearchButton');
-setSessionVariableFalse('Ort_StateSearchButton');
-setSessionVariableFalse('Vertragsdatum_StateSearchButton');
-setSessionVariableFalse('Ansprechpartner_StateSearchButton');
-setSessionVariableFalse('Gender_StateSearchButton');
 
 if ($_SESSION['sql_query'] == "") {
     $_SESSION['sql_query'] = "SELECT * FROM `kunden`";
@@ -66,15 +57,6 @@ if ($_SESSION['param'] == "") {
 if ($restart) {
     header("Refresh:0");
 }
-
-$Firmenname_StateSearchButton = $_SESSION['Firmenname_StateSearchButton'];
-$Adresse_StateSearchButton = $_SESSION['Adresse_StateSearchButton'];
-$RechnungsKürzel_StateSearchButton = $_SESSION['RechnungsKürzel_StateSearchButton'];
-$PLZ_StateSearchButton = $_SESSION['PLZ_StateSearchButton'];
-$Ort_StateSearchButton = $_SESSION['Ort_StateSearchButton'];
-$Vertragsdatum_StateSearchButton = $_SESSION['Vertragsdatum_StateSearchButton'];
-$Ansprechpartner_StateSearchButton = $_SESSION['Ansprechpartner_StateSearchButton'];
-$Gender_StateSearchButton = $_SESSION['Gender_StateSearchButton'];
 
 $sql_query = $_SESSION['sql_query'];
 $param = $_SESSION['param'];
@@ -265,110 +247,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 $showMessage = "flex";
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                break;
-            case 'Search_FirmenName':
-                $Firmenname_StateSearchButton = $_POST['Firmenname_StateSearchButton'];
-
-                if ($Firmenname_StateSearchButton == "false") {
-                    $Firmenname_StateSearchButton = "true";
-                } else if ($Firmenname_StateSearchButton == "true") {
-                    $Firmenname_StateSearchButton = "false";
-                }
-                $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Adresse':
-                $Adresse_StateSearchButton = $_POST['Adresse_StateSearchButton'];
-
-                if ($Adresse_StateSearchButton == "false") {
-                    $Adresse_StateSearchButton = "true";
-                } elseif ($Adresse_StateSearchButton == "true") {
-                    $Adresse_StateSearchButton = "false";
-                }
-                $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_RechnungsKürzel':
-                $RechnungsKürzel_StateSearchButton = $_POST['RechnungsKürzel_StateSearchButton'];
-
-                if ($RechnungsKürzel_StateSearchButton == "false") {
-                    $RechnungsKürzel_StateSearchButton = "true";
-                } elseif ($RechnungsKürzel_StateSearchButton == "true") {
-                    $RechnungsKürzel_StateSearchButton = "false";
-                }
-                $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_PLZ':
-                $PLZ_StateSearchButton = $_POST['PLZ_StateSearchButton'];
-
-                if ($PLZ_StateSearchButton == "false") {
-                    $PLZ_StateSearchButton = "true";
-                } elseif ($PLZ_StateSearchButton == "true") {
-                    $PLZ_StateSearchButton = "false";
-                }
-                $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Ort':
-                $Ort_StateSearchButton = $_POST['Ort_StateSearchButton'];
-
-                if ($Ort_StateSearchButton == "false") {
-                    $Ort_StateSearchButton = "true";
-                } elseif ($Ort_StateSearchButton == "true") {
-                    $Ort_StateSearchButton = "false";
-                }
-                $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Vertragsdatum':
-                $Vertragsdatum_StateSearchButton = $_POST['Vertragsdatum_StateSearchButton'];
-
-                if ($Vertragsdatum_StateSearchButton == "false") {
-                    $Vertragsdatum_StateSearchButton = "true";
-                } elseif ($Vertragsdatum_StateSearchButton == "true") {
-                    $Vertragsdatum_StateSearchButton = "false";
-                }
-                $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Ansprechpartner':
-                $Ansprechpartner_StateSearchButton = $_POST['Ansprechpartner_StateSearchButton'];
-
-                if ($Ansprechpartner_StateSearchButton == "false") {
-                    $Ansprechpartner_StateSearchButton = "true";
-                } elseif ($Ansprechpartner_StateSearchButton == "true") {
-                    $Ansprechpartner_StateSearchButton = "false";
-                }
-                $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Gender':
-                $Gender_StateSearchButton = $_POST['Gender_StateSearchButton'];
-
-                if ($Gender_StateSearchButton == "false") {
-                    $Gender_StateSearchButton = "true";
-                } elseif ($Gender_StateSearchButton == "true") {
-                    $Gender_StateSearchButton = "false";
-                }
-                $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
                 break;
 
             case 'search':
@@ -679,33 +557,51 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
-                        <!-- ckEditor 5 CustomBuild -->
-                        <div class="leistung">
-                            <label>Leistung und ggf. Leistungsstraße:</label>
-                            <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor"></textarea>
-                        </div>
-
-                        <div class="abrechnungsart">
-                            <label for="AbrechnungsartList">Wähle die Abrechnungsart aus</label>
-                            <div class="Abrechnungsart-container" onchange="toggleInputField()">
-                                <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                                <select name="AbrechnungsartList" id="AbrechnungsartList" required>
-                                    <option value="Pauschal">Pauschal</option>
-                                    <option value="Stunden">Stunden</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="preis">
-                            <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
-                        </div>
-
                         <div class="datum">
                             <label for="RechnungsDatum">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
                             <div class="RechnungsDatum">
                                 <input type="date" name="RechnungsDatum" id="RechnungsDatum" required>
                                 <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr" required>
                             </div>
+                        </div>
+
+                        <!-- ckEditor 5 CustomBuild -->
+                        <div class="dienstleistungs-details">
+                            <table>
+                                <thead>
+                                    <th>Leistung und ggf. Leistungsstraße:</th>
+                                    <th>Wähle die Abrechnungsart aus:</th>
+                                    <th>NettoPreis:</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="leistung">
+                                                <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor"></textarea>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="abrechnungsart">
+                                                <div class="Abrechnungsart-container" onchange="toggleInputField()">
+                                                    <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                                                    <select name="AbrechnungsartList" id="AbrechnungsartList" required>
+                                                        <option value="Pauschal">Pauschal</option>
+                                                        <option value="Stunden">Stunden</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="preis">
+                                                <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+
+                                </tfoot>
+                            </table>
                         </div>
 
                         <div class="monatlicheRechnung">
