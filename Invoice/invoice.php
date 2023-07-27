@@ -731,10 +731,12 @@ function setSessionVariableFalse($session)
             const tBody = document.querySelector('.dienstleistungs-details tbody');
             const newRow = document.createElement('tr');
 
+            editorCount++;
+
             newRow.innerHTML = `
                 <td>
                     <div class="leistung">
-                        <textarea class="leistungEditor" id="leistungEditor-${++editorCount}" name="leistungEditor"></textarea>
+                        <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
                     </div>
                 </td>
                 <td>
@@ -762,8 +764,15 @@ function setSessionVariableFalse($session)
 
             // Creating new ckEditor
             ClassicEditor
-                .create(document.querySelector(`#leistungEditor-${editorCount}`))
+                .create(newRow.querySelector('.leistungEditor'))
                 .then(editor => {
+
+                    //default font is Arial
+                    const fontFamily = editor.commands.get('fontFamily');
+                    fontFamily.execute({
+                        value: 'Arial, Helvetica, sans-serif'
+                    });
+
                     // Checking for empty Input
                     document.getElementById('form-modal').addEventListener('submit', function(event) {
                         const editorData = editor.getData();

@@ -337,6 +337,10 @@ b {
     vertical-align: text-bottom;
 }
 
+.dienstleistungs-details table td {
+    padding-bottom: 6px;
+}
+
 /* Style for the tfoot label */
 .dienstleistungs-details tfoot .add-row label {
     color: rgb(103, 103, 196);
@@ -365,7 +369,6 @@ b {
     border: 1px solid #ccc;
     border-radius: 4px;
     padding: 8px;
-    margin-bottom: 10px;
     appearance: auto;
 }
 
