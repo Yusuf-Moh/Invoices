@@ -577,14 +577,14 @@ function setSessionVariableFalse($session)
                                     <tr>
                                         <td>
                                             <div class="leistung">
-                                                <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor"></textarea>
+                                                <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
                                             </div>
                                         </td>
                                         <td>
                                             <div class="abrechnungsart">
-                                                <div class="Abrechnungsart-container" onchange="toggleInputField()">
-                                                    <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                                                    <select name="AbrechnungsartList" id="AbrechnungsartList" required>
+                                                <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
+                                                    <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                                                    <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
                                                         <option value="Pauschal">Pauschal</option>
                                                         <option value="Stunden">Stunden</option>
                                                     </select>
@@ -593,7 +593,7 @@ function setSessionVariableFalse($session)
                                         </td>
                                         <td>
                                             <div class="preis">
-                                                <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                                                <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
                                             </div>
                                         </td>
                                     </tr>
@@ -739,9 +739,9 @@ function setSessionVariableFalse($session)
                 </td>
                 <td>
                     <div class="abrechnungsart">
-                        <div class="Abrechnungsart-container">
-                            <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                            <select name="AbrechnungsartList" id="AbrechnungsartList" required>
+                        <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
+                            <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                            <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
                                 <option value="Pauschal">Pauschal</option>
                                 <option value="Stunden">Stunden</option>
                             </select>
@@ -750,8 +750,11 @@ function setSessionVariableFalse($session)
                 </td>
                 <td>
                     <div class="preis">
-                        <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                        <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
                     </div>
+                </td>
+                <td class="delete-icon-cell">
+                    <span class="material-icons-sharp" onclick="deleteRow(this)">delete</span>
                 </td>
             `;
 
@@ -779,6 +782,11 @@ function setSessionVariableFalse($session)
                 .catch(error => {
                     console.error(error);
                 });
+        }
+
+        function deleteRow(deleteIcon) {
+            const rowToDelete = deleteIcon.closest('tr');
+            rowToDelete.remove();
         }
     </script>
 

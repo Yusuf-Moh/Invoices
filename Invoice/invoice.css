@@ -343,6 +343,13 @@ b {
     cursor: pointer;
 }
 
+.dienstleistungs-details .delete-icon-cell {
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
 /* ckEditor doing the styling everything on its own. Only thing I added is width: 100%; ckeditor/build/ckeditor.js (.ck.ck-editor{position:relative;width:100%;}) */
 
 /* ================= END OF Style for the Leistungen and Leistungsstraße Customer =========================*/

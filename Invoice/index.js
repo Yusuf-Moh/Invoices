@@ -161,10 +161,10 @@ function setRechnungsMonatJahrCurrentMonthYear() {
     // Assign the values to the input fields
     $('#RechnungsMonatJahr').val(currentYear + '-' + currentMonth);
 }
-//Toggle the Inputfield at the Dropdownliste ABrechnungsart
-function toggleInputField() {
-    var selectElement = document.getElementById("AbrechnungsartList");
-    var inputElement = document.getElementById("Stunden");
+//Toggle the Inputfield at the Dropdownliste Abrechnungsart
+function toggleInputField(containerElement) {
+    var selectElement = containerElement.querySelector("select[name='AbrechnungsartList[]']");
+    var inputElement = containerElement.querySelector("input[name='Stunden[]']");
 
     if (selectElement.value === "Stunden") {
         inputElement.style.display = "block"; // Display the input field if "Stunden" is selected
