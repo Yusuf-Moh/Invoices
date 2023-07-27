@@ -601,7 +601,7 @@ function setSessionVariableFalse($session)
                                 <tfoot>
                                     <tr>
                                         <td colspan="3" class="add-row">
-                                            <label for="addLeistung" onclick="addDienstleiistungsRow()">+ Hinzufügen weitere Leistung</label>
+                                            <label onclick="addDienstleistungsRow()">+ Hinzufügen weitere Leistung</label>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -692,7 +692,7 @@ function setSessionVariableFalse($session)
     <!-- Rich Text Editor ckEditor 5 CustomBuild -->
     <script src="../ckeditor/build/ckeditor.js"></script>
     <script>
-        //Add ckEditor 5 Custom Builds
+        //Add ckEditor 5 Custom Build
         ClassicEditor
             .create(document.querySelector('#leistungEditor'))
             .then(editor => {
@@ -722,6 +722,66 @@ function setSessionVariableFalse($session)
                 console.error(error);
             });
     </script>
+
+    <!-- Adding onclick for the tfoot label -->
+    <script>
+        let editorCount = 1; // Countvariable for the editor
+
+        function addDienstleistungsRow() {
+            const tBody = document.querySelector('.dienstleistungs-details tbody');
+            const newRow = document.createElement('tr');
+
+            newRow.innerHTML = `
+                <td>
+                    <div class="leistung">
+                        <textarea class="leistungEditor" id="leistungEditor-${++editorCount}" name="leistungEditor"></textarea>
+                    </div>
+                </td>
+                <td>
+                    <div class="abrechnungsart">
+                        <div class="Abrechnungsart-container">
+                            <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                            <select name="AbrechnungsartList" id="AbrechnungsartList" required>
+                                <option value="Pauschal">Pauschal</option>
+                                <option value="Stunden">Stunden</option>
+                            </select>
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="preis">
+                        <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                    </div>
+                </td>
+            `;
+
+            tBody.appendChild(newRow);
+
+            // Creating new ckEditor
+            ClassicEditor
+                .create(document.querySelector(`#leistungEditor-${editorCount}`))
+                .then(editor => {
+                    // Checking for empty Input
+                    document.getElementById('form-modal').addEventListener('submit', function(event) {
+                        const editorData = editor.getData();
+                        const messageDiv = document.getElementById('message');
+                        const messageText = document.getElementById('messageText');
+
+                        if (editorData.trim() === '' || editorData == '') {
+                            event.preventDefault();
+                            messageDiv.style.display = 'flex';
+                            messageText.innerText = 'Leere Eingabe für die Leistung';
+                            // Error Message Style
+                            messageDiv.classList.add('error');
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
+    </script>
+
 </body>
 
 </html>
