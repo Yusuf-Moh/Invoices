@@ -725,11 +725,16 @@ function setSessionVariableFalse($session)
 
     <!-- Adding onclick for the tfoot label -->
     <script>
-        let editorCount = 1; // Countvariable for the editor
+        let editorCount = 0; // Countvariable for the created editor
+        const editorArray = []; // Array to store editor instances
 
         function addDienstleistungsRow() {
             const tBody = document.querySelector('.dienstleistungs-details tbody');
             const newRow = document.createElement('tr');
+
+
+            newRow.setAttribute('data-editor-index', editorCount); // Add attribute to mark the editor index
+            newRow.setAttribute('data-editor-active', 'true'); // Add attribute to mark the editor as active
 
             editorCount++;
 
@@ -773,20 +778,7 @@ function setSessionVariableFalse($session)
                         value: 'Arial, Helvetica, sans-serif'
                     });
 
-                    // Checking for empty Input
-                    document.getElementById('form-modal').addEventListener('submit', function(event) {
-                        const editorData = editor.getData();
-                        const messageDiv = document.getElementById('message');
-                        const messageText = document.getElementById('messageText');
-
-                        if (editorData.trim() === '' || editorData == '') {
-                            event.preventDefault();
-                            messageDiv.style.display = 'flex';
-                            messageText.innerText = 'Leere Eingabe für die Leistung';
-                            // Error Message Style
-                            messageDiv.classList.add('error');
-                        }
-                    });
+                    editorArray.push(editor); // Add the editor instance to the array
                 })
                 .catch(error => {
                     console.error(error);
@@ -795,8 +787,44 @@ function setSessionVariableFalse($session)
 
         function deleteRow(deleteIcon) {
             const rowToDelete = deleteIcon.closest('tr');
+            const editorIndex = rowToDelete.getAttribute('data-editor-index');
+
+            const editor = editorArray[editorIndex]; // Get the corresponding editor instance from the array
+
+            // Destroy the editor
+            editor.destroy();
+
+            // Remove the row
             rowToDelete.remove();
         }
+
+        // Event listener for form submission; checking if inputfield of the ckEditor is empty => dont submit form
+        document.getElementById('form-modal').addEventListener('submit', function(event) {
+            const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
+
+            for (const row of rows) {
+                const editorIsActive = row.getAttribute('data-editor-active');
+                const editorIndex = row.getAttribute('data-editor-index');
+
+                const editor = editorArray[editorIndex];
+
+                // Check if the editor is active (not deleted)
+                if (editorIsActive === 'true') {
+                    const editorData = editor.getData();
+                    const messageDiv = document.getElementById('message');
+                    const messageText = document.getElementById('messageText');
+
+                    if (editorData.trim() === '' || editorData == '') {
+                        event.preventDefault();
+                        messageDiv.style.display = 'flex';
+                        messageText.innerText = 'Leere Eingabe für die Leistung';
+                        // Error Message Style
+                        messageDiv.classList.add('error');
+                        return; // Stop checking other rows once one empty editor is found
+                    }
+                }
+            }
+        });
     </script>
 
 </body>
