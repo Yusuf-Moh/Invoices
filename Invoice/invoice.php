@@ -73,29 +73,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
                 //KundenID from hidden inputfield
                 $KundenID = $_POST['selectedKundenID'];
+                // Rechnungsdatum
+                $Rechnungsdatum = $_POST['RechnungsDatum'];
+                $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
+
+
                 // Storing the content from the LeistungEditor
                 $Leistung = $_POST['leistungEditor'];
+                $LeistungDB = implode(",", $Leistung);
+
                 //Abrechnungsart
                 $AbrechnungsartList = $_POST['AbrechnungsartList'];
-                if ($AbrechnungsartList == 'Pauschal') {
-                    $abrechnungsart = "Pauschal";
-                } else if ($AbrechnungsartList == "Stunden") {
-                    // Storing the value from the inputfield
-                    $abrechnungsart = $_POST['Stunden'];
+                $AbrechnungsartStunden = $_POST['Stunden'];
+                // Replace Stunden with the inputfield number
+                for ($i = 0; $i < count($AbrechnungsartList); $i++) {
+                    if ($AbrechnungsartList[$i] != "Pauschal") {
+                        $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i];
+                    }
                 }
+                $AbrechnungsartListDB = implode(",", $AbrechnungsartList);
 
                 //Nettopreis
                 $nettoPreis = $_POST['nettoPreis'];
 
-                // Rechnungsdatum
-                $Rechnungsdatum = $_POST['RechnungsDatum'];
-                $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
+                //Calculation MwSt and Gesamtbetrag
+                $MwSt_Percentage = 19;
+
+                $MwStArray = [];
+                $GesamtBetragArray = [];
+                foreach ($nettoPreis as $nettoBetrag) {
+                    $MwSt = round($nettoBetrag * ($MwSt_Percentage / 100), 2);
+                    $GesamtBetrag = $nettoBetrag + $MwSt;
+                    $MwStArray[] = $MwSt;
+                    $GesamtBetragArray[] = $GesamtBetrag;
+                }
+
+                // Converting the nettoPreis, MwSt and Gesamtbetrag Array into a String with comma 
+                $nettoPreisDB = implode(",", $nettoPreis);
+                $MwStDB = implode(",", $MwStArray);
+                $GesamtBetragDB = implode(",", $GesamtBetragArray);
+
 
                 // Storing the value of the checkbox 
                 $monatlicheRechnung = "0";
                 if (isset($_POST['monatlicheRechnung'])) {
                     $monatlicheRechnung = "1";
                 }
+
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
@@ -726,7 +750,7 @@ function setSessionVariableFalse($session)
     <!-- Adding onclick for the tfoot label -->
     <script>
         let editorCount = 0; // Countvariable for the created editor
-        const editorArray = []; // Array to store editor instances
+        const editorArray = []; // Array to store editor instances/objects
 
         function addDienstleistungsRow() {
             const tBody = document.querySelector('.dienstleistungs-details tbody');
