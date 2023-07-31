@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         @page {
-            margin: 100px 25px;
+            /* aspect ratios of the page */
+            margin: 3cm 2cm 2cm 2cm;
         }
 
         header {
@@ -19,6 +20,13 @@
             line-height: 35px;
             width: 100%;
         }
+
+        /* main {
+            margin-top: 0.5cm;
+            margin-left: 2cm;
+            margin-right: 2cm;
+            margin-bottom: 2cm;
+        } */
 
         footer {
             position: fixed;
@@ -49,12 +57,35 @@
             right: 0;
             /* change this to get the right position for the logo */
             top: -56px;
-            height: 100px;
+            /* height: 100px; */
         }
 
         .FirmenLogo img {
             height: auto;
             width: 100%;
+        }
+
+        footer table {
+            border-collapse: collapse;
+            border: none;
+            width: 100%;
+        }
+
+        footer table td {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            border: 0;
+            line-height: 10px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        footer table td:first-child {
+            text-align: left;
+        }
+
+        footer table td:last-child {
+            text-align: right;
         }
     </style>
     <title>MusterRechnung</title>
@@ -64,8 +95,8 @@
     <header>
         <div class="ÜberschriftFirma">
             <p style='margin:0cm;font-size:15px;font-family:"Calibri",sans-serif;'><u><span
-                        style='font-size:13px;font-family:"Arial",sans-serif;'>Firmenname &ndash; Firmenstr. 0 &ndash;
-                        50000 K&ouml;ln</span></u></p>
+                        style='font-size:13px;font-family:"Arial",sans-serif;'>Firmenname - Firmenstr. 0 -
+                        50000 Köln</span></u></p>
         </div>
         <div class="FirmenLogo">
             <img src="images/logo.jpg">
@@ -73,7 +104,30 @@
 
     </header>
 
-    <footer>Footer</footer>
+    <footer>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Firmenname</td>
+                    <td>Bank</td>
+                    <td>+49 (0) 01234567891</td>
+                    <td>www.firma.de</td>
+                </tr>
+                <tr>
+                    <td>Inh. Vorname Nachname</td>
+                    <td>Sparkasse KölnBonn</td>
+                    <td>+49 (0) 012 /3456789</td>
+                    <td>info@firma.de</td>
+                </tr>
+                <tr>
+                    <td>Firmenstr. 0 - 50000 Köln</td>
+                    <td>DE00000000000000000000</td>
+                    <td></td>
+                    <td>St.-Nr.: 000/0000/0000</td>
+                </tr>
+            </tbody>
+        </table>
+    </footer>
 
     <main>
         <div class="content">
