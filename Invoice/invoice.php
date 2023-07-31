@@ -120,6 +120,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $monatlicheRechnung = "1";
                 }
 
+                // LeistungDB in Leistung speichern
+                // AbrechnungsartListDB in Abrechnungsart
+                // nettoPreisDB in NettoPreis
+                // MwStDB in MwSt
+                // GesamtBetragDB in GesamtBetrag
+                // KundenID in KundenID
+                // monatlicheRechnung in MonatlicheRechnungBool
+                // Rechnungsdatum in RechnungsDatum
+                // RechnungsMonatJahr in Monat_Jahr
+
+                // RechnungsNummer suchen von tabelle Rechnungsnr. 
+                // wenn kein eintrag => 1 
+                // sonst => Nr + 1
+
+
+                // Zuerst Rechnung Erstellen und dann anschließend werte in DB speichern
+                // Grund: Wenn erstlelen von Rechnung fehlerhaft ist => speichern von Werten in DB nicht machen
+                // Web Framework flask benutzen eventuell je nachdem ob es bei dem problem geeignet ist
+
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
