@@ -49,8 +49,8 @@ $dompdf->addInfo("Title", "An Example PDF"); // "add_info" in earlier versions o
  */
 $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
 
-// /**
-//  * Save the PDF file locally
-//  */
+/**
+ * Save the PDF file locally
+ */
 // $output = $dompdf->output();
 // file_put_contents("file.pdf", $output);

@@ -4,89 +4,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @page {
+            margin: 100px 25px;
+        }
 
-    <script defer src="https://unpkg.com/pagedjs/dist/paged.polyfill.js"></script>
-    <link rel="stylesheet" href="Muster.css"> 
+        header {
+            position: fixed;
+            top: -60px;
+            height: 50px;
+            /* background-color: #752727; */
+            /* color: white; */
+            /* text-align: center; */
+            line-height: 35px;
+            width: 100%;
+        }
 
-    <!-- <link rel="stylesheet" href="https://unpkg.com/gutenberg-css@0.6"> -->
+        footer {
+            position: fixed;
+            bottom: -60px;
+            height: 50px;
+            /* background-color: #752727; */
+            /* color: white; */
+            text-align: center;
+            line-height: 35px;
+            width: 100%;
+        }
+
+        .pagenum:before {
+            content: counter(page);
+        }
+
+        /* display flex and spacebetween not working because of domPDF */
+        .ÜberschriftFirma {
+            /* position of the div left*/
+            float: left;
+        }
+
+        .FirmenLogo {
+            /* position of the div right */
+            float: right;
+
+            position: absolute;
+            right: 0;
+            /* change this to get the right position for the logo */
+            top: -56px;
+            height: 100px;
+        }
+
+        .FirmenLogo img {
+            height: auto;
+            width: 100%;
+        }
+    </style>
     <title>MusterRechnung</title>
 </head>
 
 <body>
-    <div class="headerLeft">
-        Kopfzeile links
-    </div>
-    <div class="headerRight">
-        Kopfzeile rechts Logo
-    </div>
+    <header>
+        <div class="ÜberschriftFirma">
+            <p style='margin:0cm;font-size:15px;font-family:"Calibri",sans-serif;'><u><span
+                        style='font-size:13px;font-family:"Arial",sans-serif;'>Firmenname &ndash; Firmenstr. 0 &ndash;
+                        50000 K&ouml;ln</span></u></p>
+        </div>
+        <div class="FirmenLogo">
+            <img src="images/logo.jpg">
+        </div>
 
-    <div class="footerLeft">
-        Fußzeile
-    </div>
+    </header>
 
+    <footer>Footer</footer>
 
-    <div class="content">
-        <h1>Invoice</h1>
+    <main>
+        <div class="content">
+            <h1>Invoice</h1>
 
-        <p>Name: {{ name }}</p>
+            <p>Name: {{ name }}</p>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>A sample product</td>
-                    <td style="text-align: right">{{ quantity }}</td>
-                </tr>
-                <tr>
-                    <td>A sample product</td>
-                    <td style="text-align: right">{{ quantity }}</td>
-                </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>A sample product</td>
+                        <td style="text-align: right">{{ quantity }}</td>
+                    </tr>
+                    <tr>
+                        <td>A sample product</td>
+                        <td style="text-align: right">{{ quantity }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-    </div>
+        </div>
 
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-        perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-        repudiandae corrupti eum eius?</p>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti, natus
-        soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-        exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus quasi
-        maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-        laboriosam possimus laudantium. Magni deleniti nostrum porro?
-    </p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-        perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-        repudiandae corrupti eum eius?</p>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti, natus
-        soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-        exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus quasi
-        maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-        laboriosam possimus laudantium. Magni deleniti nostrum porro?
-    </p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-        perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-        repudiandae corrupti eum eius?</p>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti, natus
-        soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-        exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus quasi
-        maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-        laboriosam possimus laudantium. Magni deleniti nostrum porro?
-    </p>
-    <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-        perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-        repudiandae corrupti eum eius?</p>
-    <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti, natus
-        soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-        exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus quasi
-        maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-        laboriosam possimus laudantium. Magni deleniti nostrum porro?
-    </p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
+            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
+            repudiandae corrupti eum eius?</p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
+            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
+            repudiandae corrupti eum eius?</p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
+            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
+            repudiandae corrupti eum eius?</p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
+            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
+            repudiandae corrupti eum eius?</p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
+            natus
+            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
+            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
+            quasi
+            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
+            laboriosam possimus laudantium. Magni deleniti nostrum porro?
+        </p>
+    </main>
 </body>
 
 </html>
