@@ -137,9 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 // Zuerst Rechnung Erstellen und dann anschließend werte in DB speichern
                 // Grund: Wenn erstlelen von Rechnung fehlerhaft ist => speichern von Werten in DB nicht machen
-                // Web Framework flask benutzen eventuell je nachdem ob es bei dem problem geeignet ist
 
-
+                echo $LeistungDB;
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 

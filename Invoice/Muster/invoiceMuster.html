@@ -10,30 +10,23 @@
             margin: 3cm 2cm 2cm 2cm;
         }
 
+        * {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+
         header {
             position: fixed;
             top: -60px;
             height: 50px;
-            /* background-color: #752727; */
-            /* color: white; */
-            /* text-align: center; */
             line-height: 35px;
             width: 100%;
         }
 
-        /* main {
-            margin-top: 0.5cm;
-            margin-left: 2cm;
-            margin-right: 2cm;
-            margin-bottom: 2cm;
-        } */
-
         footer {
             position: fixed;
-            bottom: -60px;
+            bottom: -50px;
             height: 50px;
-            /* background-color: #752727; */
-            /* color: white; */
             text-align: center;
             line-height: 35px;
             width: 100%;
@@ -87,6 +80,18 @@
         footer table td:last-child {
             text-align: right;
         }
+
+        .Rechnungs-Tabelle table {
+            border-collapse: collapse;
+            border: none;
+            width: 100%;
+        }
+
+        .Rechnungs-Tabelle table td {
+            border: solid black 1.0pt;
+            text-align: center;
+            padding: 6.5pt 6.5pt 6.5pt 6.5pt;
+        }
     </style>
     <title>MusterRechnung</title>
 </head>
@@ -105,6 +110,8 @@
     </header>
 
     <footer>
+        <!-- Horizontal line -->
+        <hr>
         <table>
             <tbody>
                 <tr>
@@ -131,91 +138,91 @@
 
     <main>
         <div class="content">
-            <h1>Invoice</h1>
 
-            <p>Name: {{ name }}</p>
+            <div class="Kontaktinformationen">
+                <p>{{ FirmenName }} <br> {{ Name_Ansprechpartner }} <br> {{ Adresse }} <br> {{ PLZ }} {{ Ort }}</p>
+            </div>
+            <div class="RechnungsDatum">
+                <p style="text-align:right;">Rechnungsdatum: {{ RechnungsDatum }}</p>
+            </div>
+            <div class="RechnungsNr">
+                <br>
+                <p><strong>RECHNUNG NR.: {{ RechnungsNr }}</strong><br><span style="font-size: 10pt;">Bitte bei
+                        Zahlungen angeben</span></p>
+            </div>
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Product</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>A sample product</td>
-                        <td style="text-align: right">{{ quantity }}</td>
-                    </tr>
-                    <tr>
-                        <td>A sample product</td>
-                        <td style="text-align: right">{{ quantity }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="Anrede">
+                <br>
+                <p>{{ Anrede }}</p>
+                <p>hiermit übersenden wir Ihnen die Rechnung v. {{ Monat }} {{ Jahr }} {{ Vertragsdatum }} für folgende
+                    Leistungen:</p>
+            </div>
+
+            <div class="Rechnungs-Tabelle">
+                <table>
+
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;">Leistung</td>
+                            <td style="width: 100px;">Stunden</td>
+                            <td style="width: 100px;">Abrechnungsart</td>
+                            <td style="width: 140px;">Preis ohne MwSt.</td>
+                        </tr>
+
+                        <!-- Leistung and the given values -->
+                        <tr>
+                            <td style="text-align: left;">
+                                <p>Unterhaltsreinigung</p>
+                                <ul>
+                                    <li>Müllentsorgung</li>
+                                    <li>Kuchen Backen</li>
+                                </ul>
+                            </td>
+                            <td>2</td>
+                            <td>Pasuchal</td>
+                            <td>{{ BetragNetto0 }} Euro</td>
+                        </tr>
+
+                        <!-- If there is more than one "Leistung", the total Netto amount will be added together-->
+                        <tr>
+                            <td colspan="3" style="text-align: left;">
+                                Gesamtbetrag Netto
+                            </td>
+                            <td>
+                                {{ gBetragNetto }} Euro
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="3" style="text-align: left;">
+                                Zzgl. Gesetzlicher Mehrwertsteuer {{ ProzentMwSt }}
+                            </td>
+                            <td>
+                                {{ MwSt }} Euro
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: left;">
+                                <strong>Gesamtbetrag inkl. MwSt.</strong>
+                            </td>
+                            <td>
+                                <strong>{{ gBetrag }} Euro</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="Zahlungsaufforderung">
+                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von {{ gBetrag }} Euro innerhalb von <br>
+                    10 Tage nach
+                    Rechnungszustellung auf unser unten genanntes Bankonto zu überweisen.</p>
+                <br>
+                <p>Mit freundlichen Grüßen <br> Vorname Nachname</p>
+            </div>
 
         </div>
 
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-            repudiandae corrupti eum eius?</p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-            repudiandae corrupti eum eius?</p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-            repudiandae corrupti eum eius?</p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
-        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Labore officia, hic aperiam, soluta porro quas
-            perspiciatis commodi quam, deserunt ut molestiae. Aliquid consequuntur dignissimos, magni accusantium
-            repudiandae corrupti eum eius?</p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
-        <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi inventore reprehenderit minus, corrupti,
-            natus
-            soluta sequi quasi temporibus magni fugiat culpa assumenda aliquam eveniet molestiae quam doloremque,
-            exercitationem expedita iusto?Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem delectus
-            quasi
-            maiores aliquam tempore, corrupti, temporibus rerum vitae consequatur saepe quibusdam, architecto doloribus
-            laboriosam possimus laudantium. Magni deleniti nostrum porro?
-        </p>
     </main>
 </body>
 
