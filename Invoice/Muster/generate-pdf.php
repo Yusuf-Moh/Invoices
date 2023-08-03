@@ -8,11 +8,6 @@ use Dompdf\Options;
 $name = $_POST["name"];
 $quantity = $_POST["quantity"];
 
-//$html = '<h1 style="color: green">Example</h1>';
-//$html .= "Hello <em>$name</em>";
-//$html .= '<img src="example.png">';
-//$html .= "Quantity: $quantity";
-
 /**
  * Set the Dompdf options
  */
@@ -30,12 +25,9 @@ $dompdf->setPaper("A4", "portrait");
 /**
  * Load the HTML and replace placeholders with values from the form
  */
-$html = file_get_contents("invoiceMuster.html");
-
-$html = str_replace(["{{ name }}", "{{ quantity }}"], [$name, $quantity], $html);
+$html = file_get_contents("invoiceMuster.php");
 
 $dompdf->loadHtml($html);
-//$dompdf->loadHtmlFile("template.html");
 
 /**
  * Create the PDF and set attributes

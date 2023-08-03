@@ -1,3 +1,184 @@
+<?php
+
+// ============ Values from invoice.php ============
+
+$KundenID = $_POST['selectedKundenID'];
+
+// Rechnungsdatum
+$Rechnungsdatum = $_POST['RechnungsDatum'];
+$Rechnungsdatum = formatDate($Rechnungsdatum);
+$RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
+$RechnungsMonatJahr = formatMonthYear($RechnungsMonatJahr);
+
+// Storing the content from the LeistungEditor
+$Leistung = $_POST['leistungEditor'];
+
+//Abrechnungsart
+$AbrechnungsartList = $_POST['AbrechnungsartList'];
+$AbrechnungsartStunden = $_POST['Stunden'];
+// Replace Stunden with the inputfield number
+for ($i = 0; $i < count($AbrechnungsartList); $i++) {
+    if ($AbrechnungsartList[$i] != "Pauschal") {
+        $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i];
+    }
+}
+
+//Nettopreis
+$nettoPreis = $_POST['nettoPreis'];
+
+//Calculation MwSt and Gesamtbetrag
+$MwSt_Percentage = 19;
+
+$MwStArray = [];
+$GesamtBetragArray = [];
+foreach ($nettoPreis as $nettoBetrag) {
+    $MwSt = round($nettoBetrag * ($MwSt_Percentage / 100), 2);
+    $GesamtBetrag = $nettoBetrag + $MwSt;
+    $MwStArray[] = $MwSt;
+    $GesamtBetragArray[] = $GesamtBetrag;
+}
+
+// ============ Values from Kunden/Customer ============
+include('../../dbPhp/dbOpenConnection.php');
+$sql = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
+$stmt = $conn->prepare($sql);
+$stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
+$stmt->execute();
+
+$result = [];
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$FirmenName = "";
+
+if ($result['organization'] == '1') {
+    $FirmenName = $result['FirmenName'];
+}
+$Adresse = $result['Adresse'];
+$RechnungsKürzel = $result['RechnungsKürzel'];
+$PLZ = $result['PLZ'];
+$Ort = $result['Ort'];
+$VertragsDatum = $result['VertragsDatum'];
+$Ansprechpartner = $result['Name_Ansprechpartner'];
+$gender = $result['Gender'];
+
+$name_parts = explode(" ", $Ansprechpartner);
+$Nachname = end($name_parts);
+
+if ($gender == "Male") {
+    $Ansprechpartner = "Herr " . $Ansprechpartner;
+    $Anrede = "Sehr geehrter Herr " . $Nachname . ",";
+} else if ($gender = "Female") {
+    $Ansprechpartner = "Frau " . $Ansprechpartner;
+    $Anrede = "Sehr geehrte Frau " . $Nachname . ",";
+} else {
+    $Ansprechpartner = "";
+    $Anrede = "Sehr geehrte Damen und Herren,";
+}
+
+// ============ Last RechnungsNR of DB-Table Rechnung ============
+
+try {
+    $query = "SELECT MAX(RechnungsNummer) AS MaxRechnungsNR FROM rechnung WHERE KundenID = :KundenID";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam('KundenID', $KundenID, PDO::PARAM_INT);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $RechnungsNr = $result['MaxRechnungsNR'] + 1;
+} catch (PDOException) {
+    $RechnungsNr = 1;
+}
+
+
+$RechnungsKürzelNummer = $RechnungsKürzel . convertToMMYY($RechnungsMonatJahr) . "/" . formatRechnungsNr($RechnungsNr);
+
+
+include('../../dbPhp/dbCloseConnection.php');
+
+
+function displayStringBR($String)
+{
+    if (!empty($String)) {
+        echo $String . "<br>";
+    }
+}
+
+function displayString($String)
+{
+    if (!empty($String)) {
+        echo $String;
+    }
+}
+
+function displayVertragsdatum($vertragsDatum)
+{
+
+    if (!empty($vertragsDatum)) {
+        echo "laut Vertrag vom " . $vertragsDatum;
+    }
+}
+
+//From MMMM JJJJ to MMJJ for the RechnungsKürzelNummer
+function convertToMMYY($dateStr)
+{
+    $months = array(
+        'Januar' => '01',
+        'Februar' => '02',
+        'März' => '03',
+        'April' => '04',
+        'Mai' => '05',
+        'Juni' => '06',
+        'Juli' => '07',
+        'August' => '08',
+        'September' => '09',
+        'Oktober' => '10',
+        'November' => '11',
+        'Dezember' => '12'
+    );
+
+    $dateArr = explode(" ", $dateStr);
+    $month = $months[$dateArr[0]];
+    $year = substr($dateArr[1], -2);
+
+    return $month . $year;
+}
+
+//With the Inputfield type date (invoice.php) the values for 23.05.2023 are 2023-05.23 which are not suitable for the pdf.
+function formatDate($date)
+{
+    return date("d.m.Y", strtotime($date));
+}
+// With the Inputfield type Month (invoice.php), the values for Mai 2023 are 2023-05 which are not suitable.
+function formatMonthYear($monthYear)
+{
+    $months = array(
+        '01' => 'Januar',
+        '02' => 'Februar',
+        '03' => 'März',
+        '04' => 'April',
+        '05' => 'Mai',
+        '06' => 'Juni',
+        '07' => 'Juli',
+        '08' => 'August',
+        '09' => 'September',
+        '10' => 'Oktober',
+        '11' => 'November',
+        '12' => 'Dezember'
+    );
+
+    $dateArr = explode("-", $monthYear);
+    $year = $dateArr[0];
+    $month = $dateArr[1];
+
+    return $months[$month] . " " . $year;
+}
+
+function formatRechnungsNr($rechnungsNr)
+{
+    return str_pad($rechnungsNr, 4, '0', STR_PAD_LEFT);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -99,8 +280,7 @@
 <body>
     <header>
         <div class="ÜberschriftFirma">
-            <p style='margin:0cm;font-size:15px;font-family:"Calibri",sans-serif;'><u><span
-                        style='font-size:13px;font-family:"Arial",sans-serif;'>Firmenname - Firmenstr. 0 -
+            <p><u><span style='font-size:10pt;'>Firmenname - Firmenstr. 0 -
                         50000 Köln</span></u></p>
         </div>
         <div class="FirmenLogo">
@@ -140,21 +320,26 @@
         <div class="content">
 
             <div class="Kontaktinformationen">
-                <p>{{ FirmenName }} <br> {{ Name_Ansprechpartner }} <br> {{ Adresse }} <br> {{ PLZ }} {{ Ort }}</p>
+                <p> <?php displayStringBR($FirmenName);
+                    displayStringBR($Ansprechpartner);
+                    displayStringBR($Adresse);
+                    echo $PLZ . " " . $Ort ?>
+                </p>
+                <!-- <p>{{ FirmenName }} <br> {{ Name_Ansprechpartner }} <br> {{ Adresse }} <br> {{ PLZ }} {{ Ort }}</p> -->
             </div>
             <div class="RechnungsDatum">
-                <p style="text-align:right;">Rechnungsdatum: {{ RechnungsDatum }}</p>
+                <p style="text-align:right;">Rechnungsdatum: <?php echo $Rechnungsdatum; ?></p>
             </div>
             <div class="RechnungsNr">
                 <br>
-                <p><strong>RECHNUNG NR.: {{ RechnungsNr }}</strong><br><span style="font-size: 10pt;">Bitte bei
+                <p><strong>RECHNUNG NR.: <?php displayString($RechnungsKürzelNummer); ?></strong><br><span style="font-size: 10pt;">Bitte bei
                         Zahlungen angeben</span></p>
             </div>
 
             <div class="Anrede">
                 <br>
-                <p>{{ Anrede }}</p>
-                <p>hiermit übersenden wir Ihnen die Rechnung v. {{ Monat }} {{ Jahr }} {{ Vertragsdatum }} für folgende
+                <p><?php displayString($Anrede); ?></p>
+                <p>hiermit übersenden wir Ihnen die Rechnung v. <?php displayString($RechnungsMonatJahr); ?> <?php displayVertragsdatum($VertragsDatum); ?> für folgende
                     Leistungen:</p>
             </div>
 
@@ -170,6 +355,18 @@
                         </tr>
 
                         <!-- Leistung and the given values -->
+                        <tr>
+                            <td style="text-align: left;">
+                                <p>Unterhaltsreinigung</p>
+                                <ul>
+                                    <li>Müllentsorgung</li>
+                                    <li>Kuchen Backen</li>
+                                </ul>
+                            </td>
+                            <td>2</td>
+                            <td>Pasuchal</td>
+                            <td>{{ BetragNetto0 }} Euro</td>
+                        </tr>
                         <tr>
                             <td style="text-align: left;">
                                 <p>Unterhaltsreinigung</p>

@@ -73,6 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
                 //KundenID from hidden inputfield
                 $KundenID = $_POST['selectedKundenID'];
+
                 // Rechnungsdatum
                 $Rechnungsdatum = $_POST['RechnungsDatum'];
                 $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
@@ -538,7 +539,7 @@ function setSessionVariableFalse($session)
         <!--Create New Invoice with Button to open Modal-->
         <div class="createInvoices">
 
-            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage ?>">
+            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
                 <h2 id="messageText"><?php echo $message; ?></h2>
                 <span class="material-icons-sharp">close</span>
             </div>
@@ -658,11 +659,11 @@ function setSessionVariableFalse($session)
                         <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 
-                        <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
-                                                                                                                                                                    echo "Senden";
-                                                                                                                                                                } elseif ($saveUpdate == "update") {
-                                                                                                                                                                    echo "Update";
-                                                                                                                                                                } ?></button>
+                        <button type="submit" name="button" onclick="updateFormActionTarget(event)" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
+                                                                                                                                                                                                            echo "Senden";
+                                                                                                                                                                                                        } elseif ($saveUpdate == "update") {
+                                                                                                                                                                                                            echo "Update";
+                                                                                                                                                                                                        } ?></button>
                     </form>
                 </div>
             </div>
@@ -700,15 +701,7 @@ function setSessionVariableFalse($session)
                                 <td><?php echo htmlspecialchars($row['Ort']); ?></td>
                                 <td><?php echo htmlspecialchars($row['VertragsDatum']); ?></td>
                                 <td><?php echo htmlspecialchars($row['Name_Ansprechpartner']); ?></td>
-                                <td><?php
-                                    if ($row['Gender'] == "M") {
-                                        echo htmlspecialchars("Male");
-                                    } elseif ($row['Gender'] == "F") {
-                                        echo htmlspecialchars("Female");
-                                    } else {
-                                        echo htmlspecialchars($row['Gender']);
-                                    }
-                                    ?></td>
+                                <td><?php echo htmlspecialchars($row['Gender']); ?></td>
                                 <td>
                                     <form method="post">
                                         <input type="hidden" name="KundenID" value=<?php echo htmlspecialchars($row['KundenID']); ?>>
@@ -869,6 +862,25 @@ function setSessionVariableFalse($session)
         });
     </script>
 
+    <script>
+        function updateFormActionTarget(event) {
+
+            event.preventDefault();
+
+            // check if the btn value is save
+            const submitButton = event.target;
+            if (submitButton.value === 'save') {
+                // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+                const form = document.getElementById('form-modal');
+                form.action = '/projekt/website_vereinfacht/Invoice/Muster/invoiceMuster.php';
+                form.target = '_blank';
+
+                // Send Form
+                form.submit();
+                location.reload()
+            }
+        }
+    </script>
 </body>
 
 </html>
