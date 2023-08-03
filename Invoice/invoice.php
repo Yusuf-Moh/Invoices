@@ -139,7 +139,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Zuerst Rechnung Erstellen und dann anschließend werte in DB speichern
                 // Grund: Wenn erstlelen von Rechnung fehlerhaft ist => speichern von Werten in DB nicht machen
 
-                echo $LeistungDB;
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
@@ -727,10 +726,14 @@ function setSessionVariableFalse($session)
     <!-- Rich Text Editor ckEditor 5 CustomBuild -->
     <script src="../ckeditor/build/ckeditor.js"></script>
     <script>
+        const firstEditor = [];
         //Add ckEditor 5 Custom Build
         ClassicEditor
             .create(document.querySelector('#leistungEditor'))
             .then(editor => {
+
+                firstEditor.push(editor);
+
                 //default font is Arial
                 const fontFamily = editor.commands.get('fontFamily');
                 fontFamily.execute({
@@ -776,7 +779,7 @@ function setSessionVariableFalse($session)
             newRow.innerHTML = `
                 <td>
                     <div class="leistung">
-                        <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
+                        <textarea class="leistungEditor" name="leistungEditor[]"></textarea>
                     </div>
                 </td>
                 <td>
@@ -865,19 +868,30 @@ function setSessionVariableFalse($session)
     <script>
         function updateFormActionTarget(event) {
 
-            event.preventDefault();
-
             // check if the btn value is save
             const submitButton = event.target;
             if (submitButton.value === 'save') {
-                // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
                 const form = document.getElementById('form-modal');
+
+                // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
                 form.action = '/projekt/website_vereinfacht/Invoice/Muster/invoiceMuster.php';
                 form.target = '_blank';
 
-                // Send Form
-                form.submit();
-                location.reload()
+                allCkEditorFilled = true;
+                if (firstEditor[0].getData().trim() == '') {
+                    allCkEditorFilled = false;
+                }
+
+                for ($i = 0; $i < editorArray.length; i++) {
+                    if (editorArray[$i].getData().trim() == '') {
+                        allCkEditorFilled = false;
+                        break;
+                    }
+                }
+
+                if (allCkEditorFilled) {
+                    location.reload();
+                }
             }
         }
     </script>

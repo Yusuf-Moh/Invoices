@@ -67,7 +67,7 @@ $Nachname = end($name_parts);
 if ($gender == "Male") {
     $Ansprechpartner = "Herr " . $Ansprechpartner;
     $Anrede = "Sehr geehrter Herr " . $Nachname . ",";
-} else if ($gender = "Female") {
+} else if ($gender == "Female") {
     $Ansprechpartner = "Frau " . $Ansprechpartner;
     $Anrede = "Sehr geehrte Frau " . $Nachname . ",";
 } else {
@@ -91,6 +91,9 @@ try {
 
 $RechnungsKürzelNummer = $RechnungsKürzel . convertToMMYY($RechnungsMonatJahr) . "/" . formatRechnungsNr($RechnungsNr);
 
+$gesamtNettoPreis = 0;
+$gesamtBetragMwSt = 0;
+$gesamtBetragBrutto = 0;
 
 include('../../dbPhp/dbCloseConnection.php');
 
@@ -355,47 +358,45 @@ function formatRechnungsNr($rechnungsNr)
                         </tr>
 
                         <!-- Leistung and the given values -->
-                        <tr>
-                            <td style="text-align: left;">
-                                <p>Unterhaltsreinigung</p>
-                                <ul>
-                                    <li>Müllentsorgung</li>
-                                    <li>Kuchen Backen</li>
-                                </ul>
-                            </td>
-                            <td>2</td>
-                            <td>Pasuchal</td>
-                            <td>{{ BetragNetto0 }} Euro</td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: left;">
-                                <p>Unterhaltsreinigung</p>
-                                <ul>
-                                    <li>Müllentsorgung</li>
-                                    <li>Kuchen Backen</li>
-                                </ul>
-                            </td>
-                            <td>2</td>
-                            <td>Pasuchal</td>
-                            <td>{{ BetragNetto0 }} Euro</td>
-                        </tr>
+                        <?php
 
-                        <!-- If there is more than one "Leistung", the total Netto amount will be added together-->
-                        <tr>
-                            <td colspan="3" style="text-align: left;">
-                                Gesamtbetrag Netto
-                            </td>
-                            <td>
-                                {{ gBetragNetto }} Euro
-                            </td>
-                        </tr>
+                        for ($i = 0; $i < count($nettoPreis); $i++) {
+                            echo "<tr>";
+                            echo "<td style='text-align: left;'>{$Leistung[$i]}</td>";
+                            if ($AbrechnungsartList[$i] == "Pauschal") {
+                                echo "<td></td>";
+                                echo "<td>{$AbrechnungsartList[$i]}</td>";
+                            } else {
+                                echo "<td>{$AbrechnungsartList[$i]} Std.</td>";
+                                echo "<td></td>";
+                            }
+                            echo "<td>{$nettoPreis[$i]} Euro</td>";
+                            echo "</tr>";
+                            $gesamtNettoPreis += $nettoPreis[$i];
+                            $gesamtBetragMwSt += $MwStArray[$i];
+                            $gesamtBetragBrutto += $GesamtBetragArray[$i];
+                        }
+
+                        // If there is more than one "Leistung", the total Netto amount will be added together
+                        if (count($nettoPreis) > 1) {
+                            echo "<tr>";
+                            echo "<td colspan='3' style='text-align: left;'>";
+                            echo "Gesamtbetrag Netto";
+                            echo "</td>";
+                            echo "<td>";
+                            echo $gesamtNettoPreis . " Euro";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                        ?>
+
 
                         <tr>
                             <td colspan="3" style="text-align: left;">
                                 Zzgl. Gesetzlicher Mehrwertsteuer {{ ProzentMwSt }}
                             </td>
                             <td>
-                                {{ MwSt }} Euro
+                                <?php displayString($gesamtBetragMwSt); ?> Euro
                             </td>
                         </tr>
                         <tr>
@@ -403,7 +404,7 @@ function formatRechnungsNr($rechnungsNr)
                                 <strong>Gesamtbetrag inkl. MwSt.</strong>
                             </td>
                             <td>
-                                <strong>{{ gBetrag }} Euro</strong>
+                                <strong><?php displayString($gesamtBetragBrutto); ?> Euro</strong>
                             </td>
                         </tr>
                     </tbody>
@@ -411,9 +412,9 @@ function formatRechnungsNr($rechnungsNr)
             </div>
 
             <div class="Zahlungsaufforderung">
-                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von {{ gBetrag }} Euro innerhalb von <br>
-                    10 Tage nach
-                    Rechnungszustellung auf unser unten genanntes Bankonto zu überweisen.</p>
+                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von <?php displayString($gesamtBetragBrutto); ?> Euro innerhalb von 10 Tage nach
+                    Rechnungszustellung auf unser unten genanntes Bankonto zu überweisen.
+                </p>
                 <br>
                 <p>Mit freundlichen Grüßen <br> Vorname Nachname</p>
             </div>
@@ -424,3 +425,47 @@ function formatRechnungsNr($rechnungsNr)
 </body>
 
 </html>
+
+<?php
+header("Location: generate-pdf.php");
+// require __DIR__ . "/vendor/autoload.php";
+
+// use Dompdf\Dompdf;
+// use Dompdf\Options;
+
+// /**
+//  * Set the Dompdf options
+//  */
+// $options = new Options;
+// $options->setChroot(__DIR__);
+// $options->setIsRemoteEnabled(true);
+
+// $dompdf = new Dompdf($options);
+
+// /**
+//  * Set the paper size and orientation
+//  */
+// $dompdf->setPaper("A4", "portrait");
+
+// /**
+//  * Load the HTML and replace placeholders with values from the form
+//  */
+// $html = file_get_contents("invoiceMuster.php");
+
+// $dompdf->loadHtml($html);
+
+// /**
+//  * Create the PDF and set attributes
+//  */
+// $dompdf->render();
+
+// $dompdf->addInfo("Title", "An Example PDF"); // "add_info" in earlier versions of Dompdf
+
+// /**
+//  * Send the PDF to the browser
+//  */
+// $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
+
+// $pdf_output = $dompdf->output();
+// file_put_contents('output.pdf', $pdf_output);
+?>
