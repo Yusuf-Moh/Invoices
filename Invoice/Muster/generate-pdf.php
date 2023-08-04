@@ -32,7 +32,8 @@ $MwSt_Percentage = 19;
 $MwStArray = [];
 $GesamtBetragArray = [];
 foreach ($nettoPreis as $nettoBetrag) {
-    $MwSt = round($nettoBetrag * ($MwSt_Percentage / 100), 2);
+    //always round up after the 2nd decimal places 
+    $MwSt = ceil($nettoBetrag * ($MwSt_Percentage / 100) * 100) / 100;
     $GesamtBetrag = $nettoBetrag + $MwSt;
     $MwStArray[] = $MwSt;
     $GesamtBetragArray[] = $GesamtBetrag;
@@ -203,15 +204,23 @@ $RechnungsMonatJahr_ggfVertragsDatum =  $RechnungsMonatJahr . displayVertragsdat
 
 $TABLE_ROWS = '';
 for ($i = 0; $i < count($nettoPreis); $i++) {
+    //format the number from for example, 1000 to 1.000,00
+    // $nettoPreis[$i] = number_format($nettoPreis[$i], 2, ',', '.');
+
     $TABLE_ROWS .= '<tr>';
     $TABLE_ROWS .= '<td style="text-align: left;">' . $Leistung[$i] . '</td>';
     $TABLE_ROWS .= AbrechnungsArtPauschalStunden($AbrechnungsartList[$i]);
-    $TABLE_ROWS .= '<td>' . $nettoPreis[$i] . ' Euro</td>';
+    $TABLE_ROWS .= '<td>' . number_format($nettoPreis[$i], 2, ',', '.') . ' Euro</td>';
     $TABLE_ROWS .= '</tr>';
     $gesamtNettoPreis += $nettoPreis[$i];
     $gesamtBetragMwSt += $MwStArray[$i];
     $gesamtBetragBrutto += $GesamtBetragArray[$i];
 }
+
+//format the number from for example, 1000 to 1.000,00
+$gesamtNettoPreis = number_format($gesamtNettoPreis, 2, ',', '.');
+$gesamtBetragMwSt = number_format($gesamtBetragMwSt, 2, ',', '.');
+$gesamtBetragBrutto = number_format($gesamtBetragBrutto, 2, ',', '.');
 
 
 // If there is more than one "Leistung", the total Netto amount will be added together
