@@ -882,13 +882,35 @@ function setSessionVariableFalse($session)
                     allCkEditorFilled = false;
                 }
 
-                for ($i = 0; $i < editorArray.length; i++) {
-                    if (editorArray[$i].getData().trim() == '') {
-                        allCkEditorFilled = false;
-                        break;
+                // for (i = 0; i < editorArray.length; i++) {
+                //     if (editorArray[i].getData().trim() == '') {
+                //         allCkEditorFilled = false;
+                //         break;
+                //     }
+                // }
+
+                const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
+
+                for (const row of rows) {
+                    const editorIsActive = row.getAttribute('data-editor-active');
+                    const editorIndex = row.getAttribute('data-editor-index');
+
+                    const editor = editorArray[editorIndex];
+
+                    // Check if the editor is active (not deleted)
+                    if (editorIsActive === 'true') {
+                        const editorData = editor.getData();
+                        const messageDiv = document.getElementById('message');
+                        const messageText = document.getElementById('messageText');
+
+                        if (editorData.trim() === '' || editorData == '') {
+                            allCkEditorFilled = false;
+                            return; // Stop checking other rows once one empty editor is found
+                        }
                     }
                 }
 
+                // all ckEditors are filled => reload website
                 if (allCkEditorFilled) {
                     location.reload();
                 }
