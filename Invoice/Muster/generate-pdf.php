@@ -26,6 +26,7 @@ for ($i = 0; $i < count($AbrechnungsartList); $i++) {
 //Nettopreis
 $nettoPreis = $_POST['nettoPreis'];
 
+
 //Calculation MwSt and Gesamtbetrag
 $MwSt_Percentage = 19;
 
@@ -38,6 +39,14 @@ foreach ($nettoPreis as $nettoBetrag) {
     $MwStArray[] = $MwSt;
     $GesamtBetragArray[] = $GesamtBetrag;
 }
+
+
+// Storing the value of the checkbox 
+$monatlicheRechnung = "0";
+if (isset($_POST['monatlicheRechnung'])) {
+    $monatlicheRechnung = "1";
+}
+
 
 // ============ Values from Kunden/Customer ============
 include('../../dbPhp/dbOpenConnection.php');
@@ -193,6 +202,8 @@ function AbrechnungsArtPauschalStunden($abrechnungsart)
     return $html;
 }
 
+// ============ Variables which need to be inserted into the PDF/invoiceMuster.html ============
+
 $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
 // $Rechnungsdatum = $Rechnungsdatum;
 // $RechnungsKürzelNummer = $RechnungsKürzelNummer;
@@ -202,6 +213,7 @@ $RechnungsMonatJahr_ggfVertragsDatum =  $RechnungsMonatJahr . displayVertragsdat
 // $gesamtBetragMwSt = $gesamtBetragMwSt;
 // $gesamtBetragBrutto = $gesamtBetragBrutto;
 
+// Creating the Table Rows for the Leistungen, Abrechnungsart and Nettopreis
 $TABLE_ROWS = '';
 for ($i = 0; $i < count($nettoPreis); $i++) {
     //format the number from for example, 1000 to 1.000,00
@@ -223,7 +235,7 @@ $gesamtBetragMwSt = number_format($gesamtBetragMwSt, 2, ',', '.');
 $gesamtBetragBrutto = number_format($gesamtBetragBrutto, 2, ',', '.');
 
 
-// If there is more than one "Leistung", the total Netto amount will be added together
+// If there is more than one "Leistung", the total Netto amount will be shown in a seperate row
 if (count($nettoPreis) > 1) {
     $TABLE_ROWS .= "<tr>";
     $TABLE_ROWS .= "<td colspan='3' style='text-align: left;'>";
@@ -236,7 +248,7 @@ if (count($nettoPreis) > 1) {
 }
 
 
-
+// ============ Creating the PDF ============
 
 require __DIR__ . "/vendor/autoload.php";
 
@@ -275,5 +287,50 @@ $dompdf->addInfo("Title", "An Example PDF");
 $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
 
 // Save PDF locally
+// If there isnt a Folder with the given Month and Year of the Invoice then create a Folder with the name of the Month and Year and store the Invoice as pdf
 // $output = $dompdf->output();
+
+// Name of the File should be: "Firmenname/Ansprechpartner" RechnungNr. XX Month Year;
+// for example: Musterman GmbH RechnungNr. 1 August 2023
 // file_put_contents("file.pdf", $output);
+
+
+// ============ Inserting the Data into the Database Table Rechnung ============
+
+
+
+// monatlicheRechnung in MonatlicheRechnungBool; 
+// Wert muss in Tabelle monatliche_rechnung später gespeichert werden und wenn man edit klickt, und den check entfernt soll auch die eingetragene Rechnung in datenbank Tabelle MonatlicheRechnung gelöscht werden
+include('../../dbPhp/dbOpenConnection.php');
+try {
+
+    $Leistung = serialize($Leistung);
+    $AbrechnungsartList = serialize($AbrechnungsartList);
+    $nettoPreis = serialize($nettoPreis);
+
+    $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag)
+        VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag)";
+
+    $stmt = $conn->prepare($sql);
+
+    // Bind the values 
+    $stmt->bindParam(':leistung', $Leistung);
+    $stmt->bindParam(':abrechnungsart', $AbrechnungsartList);
+    $stmt->bindParam(':nettoPreis', $nettoPreis);
+    $stmt->bindParam(':kundenID', $KundenID);
+    $stmt->bindParam(':monatlicheRechnung', $monatlicheRechnung);
+    $stmt->bindParam(':rechnungsDatum', $Rechnungsdatum);
+    $stmt->bindParam(':rechnungsMonatJahr', $RechnungsMonatJahr);
+    $stmt->bindParam(':rechnungsNr', $RechnungsNr);
+    $stmt->bindParam(':rechnungsKuerzelNummer', $RechnungsKürzelNummer);
+    $stmt->bindParam(':mwSt', $gesamtBetragMwSt);
+    $stmt->bindParam(':gesamtBetrag', $gesamtBetragBrutto);
+
+    $stmt->execute();
+    // echo '<script>alert("Rechnung erfolgreich: Daten erfolgreich in die Datenbank hinzugefügt!");</script>';
+} catch (PDOException  $error) {
+    //Error message
+    // echo "<script>alert('Rechnung Fehlerhaft: Ein Fehler ist aufgetreten bezüglich der Datenbank Verbindung! Bitte überprüfe ob die Datenbank oder dein Laptop eine online Verbindung haben! ');</script>";
+}
+
+include('../../dbPhp/dbCloseConnection.php');

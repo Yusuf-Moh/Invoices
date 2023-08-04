@@ -70,78 +70,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $action = $_POST['button'];
         switch ($action) {
             case 'save':
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                //KundenID from hidden inputfield
-                $KundenID = $_POST['selectedKundenID'];
-
-                // Rechnungsdatum
-                $Rechnungsdatum = $_POST['RechnungsDatum'];
-                $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
-
-
-                // Storing the content from the LeistungEditor
-                $Leistung = $_POST['leistungEditor'];
-                $LeistungDB = implode(",", $Leistung);
-
-                //Abrechnungsart
-                $AbrechnungsartList = $_POST['AbrechnungsartList'];
-                $AbrechnungsartStunden = $_POST['Stunden'];
-                // Replace Stunden with the inputfield number
-                for ($i = 0; $i < count($AbrechnungsartList); $i++) {
-                    if ($AbrechnungsartList[$i] != "Pauschal") {
-                        $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i];
-                    }
-                }
-                $AbrechnungsartListDB = implode(",", $AbrechnungsartList);
-
-                //Nettopreis
-                $nettoPreis = $_POST['nettoPreis'];
-
-                //Calculation MwSt and Gesamtbetrag
-                $MwSt_Percentage = 19;
-
-                $MwStArray = [];
-                $GesamtBetragArray = [];
-                foreach ($nettoPreis as $nettoBetrag) {
-                    $MwSt = round($nettoBetrag * ($MwSt_Percentage / 100), 2);
-                    $GesamtBetrag = $nettoBetrag + $MwSt;
-                    $MwStArray[] = $MwSt;
-                    $GesamtBetragArray[] = $GesamtBetrag;
-                }
-
-                // Converting the nettoPreis, MwSt and Gesamtbetrag Array into a String with comma 
-                $nettoPreisDB = implode(",", $nettoPreis);
-                $MwStDB = implode(",", $MwStArray);
-                $GesamtBetragDB = implode(",", $GesamtBetragArray);
-
-
-                // Storing the value of the checkbox 
-                $monatlicheRechnung = "0";
-                if (isset($_POST['monatlicheRechnung'])) {
-                    $monatlicheRechnung = "1";
-                }
-
-                // LeistungDB in Leistung speichern
-                // AbrechnungsartListDB in Abrechnungsart
-                // nettoPreisDB in NettoPreis
-                // MwStDB in MwSt
-                // GesamtBetragDB in GesamtBetrag
-                // KundenID in KundenID
-                // monatlicheRechnung in MonatlicheRechnungBool
-                // Rechnungsdatum in RechnungsDatum
-                // RechnungsMonatJahr in Monat_Jahr
-
-                // RechnungsNummer suchen von tabelle Rechnungsnr. 
-                // wenn kein eintrag => 1 
-                // sonst => Nr + 1
-
-
-                // Zuerst Rechnung Erstellen und dann anschließend werte in DB speichern
-                // Grund: Wenn erstlelen von Rechnung fehlerhaft ist => speichern von Werten in DB nicht machen
-
-                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                // Because of the script, when the send button is pressed, the form sends on to generate-pdf.php which creates a pdf file based on the input from the form
+                // the switch case is not necessary because it doesnt get executed (Reason: form action = "gernerate-pdf.php")
                 break;
-
 
             case 'edit':
                 $messageType = "edit";
