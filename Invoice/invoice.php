@@ -874,7 +874,7 @@ function setSessionVariableFalse($session)
                 const form = document.getElementById('form-modal');
 
                 // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
-                form.action = '/projekt/website_vereinfacht/Invoice/Muster/invoiceMuster.php';
+                form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
                 form.target = '_blank';
 
                 allCkEditorFilled = true;
