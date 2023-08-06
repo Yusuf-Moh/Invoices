@@ -100,14 +100,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $GesamtBetrag_edit = $result['GesamtBetrag'];
 
                 // Storing the data from the selected Rechnung into the inputfields of the modal by transfering the values from php to js
-                $dienstleistungsRow = count($NettoPreis_edit) - 1;
-
-                // $addDienstleistungsRow = false;
-
-                // //Check for a positive number
-                // if ($dienstleistungsRow > 0) {
-                //     $addDienstleistungsRow = true;
-                // }
 
 
                 // Create a array with all values and transfer it to javascript
@@ -123,7 +115,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
                     'MwSt_edit' => $MwSt_edit,
                     'GesamtBetrag_edit' => $GesamtBetrag_edit,
-                    'dienstleistungsRow' => $dienstleistungsRow,
                 );
 
                 // Convert the array to a JSON string safely

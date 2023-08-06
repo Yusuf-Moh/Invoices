@@ -117,12 +117,12 @@ function setRechnungsMonatJahrCurrentMonthYear() {
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     var currentMonth = currentDate.getMonth() + 1; // JavaScript returns the month as a 0-based value, so +1 for the actual month
-    
+
     // Add leading zero if the month is single-digit
     if (currentMonth < 10) {
         currentMonth = '0' + currentMonth;
     }
-    
+
     // Assign the values to the input fields
     document.getElementById('RechnungsMonatJahr').value = currentYear + '-' + currentMonth;
 }
@@ -313,21 +313,62 @@ if (messageType == "edit") {
 
     document.getElementById('RechnungsDatum').value = rechnungsDatumFormatted;
     document.getElementById('RechnungsMonatJahr').value = monatJahrFormatted;
+
+    // Select the corresponding customer in the dropdown list
+    const customerList = document.getElementById('customerList');
+    const kundenID_edit = parsedEditData.KundenID_edit;
+    for (let i = 0; i < customerList.options.length; i++) {
+        if (customerList.options[i].value == kundenID_edit) {
+            customerList.options[i].selected = true;
+            break;
+        }
+    }
+
+    var addDienstleistungsRows = parsedEditData.NettoPreis_edit.length - 1;
+
+    // const LeistungInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+    // const AbrechnungsartInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+    var nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+
+
+    const LeistungArray = parsedEditData.Leistung_edit;
+    const AbrechnungsartArray = parsedEditData.Abrechnungsart_edit;
+    const nettoPreisArray = parsedEditData.NettoPreis_edit;
+
+    nettoPreisInputFields[0].value = nettoPreisArray[0];
+
+    if (0 < addDienstleistungsRows) {
+        for (let i = 1; i <= addDienstleistungsRows; i++) {
+            console.log(i);
+            addDienstleistungsRow();
+            // editorArray[i]
+
+            // Update nettoPreisInputFields array after adding a new row, so we can access the value of the certain inputfield
+            nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+            nettoPreisInputFields[i].value = nettoPreisArray[i];
+        }
+    }
+
+
+
+    // checkbox for MonatlicheRechnungBool_edit
+    if (parsedEditData.MonatlicheRechnungBool_edit == "1") {
+        // If MonatlicheRechnungBool_edit is "1", check the checkbox
+        document.getElementById('monatlicheRechnung').checked = true;
+    } else {
+        // If MonatlicheRechnungBool_edit is "0", uncheck the checkbox
+        document.getElementById('monatlicheRechnung').checked = false;
+    }
 }
 
 
 
 // 'Leistung_edit' => $Leistung_edit,
 // 'Abrechnungsart_edit' => $Abrechnungsart_edit,
-// 'NettoPreis_edit' => $NettoPreis_edit,
-// 'KundenID_edit' => $KundenID_edit,
-// 'MonatlicheRechnungBool_edit' => $MonatlicheRechnungBool_edit,
-// 'RechnungsDatum_edit' => $RechnungsDatum_edit,
-// 'Monat_Jahr_edit' => $Monat_Jahr_edit,
 // 'RechnungsNummer_edit' => $RechnungsNummer_edit,
 // 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
+
 // 'MwSt_edit' => $MwSt_edit,
 // 'GesamtBetrag_edit' => $GesamtBetrag_edit,
-// 'dienstleistungsRow' => $dienstleistungsRow,
 
 // ==================== END OF MODAL ====================
