@@ -77,29 +77,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $messageType = "edit";
                 $message = "Editieren Sie Ihre Daten";
                 $modalHeadline = "Update Rechnung";
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                $RechnungsID = $_POST['RechnungsID'];
-                $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
-                $stmt = $conn->prepare($query);
-                $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
-                $stmt->execute();
 
-                $result = [];
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                // echo '<script>document.querySelector(".modal").classList.add("active");</script>';
 
-                // Storing the data from the selected Rechnung into the inputfields of the modal
+                // include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                // $RechnungsID = $_POST['RechnungsID'];
+                // $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
+                // $stmt = $conn->prepare($query);
+                // $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
+                // $stmt->execute();
 
-                $saveUpdate = "update";
+                // $result = [];
+                // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                // // Storing the data from the selected Rechnung into the inputfields of the modal
+
+                // $saveUpdate = "update";
                 $showMessage = "flex";
+
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
             case 'update':
-                
+
                 //values of the DB
                 $KundenID = $_POST['kID'];
-                
+
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
                 $showMessage = "flex";
@@ -453,202 +457,10 @@ function parseSerializedDataLeistung($serializedData)
 
 
     </div>
+    <script src="../ckeditor/build/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./index.js"></script>
     <!-- Rich Text Editor ckEditor 5 CustomBuild -->
-    <script src="../ckeditor/build/ckeditor.js"></script>
-    <script>
-        const firstEditor = [];
-        //Add ckEditor 5 Custom Build
-        ClassicEditor
-            .create(document.querySelector('#leistungEditor'))
-            .then(editor => {
-
-                firstEditor.push(editor);
-
-                //default font is Arial
-                const fontFamily = editor.commands.get('fontFamily');
-                fontFamily.execute({
-                    value: 'Arial, Helvetica, sans-serif'
-                });
-
-                //Check if ckEditor 5 has an empty input so we can simulate the required
-                document.getElementById('form-modal').addEventListener('submit', function(event) {
-                    const editorData = editor.getData();
-                    const messageDiv = document.getElementById('message');
-                    const messageText = document.getElementById('messageText');
-
-                    if (editorData.trim() === '' || editorData == '') {
-                        event.preventDefault();
-                        messageDiv.style.display = 'flex';
-                        messageText.innerText = 'Leere Eingabe für die Leistung';
-                        // Error Message Style
-                        messageDiv.classList.add('error');
-                    }
-                });
-
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
-
-    <!-- Adding onclick for the tfoot label -->
-    <script>
-        let editorCount = 0; // Countvariable for the created editor
-        const editorArray = []; // Array to store editor instances/objects
-
-        function addDienstleistungsRow() {
-            const tBody = document.querySelector('.dienstleistungs-details tbody');
-            const newRow = document.createElement('tr');
-
-
-            newRow.setAttribute('data-editor-index', editorCount); // Add attribute to mark the editor index
-            newRow.setAttribute('data-editor-active', 'true'); // Add attribute to mark the editor as active
-
-            editorCount++;
-
-            newRow.innerHTML = `
-                <td>
-                    <div class="leistung">
-                        <textarea class="leistungEditor" name="leistungEditor[]"></textarea>
-                    </div>
-                </td>
-                <td>
-                    <div class="abrechnungsart">
-                        <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
-                            <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                            <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
-                                <option value="Pauschal">Pauschal</option>
-                                <option value="Stunden">Stunden</option>
-                            </select>
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <div class="preis">
-                        <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
-                    </div>
-                </td>
-                <td class="delete-icon-cell">
-                    <span class="material-icons-sharp" onclick="deleteRow(this)">delete</span>
-                </td>
-            `;
-
-            tBody.appendChild(newRow);
-
-            // Creating new ckEditor
-            ClassicEditor
-                .create(newRow.querySelector('.leistungEditor'))
-                .then(editor => {
-
-                    //default font is Arial
-                    const fontFamily = editor.commands.get('fontFamily');
-                    fontFamily.execute({
-                        value: 'Arial, Helvetica, sans-serif'
-                    });
-
-                    editorArray.push(editor); // Add the editor instance to the array
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        }
-
-        function deleteRow(deleteIcon) {
-            const rowToDelete = deleteIcon.closest('tr');
-            const editorIndex = rowToDelete.getAttribute('data-editor-index');
-
-            const editor = editorArray[editorIndex]; // Get the corresponding editor instance from the array
-
-            // Destroy the editor
-            editor.destroy();
-
-            // Remove the row
-            rowToDelete.remove();
-        }
-
-        // Event listener for form submission; checking if inputfield of the ckEditor is empty => dont submit form
-        document.getElementById('form-modal').addEventListener('submit', function(event) {
-            const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
-
-            for (const row of rows) {
-                const editorIsActive = row.getAttribute('data-editor-active');
-                const editorIndex = row.getAttribute('data-editor-index');
-
-                const editor = editorArray[editorIndex];
-
-                // Check if the editor is active (not deleted)
-                if (editorIsActive === 'true') {
-                    const editorData = editor.getData();
-                    const messageDiv = document.getElementById('message');
-                    const messageText = document.getElementById('messageText');
-
-                    if (editorData.trim() === '' || editorData == '') {
-                        event.preventDefault();
-                        messageDiv.style.display = 'flex';
-                        messageText.innerText = 'Leere Eingabe für die Leistung';
-                        // Error Message Style
-                        messageDiv.classList.add('error');
-                        return; // Stop checking other rows once one empty editor is found
-                    }
-                }
-            }
-        });
-    </script>
-
-    <script>
-        function updateFormActionTarget(event) {
-
-            // check if the btn value is save
-            const submitButton = event.target;
-            if (submitButton.value === 'save') {
-                const form = document.getElementById('form-modal');
-
-                // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
-                form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
-                form.target = '_blank';
-
-                allCkEditorFilled = true;
-                if (firstEditor[0].getData().trim() == '') {
-                    allCkEditorFilled = false;
-                }
-
-                // for (i = 0; i < editorArray.length; i++) {
-                //     if (editorArray[i].getData().trim() == '') {
-                //         allCkEditorFilled = false;
-                //         break;
-                //     }
-                // }
-
-                const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
-
-                for (const row of rows) {
-                    const editorIsActive = row.getAttribute('data-editor-active');
-                    const editorIndex = row.getAttribute('data-editor-index');
-
-                    const editor = editorArray[editorIndex];
-
-                    // Check if the editor is active (not deleted)
-                    if (editorIsActive === 'true') {
-                        const editorData = editor.getData();
-                        const messageDiv = document.getElementById('message');
-                        const messageText = document.getElementById('messageText');
-
-                        if (editorData.trim() === '' || editorData == '') {
-                            allCkEditorFilled = false;
-                            return; // Stop checking other rows once one empty editor is found
-                        }
-                    }
-                }
-
-                // all ckEditors are filled => reload website
-                if (allCkEditorFilled) {
-                    location.reload();
-                }
-            }
-        }
-    </script>
 </body>
 
 </html>
