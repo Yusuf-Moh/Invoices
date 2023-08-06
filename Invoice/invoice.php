@@ -30,12 +30,14 @@ function reset_vars()
     global $saveUpdate;
     $saveUpdate = "save";
 
-
     global $modalHeadline;
     $modalHeadline = "Erstelle Rechnung";
 
     global $showMessage;
     $showMessage = "none";
+
+    global $showModal;
+    $showModal = false;
 }
 
 
@@ -77,22 +79,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $messageType = "edit";
                 $message = "Editieren Sie Ihre Daten";
                 $modalHeadline = "Update Rechnung";
+                $showModal = true;
 
-                // echo '<script>document.querySelector(".modal").classList.add("active");</script>';
+                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                $RechnungsID = $_POST['RechnungsID'];
+                $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
+                $stmt = $conn->prepare($query);
+                $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
+                $stmt->execute();
 
-                // include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                // $RechnungsID = $_POST['RechnungsID'];
-                // $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
-                // $stmt = $conn->prepare($query);
-                // $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
-                // $stmt->execute();
+                $result = [];
+                $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                // $result = [];
-                // $result = $stmt->fetch(PDO::FETCH_ASSOC);
+                $Leistung_edit = unserialize($result['Leistung']);
+                $Abrechnungsart_edit = unserialize($result['Abrechnungsart']);
+                $NettoPreis_edit = unserialize($result['NettoPreis']);
+                $KundenID_edit = $result['KundenID'];
+                $MonatlicheRechnungBool_edit = $result['MonatlicheRechnungBool'];
+                $RechnungsDatum_edit = $result['RechnungsDatum'];
+                $Monat_Jahr_edit = $result['Monat_Jahr'];
+                $RechnungsNummer_edit = $result['RechnungsNummer'];
+                $RechnungsKürzelNummer_edit = $result['RechnungsKürzelNummer'];
+                $RechnungsID_edit = $result['RechnungsID'];
+                $MwSt_edit = $result['MwSt'];
+                $GesamtBetrag_edit = $result['GesamtBetrag'];
 
-                // // Storing the data from the selected Rechnung into the inputfields of the modal
+                // Storing the data from the selected Rechnung into the inputfields of the modal
+                $dienstleistungsRow = count($NettoPreis_edit) - 1;
 
-                // $saveUpdate = "update";
+                // $addDienstleistungsRow = false;
+
+                // //Check for a positive number
+                // if ($dienstleistungsRow > 0) {
+                //     $addDienstleistungsRow = true;
+                // }
+                
+                echo '<script>addDienstleistungsRow();</script>';
+                $saveUpdate = "update";
                 $showMessage = "flex";
 
 
@@ -221,7 +244,6 @@ function parseSerializedDataLeistung($serializedData)
     <link rel="stylesheet" href="./invoice.css">
     <!--Link to Material Icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <!-- <link rel="stylesheet" type="text/css" href="../ckeditor/sample/styles.css"> -->
 </head>
 
 <body>
@@ -274,7 +296,7 @@ function parseSerializedDataLeistung($serializedData)
             <!-- Trigger/Open The Modal -->
             <button type="button" id="CreateInvoiceModal" class="createInvoice-Btn">Rechnung erstellen</button>
 
-            <div class="modal">
+            <div class="modal <?php echo $showModal ? 'active' : ''; ?>">
                 <!-- Modal content -->
                 <div class="modal-header">
                     <h2><?php echo $modalHeadline; ?></h2>
@@ -454,13 +476,11 @@ function parseSerializedDataLeistung($serializedData)
                 </table>
             </div>
         </div>
-
-
     </div>
+    <!-- Rich Text Editor ckEditor 5 CustomBuild -->
     <script src="../ckeditor/build/ckeditor.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./index.js"></script>
-    <!-- Rich Text Editor ckEditor 5 CustomBuild -->
 </body>
 
 </html>

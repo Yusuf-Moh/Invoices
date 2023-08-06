@@ -334,19 +334,4 @@ function updateFormActionTarget(event) {
     }
 }
 
-
-// if any edit btn from crud table is clicked, the modal should be shown
-const crudEditButtons = document.querySelectorAll('.CrudEdit');
-// Add to all CrudEdit btns, the EventListener
-crudEditButtons.forEach((btn) => {
-    btn.addEventListener('click', function (event) {
-        // Open Modal
-        event.preventDefault();
-        document.querySelector(".modal").classList.add("active");
-
-    });
-});
-
-
-
 // ==================== END OF MODAL ====================
