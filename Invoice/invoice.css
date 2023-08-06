@@ -456,7 +456,7 @@ b {
     /* border-bottom: 1px solid #ddd; */
     border: 1px solid #ddd;
     color: var(--color-dark);
-    font-size: 16px;
+    /* font-size: 16px; */
 }
 
 .crud .crud-table table tr:nth-child(even) {

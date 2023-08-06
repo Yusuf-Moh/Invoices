@@ -17,11 +17,10 @@ function reset_vars()
     $Ansprechpartner_organization = null;
     $gender_organization = null;
 
-    global $sql_query;
-    // $sql_query = "SELECT * FROM `kunden`";
+    global $sql_query_invoice;
 
-    global $param;
-    // $param = [];
+    global $param_invoice;
+
 
     global $message, $messageType, $showMessage;
     $message = "";
@@ -44,13 +43,13 @@ global $restart;
 $restart = false;
 
 
-if ($_SESSION['sql_query'] == "") {
-    $_SESSION['sql_query'] = "SELECT * FROM `kunden`";
+if ($_SESSION['sql_query_invoice'] == "") {
+    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
     $restart = true;
 }
 
-if ($_SESSION['param'] == "") {
-    $_SESSION['param'] = [];
+if ($_SESSION['param_invoice'] == "") {
+    $_SESSION['param_invoice'] = [];
     $restart = true;
 }
 
@@ -58,8 +57,8 @@ if ($restart) {
     header("Refresh:0");
 }
 
-$sql_query = $_SESSION['sql_query'];
-$param = $_SESSION['param'];
+$sql_query_invoice = $_SESSION['sql_query_invoice'];
+$param_invoice = $_SESSION['param_invoice'];
 
 //reset of every variables.
 reset_vars();
@@ -77,197 +76,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'edit':
                 $messageType = "edit";
                 $message = "Editieren Sie Ihre Daten";
-                $modalHeadline = "Update Kontakt";
+                $modalHeadline = "Update Rechnung";
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                $KundenID = $_POST['KundenID'];
-                $query = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
+                $RechnungsID = $_POST['RechnungsID'];
+                $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
                 $stmt = $conn->prepare($query);
-                $stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
+                $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
                 $stmt->execute();
 
                 $result = [];
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($result['organization'] == '1') {
-                    $saveUpdate = "update";
+                // Storing the data from the selected Rechnung into the inputfields of the modal
 
-                    $firmenName_organization = $result['FirmenName'];
-                    $firmenAdresse_organization = $result['Adresse'];
-                    $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
-                    $PLZ_organization = $result['PLZ'];
-                    $Ort_organization = $result['Ort'];
-                    $Vertragsdatum_organization = $result['VertragsDatum'];
-                    $Ansprechpartner_organization = $result['Name_Ansprechpartner'];
-                    $gender_organization = $result['Gender'];
-
-                    echo "<script>";
-                    echo "var messageType = '$messageType';";
-                    echo "var firmenName_organization = '$firmenName_organization';";
-                    echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
-                    echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
-                    echo "var PLZ_organization = '$PLZ_organization';";
-                    echo "var Ort_organization = '$Ort_organization';";
-                    echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
-                    echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
-                    echo "var gender_organization = '$gender_organization';";
-                    echo "</script>";
-                }
+                $saveUpdate = "update";
                 $showMessage = "flex";
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
             case 'update':
-
+                
                 //values of the DB
                 $KundenID = $_POST['kID'];
-
+                
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
-                $query = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
-                $stmt = $conn->prepare($query);
-                $stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
-                $stmt->execute();
-
-                $result = [];
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                $firmenName_organization = $result['FirmenName'];
-                $firmenAdresse_organization = $result['Adresse'];
-                $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
-                $PLZ_organization = $result['PLZ'];
-                $Ort_organization = $result['Ort'];
-                $Vertragsdatum_organization = $result['VertragsDatum'];
-                $Ansprechpartner_organization = $result['Name_Ansprechpartner'];
-                $gender_organization = $result['Gender'];
-
-                //Values of the inputfield
-                $updated_firmenName_organization = $_POST['firmenName_organization'];
-                $updated_firmenAdresse_organization = $_POST['firmenAdresse_organization'];
-                $updated_rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
-                $updated_PLZ_organization = $_POST['PLZ_organization'];
-                $updated_Ort_organization = $_POST['Ort_organization'];
-                $updated_Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
-                $updated_Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-                $updated_gender_organization = $_POST['gender_organization'];
-
-                //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
-                if ($updated_Vertragsdatum_organization == "") {
-                    $updated_Vertragsdatum_organization = null;
-                }
-                if ($updated_Ansprechpartner_organization == "") {
-                    $updated_Ansprechpartner_organization = null;
-                }
-                if ($updated_gender_organization != "Male" && $updated_gender_organization != "Female") {
-                    $updated_gender_organization = null;
-                }
-
-                if (checkOrganizationDataChangedValues($firmenName_organization, $updated_firmenName_organization, $firmenAdresse_organization, $updated_firmenAdresse_organization, $rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization, $PLZ_organization, $updated_PLZ_organization, $Ort_organization, $updated_Ort_organization, $Vertragsdatum_organization, $updated_Vertragsdatum_organization, $Ansprechpartner_organization, $updated_Ansprechpartner_organization, $gender_organization, $updated_gender_organization)) {
-                    //Atleast one of the inputfields changed. Now we are checking if the firmenname and rechnungskürzel didnt changed so we can instantly update the inputfields.
-                    if ($firmenName_organization == $updated_firmenName_organization && $rechnungsKuerzel_organization == $updated_rechnungsKuerzel_organization) {
-                        $messageType = "success";
-                        $message = "Daten wurden erfolgreich bearbeitet!";
-                        updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                    } //Now we check if both variables have changed. If this is the case, we check whether the data already exists in the DB
-                    elseif ($firmenName_organization != $updated_firmenName_organization && $rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
-                        if (!checkIfValueExists('FirmenName', $updated_firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                        } //FirmenName and Rechnungskürzel both exist in DB
-                        elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization) && checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) und Rechnungskürzel ($updated_rechnungsKuerzel_organization) existieren bereits in der Datenbank.";
-                        } //FirmenName exist in DB
-                        elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) existiert bereits in der Datenbank.";
-                        } //RechnungsKürzel exist in DB
-                        elseif (checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Rechnungskürzel ($updated_rechnungsKuerzel_organization) exisitiert bereits in der Datenbank.";
-                        }
-                    } //check if firmenname only got changed
-                    elseif ($firmenName_organization != $updated_firmenName_organization) {
-                        if (!checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                        } else {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) exisitiert bereits in der Datenbank.";
-                        }
-                    } //check if rechnungskürzel only got changed
-                    elseif ($rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
-                        if (!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                        } else {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Rechnungskürzel ($updated_rechnungsKuerzel_organization) existiert bereits in der Datenbank.";
-                        }
-                    }
-                } else {
-                    $messageType = "edit";
-                    $message = "Daten wurden nicht geändert!";
-                }
-
-                if ($messageType == "errorUpdate") {
-                    echo "<script>";
-                    echo "var messageType = '$messageType';";
-                    echo "</script>";
-                }
                 $showMessage = "flex";
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
             case 'search':
                 reset_vars();
                 $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
 
-                //If any of the Filter Buttons are active/clicked
-                if ($_POST['Firmenname_StateSearchButton'] == "true" || $_POST['Adresse_StateSearchButton'] == "true" || $_POST['RechnungsKürzel_StateSearchButton'] == "true" || $_POST['PLZ_StateSearchButton'] == "true" || $_POST['Ort_StateSearchButton'] == "true" || $_POST['Vertragsdatum_StateSearchButton'] == "true" || $_POST['Ansprechpartner_StateSearchButton'] == "true" || $_POST['Gender_StateSearchButton'] == "true") {
-                    $sql_query = "SELECT * FROM `kunden` WHERE";
-
-                    if ($_POST['Firmenname_StateSearchButton'] == "true") {
-                        $sql_query .= " Firmenname LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Adresse_StateSearchButton'] == "true") {
-                        $sql_query .= " Adresse LIKE :search_string OR";
-                    }
-
-                    if ($_POST['RechnungsKürzel_StateSearchButton'] == "true") {
-                        $sql_query .= " RechnungsKürzel LIKE :search_string OR";
-                    }
-
-                    if ($_POST['PLZ_StateSearchButton'] == "true") {
-                        $sql_query .= " PLZ LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Ort_StateSearchButton'] == "true") {
-                        $sql_query .= " Ort LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Vertragsdatum_StateSearchButton'] == "true") {
-                        $sql_query .= " Vertragsdatum LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Ansprechpartner_StateSearchButton'] == "true") {
-                        $sql_query .= " Name_Ansprechpartner LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Gender_StateSearchButton'] == "true") {
-                        $sql_query .= " Gender LIKE :search_string OR";
-                    }
-
-                    // Delete the last "AND" of the Query
-                    $sql_query = rtrim($sql_query, "OR");
-                } else {
-                    $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";
-                }
-                $param = ['search_string' => $contentSearchbar];
+                $param_invoice = ['search_string' => $contentSearchbar];
                 break;
 
             case 'delete':
@@ -288,109 +131,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
         }
-        $_SESSION['sql_query'] = $sql_query;
-        $_SESSION['param'] = $param;
+        $_SESSION['sql_query_invoice'] = $sql_query_invoice;
+        $_SESSION['param_invoice'] = $param_invoice;
     }
 }
 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-$stmt = $conn->prepare($sql_query);
-$stmt->execute($param);
+$stmt = $conn->prepare($sql_query_invoice);
+$stmt->execute($param_invoice);
 $result = $stmt->fetchAll();
 
-function checkIfValueExists($columnName, $value)
-{
-    include('../dbPhp/dbOpenConnection.php'); // Verbindung öffnen
-
-    try {
-        // Prepare the SELECT-query
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM Kunden WHERE $columnName = :value");
-
-        // Bind the value to the parameter
-        $stmt->bindParam(':value', $value);
-
-        // Execute the query
-        $stmt->execute();
-
-        // Fetch the result
-        $result = $stmt->fetchColumn();
-
-        // Return true if the value exists, otherwise return false
-        $exists = ($result > 0);
-
-        include('../dbPhp/dbCLoseConnection.php'); // Verbindung schließen
-
-        return $exists;
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-        return false;
-    }
-}
-
-function insertOrganizationDataIntoKundenTable($firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
-{
-    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-
-    try {
-        // Prepeare the INSERT-query
-        $stmt = $conn->prepare("INSERT INTO kunden (FirmenName, Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender, organization)
-                                   VALUES (:firmenName, :Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender, 1)");
-
-        // Bind Values to the parameters
-        $stmt->bindParam(':firmenName', $firmenName);
-        $stmt->bindParam(':Adresse', $Adresse);
-        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
-        $stmt->bindParam(':plz', $PLZ);
-        $stmt->bindParam(':ort', $Ort);
-        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
-        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
-        $stmt->bindParam(':gender', $gender);
-
-        // Execute the query
-        $stmt->execute();
-
-        // header("Refresh:0");
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-    }
-
-    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
-}
-
-function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
-{
-    include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
-
-    try {
-        // Prepare the UPDATE-Abfrage
-        $stmt = $conn->prepare("UPDATE kunden SET FirmenName = :firmenName, Adresse = :Adresse, RechnungsKürzel = :rechnungsKuerzel, PLZ = :plz, Ort = :ort, VertragsDatum = :vertragsDatum, Name_Ansprechpartner = :ansprechpartner, Gender = :gender WHERE KundenID = :id");
-
-        // Bind the variables on parameters
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':firmenName', $firmenName);
-        $stmt->bindParam(':Adresse', $Adresse);
-        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
-        $stmt->bindParam(':plz', $PLZ);
-        $stmt->bindParam(':ort', $Ort);
-        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
-        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
-        $stmt->bindParam(':gender', $gender);
-
-        $stmt->execute();
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-    }
-
-    include('../dbPhp/dbCloseConnection.php'); // dbConnection schließen
-}
-
-function checkOrganizationDataChangedValues($firmenName_organization, $updated_firmenName_organization, $firmenAdresse_organization, $updated_firmenAdresse_organization, $rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization, $PLZ_organization, $updated_PLZ_organization, $Ort_organization, $updated_Ort_organization, $Vertragsdatum_organization, $updated_Vertragsdatum_organization, $Ansprechpartner_organization, $updated_Ansprechpartner_organization, $gender_organization, $updated_gender_organization)
-{
-    if (notEqualString($firmenName_organization, $updated_firmenName_organization) || notEqualString($firmenAdresse_organization, $updated_firmenAdresse_organization) || notEqualString($rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization) || notEqualString($PLZ_organization, $updated_PLZ_organization) || notEqualString($Ort_organization, $updated_Ort_organization) || notEqualString($Vertragsdatum_organization, $updated_Vertragsdatum_organization) || notEqualString($Ansprechpartner_organization, $updated_Ansprechpartner_organization) || notEqualString($gender_organization, $updated_gender_organization)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function notEqualString($string0, $string1)
 {
@@ -409,6 +158,50 @@ function setSessionVariableFalse($session)
     }
 }
 
+function KundenInformationen($FirmenName, $Ansprechpartner, $Adresse, $PLZ, $Ort)
+{
+    $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
+
+    return $KontaktInformationen;
+}
+
+function displayStringBR($String)
+{
+    if (!empty($String)) {
+        return $String . "<br>";
+    }
+}
+
+//Arrays stored in database getting unserialize for the crud-table
+function parseSerializedData($serializedData)
+{
+    $dataArray = unserialize($serializedData);
+    $lengthArray = count($dataArray);
+
+    foreach ($dataArray as $index => $data) {
+        echo '<p>' . nl2br($data) . '</p>';
+
+        // Add the <br> tag for all Array elements except the last one
+        if ($index != $lengthArray - 1) {
+            echo "<br>";
+        }
+    }
+}
+
+function parseSerializedDataLeistung($serializedData)
+{
+    $dataArray = unserialize($serializedData);
+    $lengthArray = count($dataArray);
+
+    foreach ($dataArray as $index => $data) {
+        echo nl2br($data);
+
+        // Add the <br> tag for all Array elements except the last one
+        if ($index != $lengthArray - 1) {
+            echo "<br>";
+        }
+    }
+}
 ?>
 
 
@@ -607,14 +400,18 @@ function setSessionVariableFalse($session)
             <div class="crud-table">
                 <table class="table">
                     <thead>
-                        <th>Firmenname</th>
-                        <th>Adresse</th>
-                        <th>Rechnungskürzel</th>
-                        <th>PLZ</th>
-                        <th>Ort</th>
-                        <th>Vertragsdatum</th>
-                        <th>Ansprechpartner</th>
-                        <th>Gender</th>
+                        <th>KundenInformationen</th>
+                        <th>Leistung</th>
+                        <th>Abrechnungsart</th>
+                        <th>NettoPreis</th>
+                        <th>MwSt</th>
+                        <th>GesamtBetrag</th>
+                        <th>RechnungsDatum</th>
+                        <th>Monat Jahr</th>
+                        <!-- <th>RechnungsNummer</th> -->
+                        <th>RechnungsKürzelNummer</th>
+                        <th>MonatlicheRechnung</th>
+                        <!-- <th>RechnungsID</th> -->
                         <th>Action</th>
                     </thead>
                     <tbody>
@@ -624,17 +421,21 @@ function setSessionVariableFalse($session)
                         foreach ($result as $row) {
                         ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['FirmenName']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Adresse']); ?></td>
-                                <td><?php echo htmlspecialchars($row['RechnungsKürzel']); ?></td>
-                                <td><?php echo htmlspecialchars($row['PLZ']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Ort']); ?></td>
-                                <td><?php echo htmlspecialchars($row['VertragsDatum']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Name_Ansprechpartner']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Gender']); ?></td>
+                                <td><?php echo KundenInformationen($row['FirmenName'], $row['Name_Ansprechpartner'], $row['Adresse'], $row['PLZ'], $row['Ort']); ?></td>
+                                <td><?php parseSerializedDataLeistung($row['Leistung']); ?></td>
+                                <td><?php parseSerializedData($row['Abrechnungsart']); ?></td>
+                                <td><?php parseSerializedData($row['NettoPreis']); ?></td>
+                                <td><?php echo htmlspecialchars($row['MwSt']); ?></td>
+                                <td><?php echo htmlspecialchars($row['GesamtBetrag']); ?></td>
+                                <td><?php echo htmlspecialchars($row['RechnungsDatum']); ?></td>
+                                <td><?php echo htmlspecialchars($row['Monat_Jahr']); ?></td>
+                                <!-- <td><?php // echo htmlspecialchars($row['RechnungsNummer']); 
+                                            ?></td> -->
+                                <td><?php echo htmlspecialchars($row['RechnungsKürzelNummer']); ?></td>
+                                <td><?php echo htmlspecialchars($row['MonatlicheRechnungBool']); ?></td>
                                 <td>
                                     <form method="post">
-                                        <input type="hidden" name="KundenID" value=<?php echo htmlspecialchars($row['KundenID']); ?>>
+                                        <input type="hidden" name="RechnungsID" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                         <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
                                         <button type="submit" class="CrudDelete" name="button" value="delete">Delete</button>
                                     </form>
