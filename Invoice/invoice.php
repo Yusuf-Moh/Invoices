@@ -35,9 +35,6 @@ function reset_vars()
 
     global $showMessage;
     $showMessage = "none";
-
-    global $showModal;
-    $showModal = false;
 }
 
 
@@ -79,7 +76,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $messageType = "edit";
                 $message = "Editieren Sie Ihre Daten";
                 $modalHeadline = "Update Rechnung";
-                $showModal = true;
 
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
                 $RechnungsID = $_POST['RechnungsID'];
@@ -100,11 +96,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Monat_Jahr_edit = $result['Monat_Jahr'];
                 $RechnungsNummer_edit = $result['RechnungsNummer'];
                 $RechnungsKürzelNummer_edit = $result['RechnungsKürzelNummer'];
-                $RechnungsID_edit = $result['RechnungsID'];
                 $MwSt_edit = $result['MwSt'];
                 $GesamtBetrag_edit = $result['GesamtBetrag'];
 
-                // Storing the data from the selected Rechnung into the inputfields of the modal
+                // Storing the data from the selected Rechnung into the inputfields of the modal by transfering the values from php to js
                 $dienstleistungsRow = count($NettoPreis_edit) - 1;
 
                 // $addDienstleistungsRow = false;
@@ -113,8 +108,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // if ($dienstleistungsRow > 0) {
                 //     $addDienstleistungsRow = true;
                 // }
-                
-                echo '<script>addDienstleistungsRow();</script>';
+
+
+                // Create a array with all values and transfer it to javascript
+                $data = array(
+                    'Leistung_edit' => $Leistung_edit,
+                    'Abrechnungsart_edit' => $Abrechnungsart_edit,
+                    'NettoPreis_edit' => $NettoPreis_edit,
+                    'KundenID_edit' => $KundenID_edit,
+                    'MonatlicheRechnungBool_edit' => $MonatlicheRechnungBool_edit,
+                    'RechnungsDatum_edit' => $RechnungsDatum_edit,
+                    'Monat_Jahr_edit' => $Monat_Jahr_edit,
+                    'RechnungsNummer_edit' => $RechnungsNummer_edit,
+                    'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
+                    'MwSt_edit' => $MwSt_edit,
+                    'GesamtBetrag_edit' => $GesamtBetrag_edit,
+                    'dienstleistungsRow' => $dienstleistungsRow,
+                );
+
+                // Convert the array to a JSON string safely
+                $jsonEditData = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+
+                echo "<script>";
+                // Echo the JavaScript code with the JSON data
+                echo "var jsonEditData = $jsonEditData;";
+                echo "var messageType = '$messageType';";
+                echo "</script>";
+
                 $saveUpdate = "update";
                 $showMessage = "flex";
 
@@ -296,7 +316,7 @@ function parseSerializedDataLeistung($serializedData)
             <!-- Trigger/Open The Modal -->
             <button type="button" id="CreateInvoiceModal" class="createInvoice-Btn">Rechnung erstellen</button>
 
-            <div class="modal <?php echo $showModal ? 'active' : ''; ?>">
+            <div class="modal">
                 <!-- Modal content -->
                 <div class="modal-header">
                     <h2><?php echo $modalHeadline; ?></h2>
@@ -405,14 +425,17 @@ function parseSerializedDataLeistung($serializedData)
                             <label for="monatlicheRechnung">Monatliche Rechnung</label>
                         </div>
 
-                        <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
+                        <!-- Store KundenID from div KundenListe of the selected Customer for the future -->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 
-                        <button type="submit" name="button" onclick="updateFormActionTarget(event)" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
-                                                                                                                                                                                                            echo "Senden";
-                                                                                                                                                                                                        } elseif ($saveUpdate == "update") {
-                                                                                                                                                                                                            echo "Update";
-                                                                                                                                                                                                        } ?></button>
+                        <!-- Store RechnungsID in hidden Inputfield to get access in update Switch Case-->
+                        <input type="hidden" name="RechnungsID" id="RechnungsID" value="<?php echo htmlspecialchars($RechnungsID); ?>">
+
+                        <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
+                                                                                                                                                                    echo "Senden";
+                                                                                                                                                                } elseif ($saveUpdate == "update") {
+                                                                                                                                                                    echo "Update";
+                                                                                                                                                                } ?></button>
                     </form>
                 </div>
             </div>

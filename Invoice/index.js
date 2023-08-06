@@ -112,28 +112,22 @@ document.addEventListener('click', function (event) {
 
 
 
-
-//jQuery code:
-$(document).ready(function () {
-    //Storing the current Month Year (Format: MMMM JJJJ) and write the value in the inputfield RechnungsMonatJahr
-    setRechnungsMonatJahrCurrentMonthYear();
-});
-
-
 function setRechnungsMonatJahrCurrentMonthYear() {
     // Set the current year and month as default values for the "RechnungsJahr" and "RechnungsMonat" input fields
     var currentDate = new Date();
     var currentYear = currentDate.getFullYear();
     var currentMonth = currentDate.getMonth() + 1; // JavaScript returns the month as a 0-based value, so +1 for the actual month
-
+    
     // Add leading zero if the month is single-digit
     if (currentMonth < 10) {
         currentMonth = '0' + currentMonth;
     }
-
+    
     // Assign the values to the input fields
-    $('#RechnungsMonatJahr').val(currentYear + '-' + currentMonth);
+    document.getElementById('RechnungsMonatJahr').value = currentYear + '-' + currentMonth;
 }
+setRechnungsMonatJahrCurrentMonthYear();
+
 //Toggle the Inputfield at the Dropdownliste Abrechnungsart
 function toggleInputField(containerElement) {
     var selectElement = containerElement.querySelector("select[name='AbrechnungsartList[]']");
@@ -164,21 +158,6 @@ ClassicEditor
         const fontFamily = editor.commands.get('fontFamily');
         fontFamily.execute({
             value: 'Arial, Helvetica, sans-serif'
-        });
-
-        //Check if ckEditor 5 has an empty input so we can simulate the required
-        document.getElementById('form-modal').addEventListener('submit', function (event) {
-            const editorData = editor.getData();
-            const messageDiv = document.getElementById('message');
-            const messageText = document.getElementById('messageText');
-
-            if (editorData.trim() === '' || editorData == '') {
-                event.preventDefault();
-                messageDiv.style.display = 'flex';
-                messageText.innerText = 'Leere Eingabe für die Leistung';
-                // Error Message Style
-                messageDiv.classList.add('error');
-            }
         });
 
     })
@@ -264,50 +243,15 @@ function deleteRow(deleteIcon) {
 
 // Event listener for form submission; checking if inputfield of the ckEditor is empty => dont submit form
 document.getElementById('form-modal').addEventListener('submit', function (event) {
-    const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
 
-    for (const row of rows) {
-        const editorIsActive = row.getAttribute('data-editor-active');
-        const editorIndex = row.getAttribute('data-editor-index');
 
-        const editor = editorArray[editorIndex];
+    var allCkEditorFilled = true;
 
-        // Check if the editor is active (not deleted)
-        if (editorIsActive === 'true') {
-            const editorData = editor.getData();
-            const messageDiv = document.getElementById('message');
-            const messageText = document.getElementById('messageText');
-
-            if (editorData.trim() === '' || editorData == '') {
-                event.preventDefault();
-                messageDiv.style.display = 'flex';
-                messageText.innerText = 'Leere Eingabe für die Leistung';
-                // Error Message Style
-                messageDiv.classList.add('error');
-                return; // Stop checking other rows once one empty editor is found
-            }
-        }
+    if (firstEditor[0].getData().trim() == '') {
+        allCkEditorFilled = false;
     }
-});
 
-
-
-// checking for empty ckEditors after submit; so we can redirect the to generate-pdf.php when its filled 
-function updateFormActionTarget(event) {
-    // check if the btn value is save
-    const submitButton = event.target;
-    if (submitButton.value === 'save') {
-        const form = document.getElementById('form-modal');
-
-        // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
-        form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
-        form.target = '_blank';
-
-        allCkEditorFilled = true;
-        if (firstEditor[0].getData().trim() == '') {
-            allCkEditorFilled = false;
-        }
-
+    if (allCkEditorFilled) {
         const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
 
         for (const row of rows) {
@@ -315,23 +259,75 @@ function updateFormActionTarget(event) {
             const editorIndex = row.getAttribute('data-editor-index');
 
             const editor = editorArray[editorIndex];
-
             // Check if the editor is active (not deleted)
             if (editorIsActive === 'true') {
                 const editorData = editor.getData();
 
                 if (editorData.trim() === '' || editorData == '') {
                     allCkEditorFilled = false;
-                    return; // Stop checking other rows once one empty editor is found
+                    break;
                 }
             }
         }
-
-        // all ckEditors are filled => reload website
-        if (allCkEditorFilled) {
-            location.reload();
-        }
     }
+
+    // all ckEditors are filled => reload website
+    if (allCkEditorFilled) {
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        if (submitButton.value === 'save') {
+            const form = document.getElementById('form-modal');
+
+            // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+            form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
+            form.target = '_blank';
+        }
+        location.reload();
+    } else {
+        const messageDiv = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+        event.preventDefault();
+        messageDiv.style.display = 'flex';
+        messageText.innerText = 'Leere Eingabe für die Leistung!';
+        // Error Message Style
+        messageDiv.classList.add('error');
+    }
+});
+
+var jsonEditData;
+var messageType;
+
+if (messageType == "edit") {
+    var parsedEditData = jsonEditData;
+    document.querySelector(".modal").classList.add("active");
+
+    // Assuming parsedEditData.RechnungsDatum_edit is in the format "04.08.2023"
+    // Convert it to "YYYY-MM-DD" format
+    const rechnungsDatumParts = parsedEditData.RechnungsDatum_edit.split('.');
+    const rechnungsDatumFormatted = `${rechnungsDatumParts[2]}-${rechnungsDatumParts[1]}-${rechnungsDatumParts[0]}`;
+
+    // Assuming parsedEditData.Monat_Jahr_edit is in the format "August 2023"
+    // Convert it to "YYYY-MM" format
+    const monatJahrParts = parsedEditData.Monat_Jahr_edit.split(' ');
+    const monthNumber = new Date(Date.parse(monatJahrParts[0] + ' 1, 2023')).getMonth() + 1; // Get the month number from the month name
+    const monatJahrFormatted = `${monatJahrParts[1]}-${String(monthNumber).padStart(2, '0')}`;
+
+    document.getElementById('RechnungsDatum').value = rechnungsDatumFormatted;
+    document.getElementById('RechnungsMonatJahr').value = monatJahrFormatted;
 }
+
+
+
+// 'Leistung_edit' => $Leistung_edit,
+// 'Abrechnungsart_edit' => $Abrechnungsart_edit,
+// 'NettoPreis_edit' => $NettoPreis_edit,
+// 'KundenID_edit' => $KundenID_edit,
+// 'MonatlicheRechnungBool_edit' => $MonatlicheRechnungBool_edit,
+// 'RechnungsDatum_edit' => $RechnungsDatum_edit,
+// 'Monat_Jahr_edit' => $Monat_Jahr_edit,
+// 'RechnungsNummer_edit' => $RechnungsNummer_edit,
+// 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
+// 'MwSt_edit' => $MwSt_edit,
+// 'GesamtBetrag_edit' => $GesamtBetrag_edit,
+// 'dienstleistungsRow' => $dienstleistungsRow,
 
 // ==================== END OF MODAL ====================
