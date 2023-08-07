@@ -143,6 +143,9 @@ function toggleInputField(containerElement) {
     }
 }
 
+// PHP Variables in JS
+var jsonEditData;
+var messageType;
 
 //Adding first ckEditor which can not be deleted
 
@@ -160,6 +163,9 @@ ClassicEditor
             value: 'Arial, Helvetica, sans-serif'
         });
 
+        if (messageType == "edit") {
+            editor.setData(jsonEditData.Leistung_edit[0]);
+        }
     })
     .catch(error => {
         console.error(error);
@@ -222,6 +228,11 @@ function addDienstleistungsRow() {
             });
 
             editorArray.push(editor); // Add the editor instance to the array
+
+            if (messageType == "edit" && editorCount < jsonEditData.Leistung_edit.length) {
+                editor.setData(jsonEditData.Leistung_edit[editorCount]);
+            }
+
         })
         .catch(error => {
             console.error(error);
@@ -293,8 +304,6 @@ document.getElementById('form-modal').addEventListener('submit', function (event
     }
 });
 
-var jsonEditData;
-var messageType;
 
 if (messageType == "edit") {
     var parsedEditData = jsonEditData;
@@ -339,10 +348,7 @@ if (messageType == "edit") {
 
     if (0 < addDienstleistungsRows) {
         for (let i = 1; i <= addDienstleistungsRows; i++) {
-            console.log(i);
             addDienstleistungsRow();
-            // editorArray[i]
-
             // Update nettoPreisInputFields array after adding a new row, so we can access the value of the certain inputfield
             nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
             nettoPreisInputFields[i].value = nettoPreisArray[i];
