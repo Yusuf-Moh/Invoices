@@ -238,7 +238,7 @@ function addDienstleistungsRow() {
             console.error(error);
         });
 }
-
+// Delete the added Row 
 function deleteRow(deleteIcon) {
     const rowToDelete = deleteIcon.closest('tr');
     const editorIndex = rowToDelete.getAttribute('data-editor-index');
@@ -254,7 +254,6 @@ function deleteRow(deleteIcon) {
 
 // Event listener for form submission; checking if inputfield of the ckEditor is empty => dont submit form
 document.getElementById('form-modal').addEventListener('submit', function (event) {
-
 
     var allCkEditorFilled = true;
 
@@ -335,20 +334,51 @@ if (messageType == "edit") {
 
     var addDienstleistungsRows = parsedEditData.NettoPreis_edit.length - 1;
 
-    // const LeistungInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
-    // const AbrechnungsartInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
     var nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+    var AbrechnungsartStundenInputFields = document.querySelectorAll("input[name='Stunden[]']");
+    var AbrechnungsartSelectFields = document.querySelectorAll("select[name='AbrechnungsartList[]']");
 
-
-    const LeistungArray = parsedEditData.Leistung_edit;
+    // const LeistungArray = parsedEditData.Leistung_edit;
     const AbrechnungsartArray = parsedEditData.Abrechnungsart_edit;
     const nettoPreisArray = parsedEditData.NettoPreis_edit;
+
+
+
+    if (AbrechnungsartArray[0] == "Pauschal") {
+        AbrechnungsartSelectFields[0].value = "Pauschal";
+        AbrechnungsartStundenInputFields[0].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+        AbrechnungsartStundenInputFields[0].value = ""; // Set the input field value to empty when hiding it
+        AbrechnungsartStundenInputFields[0].required = false; // Set the "required" attribute to false
+
+    } else {
+        AbrechnungsartSelectFields[0].value = "Stunden";
+        AbrechnungsartStundenInputFields[0].style.display = "block"; // Display the input field if "Stunden" is selected
+        AbrechnungsartStundenInputFields[0].value = AbrechnungsartArray[0];
+        AbrechnungsartStundenInputFields[0].required = true; // Set the "required" attribute to true
+    }
 
     nettoPreisInputFields[0].value = nettoPreisArray[0];
 
     if (0 < addDienstleistungsRows) {
         for (let i = 1; i <= addDienstleistungsRows; i++) {
             addDienstleistungsRow();
+
+            AbrechnungsartStundenInputFields = document.querySelectorAll("input[name='Stunden[]']");
+            AbrechnungsartSelectFields = document.querySelectorAll("select[name='AbrechnungsartList[]']");
+
+            if (AbrechnungsartArray[i] == "Pauschal") {
+                AbrechnungsartSelectFields[i].value = "Pauschal";
+                AbrechnungsartStundenInputFields[i].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+                AbrechnungsartStundenInputFields[i].value = ""; // Set the input field value to empty when hiding it
+                AbrechnungsartStundenInputFields[i].required = false; // Set the "required" attribute to false
+
+            } else {
+                AbrechnungsartSelectFields[i].value = "Stunden";
+                AbrechnungsartStundenInputFields[i].style.display = "block"; // Display the input field if "Stunden" is selected
+                AbrechnungsartStundenInputFields[i].value = AbrechnungsartArray[i];
+                AbrechnungsartStundenInputFields[i].required = true; // Set the "required" attribute to true
+            }
+
             // Update nettoPreisInputFields array after adding a new row, so we can access the value of the certain inputfield
             nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
             nettoPreisInputFields[i].value = nettoPreisArray[i];
