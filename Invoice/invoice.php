@@ -78,6 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $modalHeadline = "Update Rechnung";
 
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                // RechnungsID from the Crud row (Form in the edit/delete btns)
                 $RechnungsID = $_POST['RechnungsID'];
                 $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
                 $stmt = $conn->prepare($query);
@@ -135,13 +136,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             case 'update':
 
-                //values of the DB
-                $KundenID = $_POST['kID'];
-
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-
-                $showMessage = "flex";
-                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
             case 'search':
@@ -441,6 +435,8 @@ function parseSerializedDataLeistung($serializedData)
 
                         <!-- Store RechnungsID in hidden Inputfield to get access in update Switch Case-->
                         <input type="hidden" name="RechnungsID" id="RechnungsID" value="<?php echo htmlspecialchars($RechnungsID); ?>">
+
+                        <input type="hidden" name="saveUpdate" value="<?php echo $saveUpdate; ?>">
 
                         <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
                                                                                                                                                                     echo "Senden";

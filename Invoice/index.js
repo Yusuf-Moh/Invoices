@@ -163,6 +163,7 @@ ClassicEditor
             value: 'Arial, Helvetica, sans-serif'
         });
 
+        // Insert value into the ckEditor if we edit the given Invoice
         if (messageType == "edit") {
             editor.setData(jsonEditData.Leistung_edit[0]);
         }
@@ -284,13 +285,18 @@ document.getElementById('form-modal').addEventListener('submit', function (event
     // all ckEditors are filled => reload website
     if (allCkEditorFilled) {
         const submitButton = event.target.querySelector('button[type="submit"]');
-        if (submitButton.value === 'save') {
+        if (submitButton.value === 'save' || submitButton.value == "update") {
             const form = document.getElementById('form-modal');
 
             // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
             form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
             form.target = '_blank';
+            if (submitButton.value == "update") {
+                messageType = "";
+                console.log("Update");
+            }
         }
+        console.log("reload");
         location.reload();
     } else {
         const messageDiv = document.getElementById('message');
@@ -303,7 +309,7 @@ document.getElementById('form-modal').addEventListener('submit', function (event
     }
 });
 
-
+// Data from PHP (Switchcase edit) insert into the Inputfields
 if (messageType == "edit") {
     var parsedEditData = jsonEditData;
     document.querySelector(".modal").classList.add("active");
@@ -316,21 +322,44 @@ if (messageType == "edit") {
     // Assuming parsedEditData.Monat_Jahr_edit is in the format "August 2023"
     // Convert it to "YYYY-MM" format
     const monatJahrParts = parsedEditData.Monat_Jahr_edit.split(' ');
-    const monthNumber = new Date(Date.parse(monatJahrParts[0] + ' 1, 2023')).getMonth() + 1; // Get the month number from the month name
-    const monatJahrFormatted = `${monatJahrParts[1]}-${String(monthNumber).padStart(2, '0')}`;
+    const monthName = monatJahrParts[0];
+    const year = monatJahrParts[1];
+
+    const monthNameToNumber = {
+        'Januar': '01',
+        'Februar': '02',
+        'März': '03',
+        'April': '04',
+        'Mai': '05',
+        'Juni': '06',
+        'Juli': '07',
+        'August': '08',
+        'September': '09',
+        'Oktober': '10',
+        'November': '11',
+        'Dezember': '12'
+    }
+    const monthNumber = monthNameToNumber[monthName];
+    const monatJahrFormatted = `${year}-${monthNumber}`;
 
     document.getElementById('RechnungsDatum').value = rechnungsDatumFormatted;
     document.getElementById('RechnungsMonatJahr').value = monatJahrFormatted;
 
+    // Store the KundenID into the hiddenInputfield
+    const kundenID_edit = parsedEditData.KundenID_edit;
+    const selectedKundenIDInput = document.getElementById('selectedKundenID');
+    selectedKundenIDInput.value = kundenID_edit;
+
     // Select the corresponding customer in the dropdown list
     const customerList = document.getElementById('customerList');
-    const kundenID_edit = parsedEditData.KundenID_edit;
     for (let i = 0; i < customerList.options.length; i++) {
         if (customerList.options[i].value == kundenID_edit) {
             customerList.options[i].selected = true;
             break;
         }
     }
+
+
 
     var addDienstleistungsRows = parsedEditData.NettoPreis_edit.length - 1;
 
@@ -399,9 +428,7 @@ if (messageType == "edit") {
 
 
 
-// 'Leistung_edit' => $Leistung_edit,
-// 'Abrechnungsart_edit' => $Abrechnungsart_edit,
-// 'RechnungsNummer_edit' => $RechnungsNummer_edit,
+
 // 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
 
 // 'MwSt_edit' => $MwSt_edit,

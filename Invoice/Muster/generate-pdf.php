@@ -3,19 +3,22 @@
 // ============ Values from invoice.php ============
 
 $KundenID = $_POST['selectedKundenID'];
-
 // Rechnungsdatum
 $Rechnungsdatum = $_POST['RechnungsDatum'];
-$Rechnungsdatum = formatDate($Rechnungsdatum);
 $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
-$RechnungsMonatJahr = formatMonthYear($RechnungsMonatJahr);
-
 // Storing the content from the LeistungEditor
 $Leistung = $_POST['leistungEditor'];
-
 //Abrechnungsart
 $AbrechnungsartList = $_POST['AbrechnungsartList'];
 $AbrechnungsartStunden = $_POST['Stunden'];
+//Nettopreis
+$nettoPreis = $_POST['nettoPreis'];
+
+$gesamtNettoPreis = 0;
+$gesamtBetragMwSt = 0;
+$gesamtBetragBrutto = 0;
+
+
 // Replace Stunden with the inputfield number
 for ($i = 0; $i < count($AbrechnungsartList); $i++) {
     if ($AbrechnungsartList[$i] != "Pauschal") {
@@ -23,8 +26,9 @@ for ($i = 0; $i < count($AbrechnungsartList); $i++) {
     }
 }
 
-//Nettopreis
-$nettoPreis = $_POST['nettoPreis'];
+// Format the Html Data and Month_Year to the european version
+$Rechnungsdatum = formatDate($Rechnungsdatum);
+$RechnungsMonatJahr = formatMonthYear($RechnungsMonatJahr);
 
 
 //Calculation MwSt and Gesamtbetrag
@@ -46,7 +50,8 @@ $monatlicheRechnung = "0";
 if (isset($_POST['monatlicheRechnung'])) {
     $monatlicheRechnung = "1";
 }
-
+// Storing the value
+$saveUpdate = $_POST['saveUpdate'];
 
 // ============ Values from Kunden/Customer ============
 include('../../dbPhp/dbOpenConnection.php');
@@ -84,27 +89,35 @@ if ($gender == "Male") {
     $Ansprechpartner = "";
     $Anrede = "Sehr geehrte Damen und Herren,";
 }
+include('../../dbPhp/dbCloseConnection.php');
 
-// ============ Last RechnungsNR of DB-Table Rechnung ============
+if ($saveUpdate == "save") {
+    // ============ Last RechnungsNR of DB-Table Rechnung ============
+    $RechnungsNr = lastRechnungsNr($KundenID);
+} else if ($saveUpdate == "update") {
+    // RechnungsID from the hidden Inputfield
+    $RechnungsID = $_POST['RechnungsID'];
 
-try {
-    $query = "SELECT MAX(RechnungsNummer) AS MaxRechnungsNR FROM rechnung WHERE KundenID = :KundenID";
+    include('../../dbPhp/dbOpenConnection.php');
+    $query = "SELECT KundenID, RechnungsNummer FROM rechnung WHERE RechnungsID = :RechnungsID";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam('KundenID', $KundenID, PDO::PARAM_INT);
+    $stmt->bindParam('RechnungsID', $RechnungsID, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    $RechnungsNr = $result['MaxRechnungsNR'] + 1;
-} catch (PDOException) {
-    $RechnungsNr = 1;
+    $KundenID_update = $result['KundenID'];
+    $RechnungsNr_update = $result['RechnungsNummer'];
+    include('../../dbPhp/dbCloseConnection.php');
+
+    if ($KundenID_update == $KundenID) {
+        $RechnungsNr = $RechnungsNr_update;
+    } else {
+        $RechnungsNr = lastRechnungsNr($KundenID);
+        // Delete the Invoice with the RechnungsID; But carefully, you need to follow a row of RechnungsNr. You arent allowed to delete a Invoice and have a gap in RechnungsNr.
+        // Also you need to inform the Kunden, that the given Invoice is not valid (deleted). When you are editing a Invoice you also need to inform the Kunden.
+    }
 }
 
-
 $RechnungsKürzelNummer = $RechnungsKürzel . convertToMMYY($RechnungsMonatJahr) . "/" . formatRechnungsNr($RechnungsNr);
-
-$gesamtNettoPreis = 0;
-$gesamtBetragMwSt = 0;
-$gesamtBetragBrutto = 0;
-
 include('../../dbPhp/dbCloseConnection.php');
 
 
@@ -200,6 +213,23 @@ function AbrechnungsArtPauschalStunden($abrechnungsart)
         $html .= '<td></td>';
     }
     return $html;
+}
+
+function lastRechnungsNr($kundenID)
+{
+    include('../../dbPhp/dbOpenConnection.php');
+    try {
+        $query = "SELECT MAX(RechnungsNummer) AS MaxRechnungsNR FROM rechnung WHERE KundenID = :KundenID";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam('KundenID', $kundenID, PDO::PARAM_INT);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        $rechnungsNr = $result['MaxRechnungsNR'] + 1;
+    } catch (PDOException) {
+        $rechnungsNr = 1;
+    }
+    return $rechnungsNr;
+    include('../../dbPhp/dbCloseConnection.php');
 }
 
 // ============ Variables which need to be inserted into the PDF/invoiceMuster.html ============
