@@ -135,7 +135,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case 'update':
-
+                header("Refresh:0");
                 break;
 
             case 'search':
@@ -146,14 +146,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 break;
 
             case 'delete':
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                $KundenID = $_POST['KundenID'];
-                $sql = "DELETE FROM kunden WHERE KundenID=:KundenID";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(['KundenID' => $KundenID]);
-
-                if ($stmt->rowCount() > 0) {
-                    $message = $stmt->rowCount() . " Datensatz gelöscht!";
+                $RechnungsID = $_POST['RechnungsID'];
+                $numberDeletedRows = deleteRechnung($RechnungsID);
+                if ($numberDeletedRows > 0) {
+                    $message = $numberDeletedRows . " Datensatz gelöscht!";
                     $messageType = "success";
                 } else {
                     $message = "Datensatz wurde nicht gelöscht!";
@@ -253,6 +249,27 @@ function parseSerializedDataLeistung($serializedData)
             echo "<br>";
         }
     }
+}
+
+// Function to copy the data from the given invoice and deleting it from the database rechnung 
+function deleteRechnung($rechnungsID)
+{
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+    $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
+    $query = "DELETE FROM rechnung WHERE RechnungsID=:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
+    $numberDeletedRows = $stmt->rowCount();
+    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+
+    return $numberDeletedRows;
 }
 ?>
 
@@ -493,7 +510,7 @@ function parseSerializedDataLeistung($serializedData)
                                     <form method="post">
                                         <input type="hidden" name="RechnungsID" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                         <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
-                                        <button type="submit" class="CrudDelete" name="button" value="delete">Delete</button>
+                                        <button type="submit" class="CrudDelete" name="button" value="delete" onclick="showDeleteConfirmation()">Delete</button>
                                     </form>
                                 </td>
                             </tr>

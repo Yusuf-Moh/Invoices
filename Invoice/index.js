@@ -293,11 +293,9 @@ document.getElementById('form-modal').addEventListener('submit', function (event
             form.target = '_blank';
             if (submitButton.value == "update") {
                 messageType = "";
-                console.log("Update");
             }
         }
-        console.log("reload");
-        location.reload();
+        window.location.replace('invoice.php');
     } else {
         const messageDiv = document.getElementById('message');
         const messageText = document.getElementById('messageText');
@@ -426,12 +424,25 @@ if (messageType == "edit") {
     }
 }
 
-
-
-
 // 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
 
 // 'MwSt_edit' => $MwSt_edit,
 // 'GesamtBetrag_edit' => $GesamtBetrag_edit,
 
 // ==================== END OF MODAL ====================
+
+
+// ==================== Start OF Crud ====================
+
+function showDeleteConfirmation(button) {
+    var confirmation = confirm("Bist du dir ganz sicher, das du diesen Datensatz löschen möchtest?");
+    if (confirmation) {
+        button.type = 'submit';
+    } else {
+        event.preventDefault();
+    }
+}
+
+
+// ==================== END OF Crud ====================
+
