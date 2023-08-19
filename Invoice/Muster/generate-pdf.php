@@ -112,6 +112,7 @@ if ($saveUpdate == "save") {
         $RechnungsNr = $RechnungsNr_update;
     } else {
         $RechnungsNr = lastRechnungsNr($KundenID);
+        deleteRechnung($RechnungsID);
         // Delete the Invoice with the RechnungsID; But carefully, you need to follow a row of RechnungsNr. You arent allowed to delete a Invoice and have a gap in RechnungsNr.
         // Also you need to inform the Kunden, that the given Invoice is not valid (deleted). When you are editing a Invoice you also need to inform the Kunden.
     }
@@ -234,6 +235,23 @@ function lastRechnungsNr($kundenID)
     include('../../dbPhp/dbCloseConnection.php');
 }
 
+// Function to copy the data from the given invoice and deleting it from the database rechnung 
+function deleteRechnung($rechnungsID)
+{
+    include('../../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+    $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
+    $query = "DELETE FROM rechnung WHERE RechnungsID=:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+    include('../../dbPhp/dbCloseConnection.php');    // dbConnection close
+}
+
 // ============ Variables which need to be inserted into the PDF/invoiceMuster.html ============
 
 $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
@@ -244,6 +262,8 @@ $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprech
 $RechnungsMonatJahr_ggfVertragsDatum =  $RechnungsMonatJahr . displayVertragsdatum($VertragsDatum);
 // $gesamtBetragMwSt = $gesamtBetragMwSt;
 // $gesamtBetragBrutto = $gesamtBetragBrutto;
+
+
 
 // Creating the Table Rows for the Leistungen, Abrechnungsart and Nettopreis
 $TABLE_ROWS = '';
@@ -340,8 +360,24 @@ try {
     $AbrechnungsartList = serialize($AbrechnungsartList);
     $nettoPreis = serialize($nettoPreis);
 
-    $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag)
+    if ($saveUpdate == "update") {
+        $sql = "UPDATE rechnung
+        SET Leistung = :leistung,
+            Abrechnungsart = :abrechnungsart,
+            NettoPreis = :nettoPreis,
+            KundenID = :kundenID,
+            MonatlicheRechnungBool = :monatlicheRechnung,
+            RechnungsDatum = :rechnungsDatum,
+            Monat_Jahr = :rechnungsMonatJahr,
+            RechnungsNummer = :rechnungsNr,
+            RechnungsKürzelNummer = :rechnungsKuerzelNummer,
+            MwSt = :mwSt,
+            GesamtBetrag = :gesamtBetrag
+        WHERE RechnungsID = :rechnungsID;";
+    } else {
+        $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag)
         VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag)";
+    }
 
     $stmt = $conn->prepare($sql);
 
@@ -357,12 +393,13 @@ try {
     $stmt->bindParam(':rechnungsKuerzelNummer', $RechnungsKürzelNummer);
     $stmt->bindParam(':mwSt', $gesamtBetragMwSt);
     $stmt->bindParam(':gesamtBetrag', $gesamtBetragBrutto);
-
+    if ($saveUpdate == "update") {
+        $stmt->bindParam(':rechnungsID', $RechnungsID);
+    }
     $stmt->execute();
-    // echo '<script>alert("Rechnung erfolgreich: Daten erfolgreich in die Datenbank hinzugefügt!");</script>';
+    // Success message
 } catch (PDOException  $error) {
-    //Error message
-    // echo "<script>alert('Rechnung Fehlerhaft: Ein Fehler ist aufgetreten bezüglich der Datenbank Verbindung! Bitte überprüfe ob die Datenbank oder dein Laptop eine online Verbindung haben! ');</script>";
+    // Error message
 }
 
 include('../../dbPhp/dbCloseConnection.php');
