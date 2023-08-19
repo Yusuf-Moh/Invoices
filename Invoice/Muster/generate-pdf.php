@@ -219,12 +219,14 @@ function lastRechnungsNr($kundenID)
 {
     include('../../dbPhp/dbOpenConnection.php');
     try {
-        $query = "SELECT MAX(RechnungsNummer) AS MaxRechnungsNR FROM rechnung WHERE KundenID = :KundenID";
+        $query = "SELECT MAX(RechnungsNummer) AS MaxRechnungsNr FROM 
+        ( SELECT RechnungsNummer FROM Rechnung WHERE KundenID = :KundenID UNION SELECT RechnungsNummer FROM deletedRechnung WHERE KundenID = :KundenID ) 
+        AS CombinedResults;";
         $stmt = $conn->prepare($query);
         $stmt->bindParam('KundenID', $kundenID, PDO::PARAM_INT);
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $rechnungsNr = $result['MaxRechnungsNR'] + 1;
+        $rechnungsNr = $result['MaxRechnungsNr'] + 1;
     } catch (PDOException) {
         $rechnungsNr = 1;
     }
