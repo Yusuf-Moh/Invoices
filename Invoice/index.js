@@ -401,7 +401,7 @@ if (messageType == "edit") {
             } else {
                 AbrechnungsartSelectFields[i].value = "Stunden";
                 AbrechnungsartStundenInputFields[i].style.display = "block"; // Display the input field if "Stunden" is selected
-                AbrechnungsartArray[i] = AbrechnungsartArray[i].replace(' Stunden', '');
+                AbrechnungsartArray[i] = parseFloat(AbrechnungsartArray[i].replace(' Stunden', ''));
                 AbrechnungsartStundenInputFields[i].value = AbrechnungsartArray[i];
                 AbrechnungsartStundenInputFields[i].required = true; // Set the "required" attribute to true
             }
