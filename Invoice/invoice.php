@@ -17,11 +17,10 @@ function reset_vars()
     $Ansprechpartner_organization = null;
     $gender_organization = null;
 
-    global $sql_query;
-    // $sql_query = "SELECT * FROM `kunden`";
+    global $sql_query_invoice;
 
-    global $param;
-    // $param = [];
+    global $param_invoice;
+
 
     global $message, $messageType, $showMessage;
     $message = "";
@@ -31,7 +30,6 @@ function reset_vars()
     global $saveUpdate;
     $saveUpdate = "save";
 
-
     global $modalHeadline;
     $modalHeadline = "Erstelle Rechnung";
 
@@ -39,27 +37,38 @@ function reset_vars()
     $showMessage = "none";
 }
 
-global $Firmenname_StateSearchButton, $Adresse_StateSearchButton, $RechnungsKürzel_StateSearchButton, $PLZ_StateSearchButton, $Ort_StateSearchButton, $Vertragsdatum_StateSearchButton, $Ansprechpartner_StateSearchButton, $Gender_StateSearchButton;
+global $KundenInformationen_StateSearchButton, $Leistung_StateSearchButton, $Abrechnungsart_StateSearchButton, $NettoPreis_StateSearchButton, $GesamtBetrag_StateSearchButton, $RechnungsDatum_StateSearchButton, $Monat_Jahr_StateSearchButton, $RechnungsKürzelNummer_StateSearchButton, $MonatlicheRechnung_StateSearchButton;
+
+setSessionVariableFalse('KundenInformationen_StateSearchButton');
+setSessionVariableFalse('Leistung_StateSearchButton');
+setSessionVariableFalse('Abrechnungsart_StateSearchButton');
+setSessionVariableFalse('NettoPreis_StateSearchButton');
+setSessionVariableFalse('GesamtBetrag_StateSearchButton');
+setSessionVariableFalse('RechnungsDatum_StateSearchButton');
+setSessionVariableFalse('Monat_Jahr_StateSearchButton');
+setSessionVariableFalse('RechnungsKürzelNummer_StateSearchButton');
+setSessionVariableFalse('MonatlicheRechnung_StateSearchButton');
 
 global $restart;
 $restart = false;
 
-setSessionVariableFalse('Firmenname_StateSearchButton');
-setSessionVariableFalse('Adresse_StateSearchButton');
-setSessionVariableFalse('RechnungsKürzel_StateSearchButton');
-setSessionVariableFalse('PLZ_StateSearchButton');
-setSessionVariableFalse('Ort_StateSearchButton');
-setSessionVariableFalse('Vertragsdatum_StateSearchButton');
-setSessionVariableFalse('Ansprechpartner_StateSearchButton');
-setSessionVariableFalse('Gender_StateSearchButton');
+$KundenInformationen_StateSearchButton = $_SESSION['KundenInformationen_StateSearchButton'];
+$Leistung_StateSearchButton = $_SESSION['Leistung_StateSearchButton'];
+$Abrechnungsart_StateSearchButton = $_SESSION['Abrechnungsart_StateSearchButton'];
+$NettoPreis_StateSearchButton = $_SESSION['NettoPreis_StateSearchButton'];
+$GesamtBetrag_StateSearchButton = $_SESSION['GesamtBetrag_StateSearchButton'];
+$RechnungsDatum_StateSearchButton = $_SESSION['RechnungsDatum_StateSearchButton'];
+$Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
+$RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
+$MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
-if ($_SESSION['sql_query'] == "") {
-    $_SESSION['sql_query'] = "SELECT * FROM `kunden`";
+if ($_SESSION['sql_query_invoice'] == "") {
+    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
     $restart = true;
 }
 
-if ($_SESSION['param'] == "") {
-    $_SESSION['param'] = [];
+if ($_SESSION['param_invoice'] == "") {
+    $_SESSION['param_invoice'] = [];
     $restart = true;
 }
 
@@ -67,17 +76,8 @@ if ($restart) {
     header("Refresh:0");
 }
 
-$Firmenname_StateSearchButton = $_SESSION['Firmenname_StateSearchButton'];
-$Adresse_StateSearchButton = $_SESSION['Adresse_StateSearchButton'];
-$RechnungsKürzel_StateSearchButton = $_SESSION['RechnungsKürzel_StateSearchButton'];
-$PLZ_StateSearchButton = $_SESSION['PLZ_StateSearchButton'];
-$Ort_StateSearchButton = $_SESSION['Ort_StateSearchButton'];
-$Vertragsdatum_StateSearchButton = $_SESSION['Vertragsdatum_StateSearchButton'];
-$Ansprechpartner_StateSearchButton = $_SESSION['Ansprechpartner_StateSearchButton'];
-$Gender_StateSearchButton = $_SESSION['Gender_StateSearchButton'];
-
-$sql_query = $_SESSION['sql_query'];
-$param = $_SESSION['param'];
+$sql_query_invoice = $_SESSION['sql_query_invoice'];
+$param_invoice = $_SESSION['param_invoice'];
 
 //reset of every variables.
 reset_vars();
@@ -88,346 +88,212 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $action = $_POST['button'];
         switch ($action) {
             case 'save':
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                //KundenID from hidden inputfield
-                $KundenID = $_POST['selectedKundenID'];
-                // Storing the content from the LeistungEditor
-                $Leistung = $_POST['leistungEditor'];
-                //Abrechnungsart
-                $AbrechnungsartList = $_POST['AbrechnungsartList'];
-                if ($AbrechnungsartList == 'Pauschal') {
-                    $abrechnungsart = "Pauschal";
-                } else if ($AbrechnungsartList == "Stunden") {
-                    // Storing the value from the inputfield
-                    $abrechnungsart = $_POST['Stunden'];
-                }
-
-                //Nettopreis
-                $nettoPreis = $_POST['nettoPreis'];
-
-                // Rechnungsdatum
-                $Rechnungsdatum = $_POST['RechnungsDatum'];
-                $RechnungsMonatJahr = $_POST['RechnungsMonatJahr'];
-
-                // Storing the value of the checkbox 
-                $monatlicheRechnung = "0";
-                if (isset($_POST['monatlicheRechnung'])) {
-                    $monatlicheRechnung = "1";
-                }
-
-                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                // Because of the script, when the send button is pressed, the form sends on to generate-pdf.php which creates a pdf file based on the input from the form
+                // the switch case is not necessary because it doesnt get executed (Reason: form action = "gernerate-pdf.php")
                 break;
-
 
             case 'edit':
                 $messageType = "edit";
                 $message = "Editieren Sie Ihre Daten";
-                $modalHeadline = "Update Kontakt";
+                $modalHeadline = "Update Rechnung";
+
                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                $KundenID = $_POST['KundenID'];
-                $query = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
+                // RechnungsID from the Crud row (Form in the edit/delete btns)
+                $RechnungsID = $_POST['RechnungsID'];
+                $query = "SELECT * FROM Rechnung WHERE RechnungsID = :RechnungsID";
                 $stmt = $conn->prepare($query);
-                $stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
+                $stmt->bindValue(':RechnungsID', $RechnungsID, PDO::PARAM_INT);
                 $stmt->execute();
 
                 $result = [];
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($result['organization'] == '1') {
-                    $saveUpdate = "update";
+                $Leistung_edit = unserialize($result['Leistung']);
+                $Abrechnungsart_edit = unserialize($result['Abrechnungsart']);
+                $NettoPreis_edit = unserialize($result['NettoPreis']);
+                $KundenID_edit = $result['KundenID'];
+                $MonatlicheRechnungBool_edit = $result['MonatlicheRechnungBool'];
+                $RechnungsDatum_edit = $result['RechnungsDatum'];
+                $Monat_Jahr_edit = $result['Monat_Jahr'];
+                $RechnungsNummer_edit = $result['RechnungsNummer'];
+                $RechnungsKürzelNummer_edit = $result['RechnungsKürzelNummer'];
+                $MwSt_edit = $result['MwSt'];
+                $GesamtBetrag_edit = $result['GesamtBetrag'];
 
-                    $firmenName_organization = $result['FirmenName'];
-                    $firmenAdresse_organization = $result['Adresse'];
-                    $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
-                    $PLZ_organization = $result['PLZ'];
-                    $Ort_organization = $result['Ort'];
-                    $Vertragsdatum_organization = $result['VertragsDatum'];
-                    $Ansprechpartner_organization = $result['Name_Ansprechpartner'];
-                    $gender_organization = $result['Gender'];
+                // Storing the data from the selected Rechnung into the inputfields of the modal by transfering the values from php to js
 
-                    echo "<script>";
-                    echo "var messageType = '$messageType';";
-                    echo "var firmenName_organization = '$firmenName_organization';";
-                    echo "var firmenAdresse_organization = '$firmenAdresse_organization';";
-                    echo "var rechnungsKuerzel_organization = '$rechnungsKuerzel_organization';";
-                    echo "var PLZ_organization = '$PLZ_organization';";
-                    echo "var Ort_organization = '$Ort_organization';";
-                    echo "var Vertragsdatum_organization = '$Vertragsdatum_organization';";
-                    echo "var Ansprechpartner_organization = '$Ansprechpartner_organization';";
-                    echo "var gender_organization = '$gender_organization';";
-                    echo "</script>";
-                }
+
+                // Create a array with all values and transfer it to javascript
+                $data = array(
+                    'Leistung_edit' => $Leistung_edit,
+                    'Abrechnungsart_edit' => $Abrechnungsart_edit,
+                    'NettoPreis_edit' => $NettoPreis_edit,
+                    'KundenID_edit' => $KundenID_edit,
+                    'MonatlicheRechnungBool_edit' => $MonatlicheRechnungBool_edit,
+                    'RechnungsDatum_edit' => $RechnungsDatum_edit,
+                    'Monat_Jahr_edit' => $Monat_Jahr_edit,
+                    'RechnungsNummer_edit' => $RechnungsNummer_edit,
+                    'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
+                    'MwSt_edit' => $MwSt_edit,
+                    'GesamtBetrag_edit' => $GesamtBetrag_edit,
+                );
+
+                // Convert the array to a JSON string safely
+                $jsonEditData = json_encode($data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+
+                echo "<script>";
+                // Echo the JavaScript code with the JSON data
+                echo "var jsonEditData = $jsonEditData;";
+                echo "var messageType = '$messageType';";
+                echo "</script>";
+
+                $saveUpdate = "update";
                 $showMessage = "flex";
+
 
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
 
             case 'update':
-
-                //values of the DB
-                $KundenID = $_POST['kID'];
-
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-
-                $query = "SELECT * FROM Kunden WHERE KundenID = :KundenID";
-                $stmt = $conn->prepare($query);
-                $stmt->bindValue(':KundenID', $KundenID, PDO::PARAM_INT);
-                $stmt->execute();
-
-                $result = [];
-                $result = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                $firmenName_organization = $result['FirmenName'];
-                $firmenAdresse_organization = $result['Adresse'];
-                $rechnungsKuerzel_organization = $result['RechnungsKürzel'];
-                $PLZ_organization = $result['PLZ'];
-                $Ort_organization = $result['Ort'];
-                $Vertragsdatum_organization = $result['VertragsDatum'];
-                $Ansprechpartner_organization = $result['Name_Ansprechpartner'];
-                $gender_organization = $result['Gender'];
-
-                //Values of the inputfield
-                $updated_firmenName_organization = $_POST['firmenName_organization'];
-                $updated_firmenAdresse_organization = $_POST['firmenAdresse_organization'];
-                $updated_rechnungsKuerzel_organization = $_POST['rechnungsKuerzel_organization'];
-                $updated_PLZ_organization = $_POST['PLZ_organization'];
-                $updated_Ort_organization = $_POST['Ort_organization'];
-                $updated_Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
-                $updated_Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-                $updated_gender_organization = $_POST['gender_organization'];
-
-                //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
-                if ($updated_Vertragsdatum_organization == "") {
-                    $updated_Vertragsdatum_organization = null;
-                }
-                if ($updated_Ansprechpartner_organization == "") {
-                    $updated_Ansprechpartner_organization = null;
-                }
-                if ($updated_gender_organization != "Male" && $updated_gender_organization != "Female") {
-                    $updated_gender_organization = null;
-                }
-
-                if (checkOrganizationDataChangedValues($firmenName_organization, $updated_firmenName_organization, $firmenAdresse_organization, $updated_firmenAdresse_organization, $rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization, $PLZ_organization, $updated_PLZ_organization, $Ort_organization, $updated_Ort_organization, $Vertragsdatum_organization, $updated_Vertragsdatum_organization, $Ansprechpartner_organization, $updated_Ansprechpartner_organization, $gender_organization, $updated_gender_organization)) {
-                    //Atleast one of the inputfields changed. Now we are checking if the firmenname and rechnungskürzel didnt changed so we can instantly update the inputfields.
-                    if ($firmenName_organization == $updated_firmenName_organization && $rechnungsKuerzel_organization == $updated_rechnungsKuerzel_organization) {
-                        $messageType = "success";
-                        $message = "Daten wurden erfolgreich bearbeitet!";
-                        updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                    } //Now we check if both variables have changed. If this is the case, we check whether the data already exists in the DB
-                    elseif ($firmenName_organization != $updated_firmenName_organization && $rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
-                        if (!checkIfValueExists('FirmenName', $updated_firmenName_organization) && !checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                        } //FirmenName and Rechnungskürzel both exist in DB
-                        elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization) && checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) und Rechnungskürzel ($updated_rechnungsKuerzel_organization) existieren bereits in der Datenbank.";
-                        } //FirmenName exist in DB
-                        elseif (checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) existiert bereits in der Datenbank.";
-                        } //RechnungsKürzel exist in DB
-                        elseif (checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Rechnungskürzel ($updated_rechnungsKuerzel_organization) exisitiert bereits in der Datenbank.";
-                        }
-                    } //check if firmenname only got changed
-                    elseif ($firmenName_organization != $updated_firmenName_organization) {
-                        if (!checkIfValueExists('FirmenName', $updated_firmenName_organization)) {
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                        } else {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Firmenname ($updated_firmenName_organization) exisitiert bereits in der Datenbank.";
-                        }
-                    } //check if rechnungskürzel only got changed
-                    elseif ($rechnungsKuerzel_organization != $updated_rechnungsKuerzel_organization) {
-                        if (!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_organization)) {
-                            $messageType = "success";
-                            $message = "Daten wurden erfolgreich bearbeitet!";
-                            updateOrganizationDataIntoKundenTable($KundenID, $updated_firmenName_organization, $updated_firmenAdresse_organization, $updated_rechnungsKuerzel_organization, $updated_PLZ_organization, $updated_Ort_organization, $updated_Vertragsdatum_organization, $updated_Ansprechpartner_organization, $updated_gender_organization);
-                        } else {
-                            $messageType = "errorUpdate";
-                            $message = "Fehler: Geänderter Rechnungskürzel ($updated_rechnungsKuerzel_organization) existiert bereits in der Datenbank.";
-                        }
-                    }
-                } else {
-                    $messageType = "edit";
-                    $message = "Daten wurden nicht geändert!";
-                }
-
-                if ($messageType == "errorUpdate") {
-                    echo "<script>";
-                    echo "var messageType = '$messageType';";
-                    echo "</script>";
-                }
-                $showMessage = "flex";
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                header("Refresh:0");
                 break;
-            case 'Search_FirmenName':
-                $Firmenname_StateSearchButton = $_POST['Firmenname_StateSearchButton'];
-
-                if ($Firmenname_StateSearchButton == "false") {
-                    $Firmenname_StateSearchButton = "true";
-                } else if ($Firmenname_StateSearchButton == "true") {
-                    $Firmenname_StateSearchButton = "false";
-                }
-                $_SESSION['Firmenname_StateSearchButton'] = $Firmenname_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Adresse':
-                $Adresse_StateSearchButton = $_POST['Adresse_StateSearchButton'];
-
-                if ($Adresse_StateSearchButton == "false") {
-                    $Adresse_StateSearchButton = "true";
-                } elseif ($Adresse_StateSearchButton == "true") {
-                    $Adresse_StateSearchButton = "false";
-                }
-                $_SESSION['Adresse_StateSearchButton'] = $Adresse_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_RechnungsKürzel':
-                $RechnungsKürzel_StateSearchButton = $_POST['RechnungsKürzel_StateSearchButton'];
-
-                if ($RechnungsKürzel_StateSearchButton == "false") {
-                    $RechnungsKürzel_StateSearchButton = "true";
-                } elseif ($RechnungsKürzel_StateSearchButton == "true") {
-                    $RechnungsKürzel_StateSearchButton = "false";
-                }
-                $_SESSION['RechnungsKürzel_StateSearchButton'] = $RechnungsKürzel_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_PLZ':
-                $PLZ_StateSearchButton = $_POST['PLZ_StateSearchButton'];
-
-                if ($PLZ_StateSearchButton == "false") {
-                    $PLZ_StateSearchButton = "true";
-                } elseif ($PLZ_StateSearchButton == "true") {
-                    $PLZ_StateSearchButton = "false";
-                }
-                $_SESSION['PLZ_StateSearchButton'] = $PLZ_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Ort':
-                $Ort_StateSearchButton = $_POST['Ort_StateSearchButton'];
-
-                if ($Ort_StateSearchButton == "false") {
-                    $Ort_StateSearchButton = "true";
-                } elseif ($Ort_StateSearchButton == "true") {
-                    $Ort_StateSearchButton = "false";
-                }
-                $_SESSION['Ort_StateSearchButton'] = $Ort_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Vertragsdatum':
-                $Vertragsdatum_StateSearchButton = $_POST['Vertragsdatum_StateSearchButton'];
-
-                if ($Vertragsdatum_StateSearchButton == "false") {
-                    $Vertragsdatum_StateSearchButton = "true";
-                } elseif ($Vertragsdatum_StateSearchButton == "true") {
-                    $Vertragsdatum_StateSearchButton = "false";
-                }
-                $_SESSION['Vertragsdatum_StateSearchButton'] = $Vertragsdatum_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Ansprechpartner':
-                $Ansprechpartner_StateSearchButton = $_POST['Ansprechpartner_StateSearchButton'];
-
-                if ($Ansprechpartner_StateSearchButton == "false") {
-                    $Ansprechpartner_StateSearchButton = "true";
-                } elseif ($Ansprechpartner_StateSearchButton == "true") {
-                    $Ansprechpartner_StateSearchButton = "false";
-                }
-                $_SESSION['Ansprechpartner_StateSearchButton'] = $Ansprechpartner_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
-                break;
-            case 'Search_Gender':
-                $Gender_StateSearchButton = $_POST['Gender_StateSearchButton'];
-
-                if ($Gender_StateSearchButton == "false") {
-                    $Gender_StateSearchButton = "true";
-                } elseif ($Gender_StateSearchButton == "true") {
-                    $Gender_StateSearchButton = "false";
-                }
-                $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
-
-                $sql_query = "SELECT * FROM `kunden`";
-                $param = [];
+            case 'Search_KundenInformationen':
+                $KundenInformationen_StateSearchButton = $_POST['KundenInformationen_StateSearchButton'];
+                $_SESSION['KundenInformationen_StateSearchButton'] = stateSearchButton($KundenInformationen_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
                 break;
 
+            case 'Search_Leistung':
+                $Leistung_StateSearchButton = $_POST['Leistung_StateSearchButton'];
+                $_SESSION['Leistung_StateSearchButton'] = stateSearchButton($Leistung_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_Abrechnungsart':
+                $Abrechnungsart_StateSearchButton = $_POST['Abrechnungsart_StateSearchButton'];
+                $_SESSION['Abrechnungsart_StateSearchButton'] = stateSearchButton($Abrechnungsart_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_NettoPreis':
+                $NettoPreis_StateSearchButton = $_POST['NettoPreis_StateSearchButton'];
+                $_SESSION['NettoPreis_StateSearchButton'] = stateSearchButton($NettoPreis_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_GesamtBetrag':
+                $GesamtBetrag_StateSearchButton = $_POST['GesamtBetrag_StateSearchButton'];
+                $_SESSION['GesamtBetrag_StateSearchButton'] = stateSearchButton($GesamtBetrag_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_RechnungsDatum':
+                $RechnungsDatum_StateSearchButton = $_POST['RechnungsDatum_StateSearchButton'];
+                $_SESSION['RechnungsDatum_StateSearchButton'] = stateSearchButton($RechnungsDatum_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_Monat_Jahr':
+                $Monat_Jahr_StateSearchButton = $_POST['Monat_Jahr_StateSearchButton'];
+                $_SESSION['Monat_Jahr_StateSearchButton'] = stateSearchButton($Monat_Jahr_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_RechnungsKürzelNummer':
+                $RechnungsKürzelNummer_StateSearchButton = $_POST['RechnungsKürzelNummer_StateSearchButton'];
+                $_SESSION['RechnungsKürzelNummer_StateSearchButton'] = stateSearchButton($RechnungsKürzelNummer_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
+
+            case 'Search_MonatlicheRechnung':
+                $MonatlicheRechnung_StateSearchButton = $_POST['MonatlicheRechnung_StateSearchButton'];
+                $_SESSION['MonatlicheRechnung_StateSearchButton'] = stateSearchButton($MonatlicheRechnung_StateSearchButton);
+                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $param_invoice = [];
+                break;
             case 'search':
                 reset_vars();
                 $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
 
-                //If any of the Filter Buttons are active/clicked
-                if ($_POST['Firmenname_StateSearchButton'] == "true" || $_POST['Adresse_StateSearchButton'] == "true" || $_POST['RechnungsKürzel_StateSearchButton'] == "true" || $_POST['PLZ_StateSearchButton'] == "true" || $_POST['Ort_StateSearchButton'] == "true" || $_POST['Vertragsdatum_StateSearchButton'] == "true" || $_POST['Ansprechpartner_StateSearchButton'] == "true" || $_POST['Gender_StateSearchButton'] == "true") {
-                    $sql_query = "SELECT * FROM `kunden` WHERE";
+                if ($_POST['KundenInformationen_StateSearchButton'] == "true" || $_POST['Leistung_StateSearchButton'] == "true" || $_POST['Abrechnungsart_StateSearchButton'] == "true" || $_POST['NettoPreis_StateSearchButton'] == "true" || $_POST['GesamtBetrag_StateSearchButton'] == "true" || $_POST['RechnungsDatum_StateSearchButton'] == "true" || $_POST['Monat_Jahr_StateSearchButton'] == "true" || $_POST['RechnungsKürzelNummer_StateSearchButton'] == "true" || $_POST['MonatlicheRechnung_StateSearchButton'] == "true") {
 
-                    if ($_POST['Firmenname_StateSearchButton'] == "true") {
-                        $sql_query .= " Firmenname LIKE :search_string OR";
+                    $sql_query_invoice = 'SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
+                                            FROM Rechnung r 
+                                            JOIN Kunden k ON r.KundenID = k.KundenID WHERE';
+
+                    if ($_POST['KundenInformationen_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " FirmenName LIKE :search_string OR Adresse LIKE :search_string OR PLZ LIKE :search_string OR ORT LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR";
                     }
 
-                    if ($_POST['Adresse_StateSearchButton'] == "true") {
-                        $sql_query .= " Adresse LIKE :search_string OR";
+                    if ($_POST['Leistung_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " Leistung LIKE :search_string OR";
                     }
 
-                    if ($_POST['RechnungsKürzel_StateSearchButton'] == "true") {
-                        $sql_query .= " RechnungsKürzel LIKE :search_string OR";
+                    if ($_POST['Abrechnungsart_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " Abrechnungsart LIKE :search_string OR";
                     }
 
-                    if ($_POST['PLZ_StateSearchButton'] == "true") {
-                        $sql_query .= " PLZ LIKE :search_string OR";
+                    if ($_POST['NettoPreis_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " NettoPreis LIKE :search_string OR";
                     }
 
-                    if ($_POST['Ort_StateSearchButton'] == "true") {
-                        $sql_query .= " Ort LIKE :search_string OR";
+                    if ($_POST['GesamtBetrag_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " GesamtBetrag LIKE :search_string OR";
                     }
 
-                    if ($_POST['Vertragsdatum_StateSearchButton'] == "true") {
-                        $sql_query .= " Vertragsdatum LIKE :search_string OR";
+                    if ($_POST['RechnungsDatum_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " RechnungsDatum LIKE :search_string OR";
                     }
 
-                    if ($_POST['Ansprechpartner_StateSearchButton'] == "true") {
-                        $sql_query .= " Name_Ansprechpartner LIKE :search_string OR";
+                    if ($_POST['Monat_Jahr_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " Monat_Jahr LIKE :search_string OR";
                     }
 
-                    if ($_POST['Gender_StateSearchButton'] == "true") {
-                        $sql_query .= " Gender LIKE :search_string OR";
+                    if ($_POST['RechnungsKürzelNummer_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " RechnungsKürzelNummer LIKE :search_string OR";
                     }
 
-                    // Delete the last "AND" of the Query
-                    $sql_query = rtrim($sql_query, "OR");
+                    if ($_POST['MonatlicheRechnung_StateSearchButton'] == "true") {
+                        $sql_query_invoice .= " MonatlicheRechnungBool LIKE :search_string OR";
+                    }
+
+                    // Delete the last "OR" of the Query
+                    $sql_query_invoice = rtrim($sql_query_invoice, "OR");
                 } else {
-                    $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";
+                    $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
+                                        FROM Rechnung r 
+                                        JOIN Kunden k ON r.KundenID = k.KundenID
+                                        WHERE r.Leistung LIKE :search_string 
+                                            OR r.Abrechnungsart LIKE :search_string 
+                                            OR r.NettoPreis LIKE :search_string 
+                                            OR r.GesamtBetrag LIKE :search_string 
+                                            OR r.RechnungsDatum LIKE :search_string 
+                                            OR r.Monat_Jahr LIKE :search_string 
+                                            OR r.RechnungsKürzelNummer LIKE :search_string 
+                                            OR r.MonatlicheRechnungBool LIKE :search_string
+                                            OR k.FirmenName LIKE :search_string 
+                                            OR Adresse LIKE :search_string 
+                                            OR PLZ LIKE :search_string 
+                                            OR ORT LIKE :search_string 
+                                            OR Name_Ansprechpartner LIKE :search_string;";
                 }
-                $param = ['search_string' => $contentSearchbar];
+
+                $param_invoice = ['search_string' => $contentSearchbar];
                 break;
 
             case 'delete':
-                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                $KundenID = $_POST['KundenID'];
-                $sql = "DELETE FROM kunden WHERE KundenID=:KundenID";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute(['KundenID' => $KundenID]);
-
-                if ($stmt->rowCount() > 0) {
-                    $message = $stmt->rowCount() . " Datensatz gelöscht!";
+                $RechnungsID = $_POST['RechnungsID'];
+                $numberDeletedRows = deleteRechnung($RechnungsID);
+                if ($numberDeletedRows > 0) {
+                    $message = $numberDeletedRows . " Datensatz gelöscht!";
                     $messageType = "success";
                 } else {
                     $message = "Datensatz wurde nicht gelöscht!";
@@ -437,109 +303,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
         }
-        $_SESSION['sql_query'] = $sql_query;
-        $_SESSION['param'] = $param;
+        $_SESSION['sql_query_invoice'] = $sql_query_invoice;
+        $_SESSION['param_invoice'] = $param_invoice;
     }
 }
 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-$stmt = $conn->prepare($sql_query);
-$stmt->execute($param);
+$stmt = $conn->prepare($sql_query_invoice);
+$stmt->execute($param_invoice);
 $result = $stmt->fetchAll();
 
-function checkIfValueExists($columnName, $value)
-{
-    include('../dbPhp/dbOpenConnection.php'); // Verbindung öffnen
-
-    try {
-        // Prepare the SELECT-query
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM Kunden WHERE $columnName = :value");
-
-        // Bind the value to the parameter
-        $stmt->bindParam(':value', $value);
-
-        // Execute the query
-        $stmt->execute();
-
-        // Fetch the result
-        $result = $stmt->fetchColumn();
-
-        // Return true if the value exists, otherwise return false
-        $exists = ($result > 0);
-
-        include('../dbPhp/dbCLoseConnection.php'); // Verbindung schließen
-
-        return $exists;
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-        return false;
-    }
-}
-
-function insertOrganizationDataIntoKundenTable($firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
-{
-    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-
-    try {
-        // Prepeare the INSERT-query
-        $stmt = $conn->prepare("INSERT INTO kunden (FirmenName, Adresse, RechnungsKürzel, PLZ, Ort, VertragsDatum, Name_Ansprechpartner, Gender, organization)
-                                   VALUES (:firmenName, :Adresse, :rechnungsKuerzel, :plz, :ort, :vertragsDatum, :ansprechpartner, :gender, 1)");
-
-        // Bind Values to the parameters
-        $stmt->bindParam(':firmenName', $firmenName);
-        $stmt->bindParam(':Adresse', $Adresse);
-        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
-        $stmt->bindParam(':plz', $PLZ);
-        $stmt->bindParam(':ort', $Ort);
-        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
-        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
-        $stmt->bindParam(':gender', $gender);
-
-        // Execute the query
-        $stmt->execute();
-
-        // header("Refresh:0");
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-    }
-
-    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
-}
-
-function updateOrganizationDataIntoKundenTable($id, $firmenName, $Adresse, $rechnungsKuerzel, $PLZ, $Ort, $Vertragsdatum, $Ansprechpartner, $gender)
-{
-    include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
-
-    try {
-        // Prepare the UPDATE-Abfrage
-        $stmt = $conn->prepare("UPDATE kunden SET FirmenName = :firmenName, Adresse = :Adresse, RechnungsKürzel = :rechnungsKuerzel, PLZ = :plz, Ort = :ort, VertragsDatum = :vertragsDatum, Name_Ansprechpartner = :ansprechpartner, Gender = :gender WHERE KundenID = :id");
-
-        // Bind the variables on parameters
-        $stmt->bindParam(':id', $id);
-        $stmt->bindParam(':firmenName', $firmenName);
-        $stmt->bindParam(':Adresse', $Adresse);
-        $stmt->bindParam(':rechnungsKuerzel', $rechnungsKuerzel);
-        $stmt->bindParam(':plz', $PLZ);
-        $stmt->bindParam(':ort', $Ort);
-        $stmt->bindParam(':vertragsDatum', $Vertragsdatum);
-        $stmt->bindParam(':ansprechpartner', $Ansprechpartner);
-        $stmt->bindParam(':gender', $gender);
-
-        $stmt->execute();
-    } catch (PDOException $e) {
-        echo "Fehler: " . $e->getMessage();
-    }
-
-    include('../dbPhp/dbCloseConnection.php'); // dbConnection schließen
-}
-
-function checkOrganizationDataChangedValues($firmenName_organization, $updated_firmenName_organization, $firmenAdresse_organization, $updated_firmenAdresse_organization, $rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization, $PLZ_organization, $updated_PLZ_organization, $Ort_organization, $updated_Ort_organization, $Vertragsdatum_organization, $updated_Vertragsdatum_organization, $Ansprechpartner_organization, $updated_Ansprechpartner_organization, $gender_organization, $updated_gender_organization)
-{
-    if (notEqualString($firmenName_organization, $updated_firmenName_organization) || notEqualString($firmenAdresse_organization, $updated_firmenAdresse_organization) || notEqualString($rechnungsKuerzel_organization, $updated_rechnungsKuerzel_organization) || notEqualString($PLZ_organization, $updated_PLZ_organization) || notEqualString($Ort_organization, $updated_Ort_organization) || notEqualString($Vertragsdatum_organization, $updated_Vertragsdatum_organization) || notEqualString($Ansprechpartner_organization, $updated_Ansprechpartner_organization) || notEqualString($gender_organization, $updated_gender_organization)) {
-        return true;
-    } else {
-        return false;
-    }
-}
 
 function notEqualString($string0, $string1)
 {
@@ -558,6 +330,101 @@ function setSessionVariableFalse($session)
     }
 }
 
+function KundenInformationen($FirmenName, $Ansprechpartner, $Adresse, $PLZ, $Ort)
+{
+    $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
+
+    return $KontaktInformationen;
+}
+
+function displayStringBR($String)
+{
+    if (!empty($String)) {
+        return $String . "<br>";
+    }
+}
+
+//Arrays stored in database getting unserialize for the crud-table
+function parseSerializedData($serializedData)
+{
+    $dataArray = unserialize($serializedData);
+    $lengthArray = count($dataArray);
+
+    foreach ($dataArray as $index => $data) {
+        echo '<p>' . nl2br($data) . '</p>';
+
+        // Add the <br> tag for all Array elements except the last one
+        if ($index != $lengthArray - 1) {
+            echo "<br>";
+        }
+    }
+}
+
+function parseSerializedDataAbrechnungsart($serializedData)
+{
+    $dataArray = unserialize($serializedData);
+    $lengthArray = count($dataArray);
+
+    foreach ($dataArray as $index => $data) {
+
+        if ($data != "Pauschal") {
+            $data = $data . ' Stunden';
+        }
+
+        echo '<p>' . nl2br($data) . '</p>';
+
+        // Add the <br> tag for all Array elements except the last one
+        if ($index != $lengthArray - 1) {
+            echo "<br>";
+        }
+    }
+}
+
+function parseSerializedDataLeistung($serializedData)
+{
+    $dataArray = unserialize($serializedData);
+    $lengthArray = count($dataArray);
+
+    foreach ($dataArray as $index => $data) {
+        echo nl2br($data);
+
+        // Add the <br> tag for all Array elements except the last one
+        if ($index != $lengthArray - 1) {
+            echo "<br>";
+        }
+    }
+}
+
+// Function to copy the data from the given invoice and deleting it from the database rechnung 
+function deleteRechnung($rechnungsID)
+{
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+    $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
+    $query = "DELETE FROM rechnung WHERE RechnungsID=:RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
+    $numberDeletedRows = $stmt->rowCount();
+    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+
+    return $numberDeletedRows;
+}
+
+function stateSearchButton($currentState)
+{
+    if ($currentState == "false") {
+        return "true";
+    } elseif ($currentState == "true") {
+        return "false";
+    }
+    return $currentState;
+}
 ?>
 
 
@@ -573,7 +440,6 @@ function setSessionVariableFalse($session)
     <link rel="stylesheet" href="./invoice.css">
     <!--Link to Material Icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <!-- <link rel="stylesheet" type="text/css" href="../ckeditor/sample/styles.css"> -->
 </head>
 
 <body>
@@ -590,25 +456,26 @@ function setSessionVariableFalse($session)
                         </div>
                         <div class="buttons-container">
                             <div class="search-buttons">
-                                <button type="submit" name="button" value="Search_FirmenName" onclick="changeBackground(this)">FirmenName</button>
-                                <button type="submit" name="button" value="Search_Adresse" onclick="changeBackground(this)">Adresse</button>
-                                <button type="submit" name="button" value="Search_RechnungsKürzel" onclick="changeBackground(this)">RechnungsKürzel</button>
-                                <button type="submit" name="button" value="Search_PLZ" onclick="changeBackground(this)">PLZ</button>
-                                <button type="submit" name="button" value="Search_Ort" onclick="changeBackground(this)">Ort</button>
-                                <button type="submit" name="button" value="Search_Vertragsdatum" onclick="changeBackground(this)">Vertragsdatum</button>
-                                <button type="submit" name="button" value="Search_Ansprechpartner" onclick="changeBackground(this)">Ansprechpartner</button>
-                                <button type="submit" name="button" value="Search_Gender" onclick="changeBackground(this)">Gender</button>
+                                <button type="submit" name="button" value="Search_KundenInformationen" onclick="changeBackground(this)">KundenInformationen</button>
+                                <button type="submit" name="button" value="Search_Leistung" onclick="changeBackground(this)">Leistung</button>
+                                <button type="submit" name="button" value="Search_Abrechnungsart" onclick="changeBackground(this)">Abrechnungsart</button>
+                                <button type="submit" name="button" value="Search_NettoPreis" onclick="changeBackground(this)">NettoPreis</button>
+                                <button type="submit" name="button" value="Search_GesamtBetrag" onclick="changeBackground(this)">GesamtBetrag</button>
+                                <button type="submit" name="button" value="Search_RechnungsDatum" onclick="changeBackground(this)">RechnungsDatum</button>
+                                <button type="submit" name="button" value="Search_Monat_Jahr" onclick="changeBackground(this)">Monat Jahr</button>
+                                <button type="submit" name="button" value="Search_RechnungsKürzelNummer" onclick="changeBackground(this)">RechnungsKürzelNummer</button>
+                                <button type="submit" name="button" value="Search_MonatlicheRechnung" onclick="changeBackground(this)">MonatlicheRechnung</button>
                             </div>
                         </div>
-                        <input type="hidden" name="Firmenname_StateSearchButton" value="<?php echo $Firmenname_StateSearchButton; ?>">
-                        <input type="hidden" name="Adresse_StateSearchButton" value="<?php echo $Adresse_StateSearchButton; ?>">
-                        <input type="hidden" name="RechnungsKürzel_StateSearchButton" value="<?php echo $RechnungsKürzel_StateSearchButton; ?>">
-                        <input type="hidden" name="PLZ_StateSearchButton" value="<?php echo $PLZ_StateSearchButton; ?>">
-                        <input type="hidden" name="Ort_StateSearchButton" value="<?php echo $Ort_StateSearchButton; ?>">
-                        <input type="hidden" name="Vertragsdatum_StateSearchButton" value="<?php echo $Vertragsdatum_StateSearchButton; ?>">
-                        <input type="hidden" name="Ansprechpartner_StateSearchButton" value="<?php echo $Ansprechpartner_StateSearchButton; ?>">
-                        <input type="hidden" name="Gender_StateSearchButton" value="<?php echo $Gender_StateSearchButton; ?>">
-
+                        <input type="hidden" name="KundenInformationen_StateSearchButton" value="<?php echo $KundenInformationen_StateSearchButton; ?>">
+                        <input type="hidden" name="Leistung_StateSearchButton" value="<?php echo $Leistung_StateSearchButton; ?>">
+                        <input type="hidden" name="Abrechnungsart_StateSearchButton" value="<?php echo $Abrechnungsart_StateSearchButton; ?>">
+                        <input type="hidden" name="NettoPreis_StateSearchButton" value="<?php echo $NettoPreis_StateSearchButton; ?>">
+                        <input type="hidden" name="GesamtBetrag_StateSearchButton" value="<?php echo $GesamtBetrag_StateSearchButton; ?>">
+                        <input type="hidden" name="RechnungsDatum_StateSearchButton" value="<?php echo $RechnungsDatum_StateSearchButton; ?>">
+                        <input type="hidden" name="Monat_Jahr_StateSearchButton" value="<?php echo $Monat_Jahr_StateSearchButton; ?>">
+                        <input type="hidden" name="RechnungsKürzelNummer_StateSearchButton" value="<?php echo $RechnungsKürzelNummer_StateSearchButton; ?>">
+                        <input type="hidden" name="MonatlicheRechnung_StateSearchButton" value="<?php echo $MonatlicheRechnung_StateSearchButton; ?>">
                     </form>
                 </div>
             </div>
@@ -618,7 +485,7 @@ function setSessionVariableFalse($session)
         <!--Create New Invoice with Button to open Modal-->
         <div class="createInvoices">
 
-            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage ?>">
+            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
                 <h2 id="messageText"><?php echo $message; ?></h2>
                 <span class="material-icons-sharp">close</span>
             </div>
@@ -679,27 +546,6 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
-                        <!-- ckEditor 5 CustomBuild -->
-                        <div class="leistung">
-                            <label>Leistung und ggf. Leistungsstraße:</label>
-                            <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor"></textarea>
-                        </div>
-
-                        <div class="abrechnungsart">
-                            <label for="AbrechnungsartList">Wähle die Abrechnungsart aus</label>
-                            <div class="Abrechnungsart-container" onchange="toggleInputField()">
-                                <input type="number" name="Stunden" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                                <select name="AbrechnungsartList" id="AbrechnungsartList" required>
-                                    <option value="Pauschal">Pauschal</option>
-                                    <option value="Stunden">Stunden</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="preis">
-                            <input type="number" name="nettoPreis" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
-                        </div>
-
                         <div class="datum">
                             <label for="RechnungsDatum">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
                             <div class="RechnungsDatum">
@@ -708,13 +554,61 @@ function setSessionVariableFalse($session)
                             </div>
                         </div>
 
+                        <!-- ckEditor 5 CustomBuild -->
+                        <div class="dienstleistungs-details">
+                            <table>
+                                <thead>
+                                    <th>Leistung und ggf. Leistungsstraße:</th>
+                                    <th>Wähle die Abrechnungsart aus:</th>
+                                    <th>NettoPreis:</th>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <div class="leistung">
+                                                <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="abrechnungsart">
+                                                <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
+                                                    <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                                                    <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
+                                                        <option value="Pauschal">Pauschal</option>
+                                                        <option value="Stunden">Stunden</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="preis">
+                                                <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="add-row">
+                                            <label onclick="addDienstleistungsRow()">+ Hinzufügen weitere Leistung</label>
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+
                         <div class="monatlicheRechnung">
                             <input type="checkbox" name="monatlicheRechnung" id="monatlicheRechnung">
                             <label for="monatlicheRechnung">Monatliche Rechnung</label>
                         </div>
 
-                        <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
+                        <!-- Store KundenID from div KundenListe of the selected Customer for the future -->
                         <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
+
+                        <!-- Store RechnungsID in hidden Inputfield to get access in update Switch Case-->
+                        <input type="hidden" name="RechnungsID" id="RechnungsID" value="<?php echo htmlspecialchars($RechnungsID); ?>">
+
+                        <input type="hidden" name="saveUpdate" value="<?php echo $saveUpdate; ?>">
 
                         <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
                                                                                                                                                                     echo "Senden";
@@ -734,14 +628,18 @@ function setSessionVariableFalse($session)
             <div class="crud-table">
                 <table class="table">
                     <thead>
-                        <th>Firmenname</th>
-                        <th>Adresse</th>
-                        <th>Rechnungskürzel</th>
-                        <th>PLZ</th>
-                        <th>Ort</th>
-                        <th>Vertragsdatum</th>
-                        <th>Ansprechpartner</th>
-                        <th>Gender</th>
+                        <th>KundenInformationen</th>
+                        <th>Leistung</th>
+                        <th>Abrechnungsart</th>
+                        <th>NettoPreis</th>
+                        <th>MwSt</th>
+                        <th>GesamtBetrag</th>
+                        <th>RechnungsDatum</th>
+                        <th>Monat Jahr</th>
+                        <!-- <th>RechnungsNummer</th> -->
+                        <th>RechnungsKürzelNummer</th>
+                        <th>MonatlicheRechnung</th>
+                        <!-- <th>RechnungsID</th> -->
                         <th>Action</th>
                     </thead>
                     <tbody>
@@ -751,27 +649,21 @@ function setSessionVariableFalse($session)
                         foreach ($result as $row) {
                         ?>
                             <tr>
-                                <td><?php echo htmlspecialchars($row['FirmenName']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Adresse']); ?></td>
-                                <td><?php echo htmlspecialchars($row['RechnungsKürzel']); ?></td>
-                                <td><?php echo htmlspecialchars($row['PLZ']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Ort']); ?></td>
-                                <td><?php echo htmlspecialchars($row['VertragsDatum']); ?></td>
-                                <td><?php echo htmlspecialchars($row['Name_Ansprechpartner']); ?></td>
-                                <td><?php
-                                    if ($row['Gender'] == "M") {
-                                        echo htmlspecialchars("Male");
-                                    } elseif ($row['Gender'] == "F") {
-                                        echo htmlspecialchars("Female");
-                                    } else {
-                                        echo htmlspecialchars($row['Gender']);
-                                    }
-                                    ?></td>
+                                <td><?php echo KundenInformationen($row['FirmenName'], $row['Name_Ansprechpartner'], $row['Adresse'], $row['PLZ'], $row['Ort']); ?></td>
+                                <td><?php parseSerializedDataLeistung($row['Leistung']); ?></td>
+                                <td><?php parseSerializedDataAbrechnungsart($row['Abrechnungsart']); ?></td>
+                                <td><?php parseSerializedData($row['NettoPreis']); ?></td>
+                                <td><?php echo htmlspecialchars($row['MwSt']); ?></td>
+                                <td><?php echo htmlspecialchars($row['GesamtBetrag']); ?></td>
+                                <td><?php echo htmlspecialchars($row['RechnungsDatum']); ?></td>
+                                <td><?php echo htmlspecialchars($row['Monat_Jahr']); ?></td>
+                                <td><?php echo htmlspecialchars($row['RechnungsKürzelNummer']); ?></td>
+                                <td><?php echo htmlspecialchars($row['MonatlicheRechnungBool']); ?></td>
                                 <td>
                                     <form method="post">
-                                        <input type="hidden" name="KundenID" value=<?php echo htmlspecialchars($row['KundenID']); ?>>
+                                        <input type="hidden" name="RechnungsID" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                         <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
-                                        <button type="submit" class="CrudDelete" name="button" value="delete">Delete</button>
+                                        <button type="submit" class="CrudDelete" name="button" value="delete" onclick="showDeleteConfirmation()">Delete</button>
                                     </form>
                                 </td>
                             </tr>
@@ -784,44 +676,11 @@ function setSessionVariableFalse($session)
                 </table>
             </div>
         </div>
-
-
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="./index.js"></script>
     <!-- Rich Text Editor ckEditor 5 CustomBuild -->
     <script src="../ckeditor/build/ckeditor.js"></script>
-    <script>
-        //Add ckEditor 5 Custom Builds
-        ClassicEditor
-            .create(document.querySelector('#leistungEditor'))
-            .then(editor => {
-                //default font is Arial
-                const fontFamily = editor.commands.get('fontFamily');
-                fontFamily.execute({
-                    value: 'Arial, Helvetica, sans-serif'
-                });
-
-                //Check if ckEditor 5 has an empty input so we can simulate the required
-                document.getElementById('form-modal').addEventListener('submit', function(event) {
-                    const editorData = editor.getData();
-                    const messageDiv = document.getElementById('message');
-                    const messageText = document.getElementById('messageText');
-
-                    if (editorData.trim() === '' || editorData == '') {
-                        event.preventDefault();
-                        messageDiv.style.display = 'flex';
-                        messageText.innerText = 'Leere Eingabe für die Leistung';
-                        // Error Message Style
-                        messageDiv.classList.add('error');
-                    }
-                });
-
-            })
-            .catch(error => {
-                console.error(error);
-            });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./index.js"></script>
 </body>
 
 </html>

@@ -577,7 +577,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $sql_query .= " Gender LIKE :search_string OR";
                     }
 
-                    // Delete the last "AND" of the Query
+                    // Delete the last "OR" of the Query
                     $sql_query = rtrim($sql_query, "OR");
                 } else {
                     $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";

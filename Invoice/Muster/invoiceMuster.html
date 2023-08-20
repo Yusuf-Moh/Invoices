@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        @page {
+            /* aspect ratios of the page */
+            margin: 3cm 2cm 2cm 2cm;
+        }
+
+        * {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+        }
+
+        header {
+            position: fixed;
+            top: -60px;
+            height: 50px;
+            line-height: 35px;
+            width: 100%;
+        }
+
+        footer {
+            position: fixed;
+            bottom: -50px;
+            height: 50px;
+            text-align: center;
+            line-height: 35px;
+            width: 100%;
+        }
+
+        .pagenum:before {
+            content: counter(page);
+        }
+
+        /* display flex and spacebetween not working because of domPDF */
+        .ÜberschriftFirma {
+            /* position of the div left*/
+            float: left;
+        }
+
+        .FirmenLogo {
+            /* position of the div right */
+            float: right;
+
+            position: absolute;
+            right: 0;
+            /* change this to get the right position for the logo */
+            top: -56px;
+            /* height: 100px; */
+        }
+
+        .FirmenLogo img {
+            height: auto;
+            width: 100%;
+        }
+
+        footer table {
+            border-collapse: collapse;
+            border: none;
+            width: 100%;
+        }
+
+        footer table td {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            border: 0;
+            line-height: 10px;
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        footer table td:first-child {
+            text-align: left;
+        }
+
+        footer table td:last-child {
+            text-align: right;
+        }
+
+        .Rechnungs-Tabelle table {
+            border-collapse: collapse;
+            border: none;
+            width: 100%;
+        }
+
+        .Rechnungs-Tabelle table td {
+            border: solid black 1.0pt;
+            text-align: center;
+            padding: 6.5pt 6.5pt 6.5pt 6.5pt;
+        }
+    </style>
+    <title>MusterRechnung</title>
+</head>
+
+<body>
+    <header>
+        <div class="ÜberschriftFirma">
+            <p><u><span style='font-size:10pt;'>Firmenname - Firmenstr. 0 -
+                        50000 Köln</span></u></p>
+        </div>
+        <div class="FirmenLogo">
+            <img src="images/logo.jpg">
+        </div>
+
+    </header>
+
+    <footer>
+        <!-- Horizontal line -->
+        <hr>
+        <table>
+            <tbody>
+                <tr>
+                    <td>Firmenname</td>
+                    <td>Bank</td>
+                    <td>+49 (0) 01234567891</td>
+                    <td>www.firma.de</td>
+                </tr>
+                <tr>
+                    <td>Inh. Vorname Nachname</td>
+                    <td>Sparkasse KölnBonn</td>
+                    <td>+49 (0) 012 /3456789</td>
+                    <td>info@firma.de</td>
+                </tr>
+                <tr>
+                    <td>Firmenstr. 0 - 50000 Köln</td>
+                    <td>DE00000000000000000000</td>
+                    <td></td>
+                    <td>St.-Nr.: 000/0000/0000</td>
+                </tr>
+            </tbody>
+        </table>
+    </footer>
+
+    <main>
+        <div class="content">
+
+            <div class="Kontaktinformationen">
+                <p>%KontaktInformationen%</p>
+            </div>
+            <div class="RechnungsDatum">
+                <p style="text-align:right;">Rechnungsdatum: %Rechnungsdatum%</p>
+            </div>
+            <div class="RechnungsNr">
+                <br>
+                <p><strong>RECHNUNG NR.: %RechnungsKürzelNummer%<strong><br><span style="font-size: 10pt;">Bitte bei
+                                Zahlungen angeben</span></p>
+            </div>
+
+            <div class="Anrede">
+                <br>
+                <p>%Anrede%</p>
+                <p>hiermit übersenden wir Ihnen die Rechnung v. %RechnungsMonatJahr_ggfVertragsDatum% für folgende
+                    Leistungen:</p>
+            </div>
+
+            <div class="Rechnungs-Tabelle">
+                <table>
+
+                    <tbody>
+                        <tr>
+                            <td style="text-align: left;">Leistung</td>
+                            <td style="width: 100px;">Stunden</td>
+                            <td style="width: 100px;">Abrechnungsart</td>
+                            <td style="width: 140px;">Preis ohne MwSt.</td>
+                        </tr>
+
+                        <!-- Leistung and the given values -->
+                        %TABLE_ROWS%
+
+
+                        <tr>
+                            <td colspan="3" style="text-align: left;">
+                                Zzgl. Gesetzlicher Mehrwertsteuer 19%
+                            </td>
+                            <td>
+                                %gesamtBetragMwSt% Euro
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="3" style="text-align: left;">
+                                <strong>Gesamtbetrag inkl. MwSt.</strong>
+                            </td>
+                            <td>
+                                <strong>%gesamtBetragBrutto% Euro</strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="Zahlungsaufforderung">
+                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von %gesamtBetragBrutto% Euro innerhalb von 10 Tage nach
+                    Rechnungszustellung auf unser unten genanntes Bankonto zu überweisen.
+                </p>
+                <br>
+                <p>Mit freundlichen Grüßen <br> Vorname Nachname</p>
+            </div>
+
+        </div>
+
+    </main>
+</body>
+
+</html>

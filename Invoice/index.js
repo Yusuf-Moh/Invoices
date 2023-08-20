@@ -5,33 +5,6 @@ closeBtn.addEventListener("click", function () {
 });
 
 
-//MessageType from PHP to JS with the help of "echo"
-var messageType;
-
-//Organization-Form all input values from PHP with "echo"
-var firmenName_organization, firmenAdresse_organization, rechnungsKuerzel_organization, PLZ_organization, Ort_organization, Vertragsdatum_organization, Ansprechpartner_organization;
-var gender_organization;
-
-var updatePerson = false, updateOrganization = false;
-
-if (messageType == "error" || messageType == "edit") {
-    document.querySelector(".modal").classList.add("active");
-    //insert the last data to inputfields at a error 
-    document.getElementById("firmenName_organization").value = firmenName_organization;
-    document.getElementById("firmenAdresse_organization").value = firmenAdresse_organization;
-    document.getElementById("rechnungsKuerzel_organization").value = rechnungsKuerzel_organization;
-    document.getElementById("PLZ_organization").value = PLZ_organization;
-    document.getElementById("Ort_organization").value = Ort_organization;
-    document.getElementById("Vertragsdatum_organization").value = Vertragsdatum_organization;
-    document.getElementById("Ansprechpartner_organization").value = Ansprechpartner_organization;
-    if (gender_organization == "Male") {
-        maleRadio_organization.checked = true;
-    } else if (gender_organization == "Female") {
-        femaleRadio_organization.checked = true;
-    }
-
-}
-
 
 // Detect page reloads
 if (performance.navigation.type === 1) {
@@ -139,14 +112,6 @@ document.addEventListener('click', function (event) {
 
 
 
-
-//jQuery code:
-$(document).ready(function () {
-    //Storing the current Month Year (Format: MMMM JJJJ) and write the value in the inputfield RechnungsMonatJahr
-    setRechnungsMonatJahrCurrentMonthYear();
-});
-
-
 function setRechnungsMonatJahrCurrentMonthYear() {
     // Set the current year and month as default values for the "RechnungsJahr" and "RechnungsMonat" input fields
     var currentDate = new Date();
@@ -159,12 +124,14 @@ function setRechnungsMonatJahrCurrentMonthYear() {
     }
 
     // Assign the values to the input fields
-    $('#RechnungsMonatJahr').val(currentYear + '-' + currentMonth);
+    document.getElementById('RechnungsMonatJahr').value = currentYear + '-' + currentMonth;
 }
-//Toggle the Inputfield at the Dropdownliste ABrechnungsart
-function toggleInputField() {
-    var selectElement = document.getElementById("AbrechnungsartList");
-    var inputElement = document.getElementById("Stunden");
+setRechnungsMonatJahrCurrentMonthYear();
+
+//Toggle the Inputfield at the Dropdownliste Abrechnungsart
+function toggleInputField(containerElement) {
+    var selectElement = containerElement.querySelector("select[name='AbrechnungsartList[]']");
+    var inputElement = containerElement.querySelector("input[name='Stunden[]']");
 
     if (selectElement.value === "Stunden") {
         inputElement.style.display = "block"; // Display the input field if "Stunden" is selected
@@ -176,6 +143,306 @@ function toggleInputField() {
     }
 }
 
+// PHP Variables in JS
+var jsonEditData;
+var messageType;
 
+//Adding first ckEditor which can not be deleted
+
+const firstEditor = [];
+//Add ckEditor 5 Custom Build
+ClassicEditor
+    .create(document.querySelector('#leistungEditor'))
+    .then(editor => {
+
+        firstEditor.push(editor);
+
+        //default font is Arial
+        const fontFamily = editor.commands.get('fontFamily');
+        fontFamily.execute({
+            value: 'Arial, Helvetica, sans-serif'
+        });
+
+        // Insert value into the ckEditor if we edit the given Invoice
+        if (messageType == "edit") {
+            editor.setData(jsonEditData.Leistung_edit[0]);
+        }
+    })
+    .catch(error => {
+        console.error(error);
+    });
+
+
+
+let editorCount = 0; // Countvariable for the created editor
+const editorArray = []; // Array to store editor instances/objects
+
+//  Adding onclick for the tfoot label 
+function addDienstleistungsRow() {
+    const tBody = document.querySelector('.dienstleistungs-details tbody');
+    const newRow = document.createElement('tr');
+
+
+    newRow.setAttribute('data-editor-index', editorCount); // Add attribute to mark the editor index
+    newRow.setAttribute('data-editor-active', 'true'); // Add attribute to mark the editor as active
+
+    editorCount++;
+
+    newRow.innerHTML = `
+        <td>
+            <div class="leistung">
+                <textarea class="leistungEditor" name="leistungEditor[]"></textarea>
+            </div>
+        </td>
+        <td>
+            <div class="abrechnungsart">
+                <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
+                    <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                    <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
+                        <option value="Pauschal">Pauschal</option>
+                        <option value="Stunden">Stunden</option>
+                    </select>
+                </div>
+            </div>
+        </td>
+        <td>
+            <div class="preis">
+                <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+            </div>
+        </td>
+        <td class="delete-icon-cell">
+            <span class="material-icons-sharp" onclick="deleteRow(this)">delete</span>
+        </td>
+    `;
+
+    tBody.appendChild(newRow);
+
+    // Creating new ckEditor
+    ClassicEditor
+        .create(newRow.querySelector('.leistungEditor'))
+        .then(editor => {
+
+            //default font is Arial
+            const fontFamily = editor.commands.get('fontFamily');
+            fontFamily.execute({
+                value: 'Arial, Helvetica, sans-serif'
+            });
+
+            editorArray.push(editor); // Add the editor instance to the array
+
+            if (messageType == "edit" && editorCount < jsonEditData.Leistung_edit.length) {
+                editor.setData(jsonEditData.Leistung_edit[editorCount]);
+            }
+
+        })
+        .catch(error => {
+            console.error(error);
+        });
+}
+// Delete the added Row 
+function deleteRow(deleteIcon) {
+    const rowToDelete = deleteIcon.closest('tr');
+    const editorIndex = rowToDelete.getAttribute('data-editor-index');
+
+    const editor = editorArray[editorIndex]; // Get the corresponding editor instance from the array
+
+    // Destroy the editor
+    editor.destroy();
+
+    // Remove the row
+    rowToDelete.remove();
+}
+
+// Event listener for form submission; checking if inputfield of the ckEditor is empty => dont submit form
+document.getElementById('form-modal').addEventListener('submit', function (event) {
+
+    var allCkEditorFilled = true;
+
+    if (firstEditor[0].getData().trim() == '') {
+        allCkEditorFilled = false;
+    }
+
+    if (allCkEditorFilled) {
+        const rows = document.querySelectorAll('.dienstleistungs-details tbody tr');
+
+        for (const row of rows) {
+            const editorIsActive = row.getAttribute('data-editor-active');
+            const editorIndex = row.getAttribute('data-editor-index');
+
+            const editor = editorArray[editorIndex];
+            // Check if the editor is active (not deleted)
+            if (editorIsActive === 'true') {
+                const editorData = editor.getData();
+
+                if (editorData.trim() === '' || editorData == '') {
+                    allCkEditorFilled = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    // all ckEditors are filled => reload website
+    if (allCkEditorFilled) {
+        const submitButton = event.target.querySelector('button[type="submit"]');
+        if (submitButton.value === 'save' || submitButton.value == "update") {
+            const form = document.getElementById('form-modal');
+
+            // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+            form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
+            form.target = '_blank';
+            if (submitButton.value == "update") {
+                messageType = "";
+            }
+        }
+        window.location.replace('invoice.php');
+    } else {
+        const messageDiv = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+        event.preventDefault();
+        messageDiv.style.display = 'flex';
+        messageText.innerText = 'Leere Eingabe für die Leistung!';
+        // Error Message Style
+        messageDiv.classList.add('error');
+    }
+});
+
+// Data from PHP (Switchcase edit) insert into the Inputfields
+if (messageType == "edit") {
+    var parsedEditData = jsonEditData;
+    document.querySelector(".modal").classList.add("active");
+
+    // Assuming parsedEditData.RechnungsDatum_edit is in the format "04.08.2023"
+    // Convert it to "YYYY-MM-DD" format
+    const rechnungsDatumParts = parsedEditData.RechnungsDatum_edit.split('.');
+    const rechnungsDatumFormatted = `${rechnungsDatumParts[2]}-${rechnungsDatumParts[1]}-${rechnungsDatumParts[0]}`;
+
+    // Assuming parsedEditData.Monat_Jahr_edit is in the format "August 2023"
+    // Convert it to "YYYY-MM" format
+    const monatJahrParts = parsedEditData.Monat_Jahr_edit.split(' ');
+    const monthName = monatJahrParts[0];
+    const year = monatJahrParts[1];
+
+    const monthNameToNumber = {
+        'Januar': '01',
+        'Februar': '02',
+        'März': '03',
+        'April': '04',
+        'Mai': '05',
+        'Juni': '06',
+        'Juli': '07',
+        'August': '08',
+        'September': '09',
+        'Oktober': '10',
+        'November': '11',
+        'Dezember': '12'
+    }
+    const monthNumber = monthNameToNumber[monthName];
+    const monatJahrFormatted = `${year}-${monthNumber}`;
+
+    document.getElementById('RechnungsDatum').value = rechnungsDatumFormatted;
+    document.getElementById('RechnungsMonatJahr').value = monatJahrFormatted;
+
+    // Store the KundenID into the hiddenInputfield
+    const kundenID_edit = parsedEditData.KundenID_edit;
+    const selectedKundenIDInput = document.getElementById('selectedKundenID');
+    selectedKundenIDInput.value = kundenID_edit;
+
+    // Select the corresponding customer in the dropdown list
+    const customerList = document.getElementById('customerList');
+    for (let i = 0; i < customerList.options.length; i++) {
+        if (customerList.options[i].value == kundenID_edit) {
+            customerList.options[i].selected = true;
+            break;
+        }
+    }
+
+
+
+    var addDienstleistungsRows = parsedEditData.NettoPreis_edit.length - 1;
+
+    var nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+    var AbrechnungsartStundenInputFields = document.querySelectorAll("input[name='Stunden[]']");
+    var AbrechnungsartSelectFields = document.querySelectorAll("select[name='AbrechnungsartList[]']");
+
+    // const LeistungArray = parsedEditData.Leistung_edit;
+    const AbrechnungsartArray = parsedEditData.Abrechnungsart_edit;
+    const nettoPreisArray = parsedEditData.NettoPreis_edit;
+
+
+
+    if (AbrechnungsartArray[0] == "Pauschal") {
+        AbrechnungsartSelectFields[0].value = "Pauschal";
+        AbrechnungsartStundenInputFields[0].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+        AbrechnungsartStundenInputFields[0].value = ""; // Set the input field value to empty when hiding it
+        AbrechnungsartStundenInputFields[0].required = false; // Set the "required" attribute to false
+
+    } else {
+        AbrechnungsartSelectFields[0].value = "Stunden";
+        AbrechnungsartStundenInputFields[0].style.display = "block"; // Display the input field if "Stunden" is selected
+        AbrechnungsartStundenInputFields[0].value = AbrechnungsartArray[0];
+        AbrechnungsartStundenInputFields[0].required = true; // Set the "required" attribute to true
+    }
+
+    nettoPreisInputFields[0].value = nettoPreisArray[0];
+
+    if (0 < addDienstleistungsRows) {
+        for (let i = 1; i <= addDienstleistungsRows; i++) {
+            addDienstleistungsRow();
+
+            AbrechnungsartStundenInputFields = document.querySelectorAll("input[name='Stunden[]']");
+            AbrechnungsartSelectFields = document.querySelectorAll("select[name='AbrechnungsartList[]']");
+
+            if (AbrechnungsartArray[i] == "Pauschal") {
+                AbrechnungsartSelectFields[i].value = "Pauschal";
+                AbrechnungsartStundenInputFields[i].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+                AbrechnungsartStundenInputFields[i].value = ""; // Set the input field value to empty when hiding it
+                AbrechnungsartStundenInputFields[i].required = false; // Set the "required" attribute to false
+
+            } else {
+                AbrechnungsartSelectFields[i].value = "Stunden";
+                AbrechnungsartStundenInputFields[i].style.display = "block"; // Display the input field if "Stunden" is selected
+                AbrechnungsartStundenInputFields[i].value = AbrechnungsartArray[i];
+                AbrechnungsartStundenInputFields[i].required = true; // Set the "required" attribute to true
+            }
+
+            // Update nettoPreisInputFields array after adding a new row, so we can access the value of the certain inputfield
+            nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
+            nettoPreisInputFields[i].value = nettoPreisArray[i];
+        }
+    }
+
+
+
+    // checkbox for MonatlicheRechnungBool_edit
+    if (parsedEditData.MonatlicheRechnungBool_edit == "1") {
+        // If MonatlicheRechnungBool_edit is "1", check the checkbox
+        document.getElementById('monatlicheRechnung').checked = true;
+    } else {
+        // If MonatlicheRechnungBool_edit is "0", uncheck the checkbox
+        document.getElementById('monatlicheRechnung').checked = false;
+    }
+}
+
+// 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
+
+// 'MwSt_edit' => $MwSt_edit,
+// 'GesamtBetrag_edit' => $GesamtBetrag_edit,
 
 // ==================== END OF MODAL ====================
+
+
+// ==================== Start OF Crud ====================
+
+function showDeleteConfirmation(button) {
+    var confirmation = confirm("Bist du dir ganz sicher, das du diesen Datensatz löschen möchtest?");
+    if (confirmation) {
+        button.type = 'submit';
+    } else {
+        event.preventDefault();
+    }
+}
+
+
+// ==================== END OF Crud ====================
+
