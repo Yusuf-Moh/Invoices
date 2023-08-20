@@ -22,7 +22,7 @@ $gesamtBetragBrutto = 0;
 // Replace Stunden with the inputfield number
 for ($i = 0; $i < count($AbrechnungsartList); $i++) {
     if ($AbrechnungsartList[$i] != "Pauschal") {
-        $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i];
+        $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i] . ' Stunden';
     }
 }
 
@@ -210,7 +210,8 @@ function AbrechnungsArtPauschalStunden($abrechnungsart)
         $html .= '<td></td>';
         $html .= '<td>' . $abrechnungsart . '</td>';
     } else {
-        $html .= '<td>' . $abrechnungsart . ' Std.</td>';
+        $abrechnungsart = str_replace(' Stunden', ' Std.', $abrechnungsart);
+        $html .= '<td>' . $abrechnungsart . '</td>';
         $html .= '<td></td>';
     }
     return $html;
@@ -269,7 +270,6 @@ $RechnungsMonatJahr_ggfVertragsDatum =  $RechnungsMonatJahr . displayVertragsdat
 $TABLE_ROWS = '';
 for ($i = 0; $i < count($nettoPreis); $i++) {
     //format the number from for example, 1000 to 1.000,00
-    // $nettoPreis[$i] = number_format($nettoPreis[$i], 2, ',', '.');
 
     $TABLE_ROWS .= '<tr>';
     $TABLE_ROWS .= '<td style="text-align: left;">' . $Leistung[$i] . '</td>';

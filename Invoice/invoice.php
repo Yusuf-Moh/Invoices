@@ -360,26 +360,6 @@ function parseSerializedData($serializedData)
     }
 }
 
-function parseSerializedDataAbrechnungsart($serializedData)
-{
-    $dataArray = unserialize($serializedData);
-    $lengthArray = count($dataArray);
-
-    foreach ($dataArray as $index => $data) {
-
-        if ($data != "Pauschal") {
-            $data = $data . ' Stunden';
-        }
-
-        echo '<p>' . nl2br($data) . '</p>';
-
-        // Add the <br> tag for all Array elements except the last one
-        if ($index != $lengthArray - 1) {
-            echo "<br>";
-        }
-    }
-}
-
 function parseSerializedDataLeistung($serializedData)
 {
     $dataArray = unserialize($serializedData);
@@ -651,7 +631,7 @@ function stateSearchButton($currentState)
                             <tr>
                                 <td><?php echo KundenInformationen($row['FirmenName'], $row['Name_Ansprechpartner'], $row['Adresse'], $row['PLZ'], $row['Ort']); ?></td>
                                 <td><?php parseSerializedDataLeistung($row['Leistung']); ?></td>
-                                <td><?php parseSerializedDataAbrechnungsart($row['Abrechnungsart']); ?></td>
+                                <td><?php parseSerializedData($row['Abrechnungsart']); ?></td>
                                 <td><?php parseSerializedData($row['NettoPreis']); ?></td>
                                 <td><?php echo htmlspecialchars($row['MwSt']); ?></td>
                                 <td><?php echo htmlspecialchars($row['GesamtBetrag']); ?></td>

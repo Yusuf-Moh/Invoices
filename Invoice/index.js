@@ -4,8 +4,6 @@ closeBtn.addEventListener("click", function () {
     document.getElementById('message').style.display = 'none';
 });
 
-
-
 // Detect page reloads
 if (performance.navigation.type === 1) {
     // Page reload detected, do the redirect to the same page
@@ -18,7 +16,7 @@ if (performance.navigation.type === 1) {
 // Select Search-Input-Element
 var searchInput = document.getElementById('search');
 
-// Event-Listener for Keydown
+// Event-Listener for Keydown => If in the Searchbar, the Enter-Key on the Keyboard is clicked, the searchButton should also be clicked
 searchInput.addEventListener('keydown', function (event) {
     // Check, if the holding key is the enter-key
     if (event.key === 'Enter') {
@@ -358,7 +356,7 @@ if (messageType == "edit") {
     }
 
 
-
+    // Calculate the rows to create; -1 because there is one row in default
     var addDienstleistungsRows = parsedEditData.NettoPreis_edit.length - 1;
 
     var nettoPreisInputFields = document.querySelectorAll('input[name="nettoPreis[]"]');
@@ -380,6 +378,7 @@ if (messageType == "edit") {
     } else {
         AbrechnungsartSelectFields[0].value = "Stunden";
         AbrechnungsartStundenInputFields[0].style.display = "block"; // Display the input field if "Stunden" is selected
+        AbrechnungsartArray[0] = AbrechnungsartArray[0].replace(' Stunden', '');
         AbrechnungsartStundenInputFields[0].value = AbrechnungsartArray[0];
         AbrechnungsartStundenInputFields[0].required = true; // Set the "required" attribute to true
     }
@@ -402,6 +401,7 @@ if (messageType == "edit") {
             } else {
                 AbrechnungsartSelectFields[i].value = "Stunden";
                 AbrechnungsartStundenInputFields[i].style.display = "block"; // Display the input field if "Stunden" is selected
+                AbrechnungsartArray[i] = AbrechnungsartArray[i].replace(' Stunden', '');
                 AbrechnungsartStundenInputFields[i].value = AbrechnungsartArray[i];
                 AbrechnungsartStundenInputFields[i].required = true; // Set the "required" attribute to true
             }
@@ -423,11 +423,6 @@ if (messageType == "edit") {
         document.getElementById('monatlicheRechnung').checked = false;
     }
 }
-
-// 'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
-
-// 'MwSt_edit' => $MwSt_edit,
-// 'GesamtBetrag_edit' => $GesamtBetrag_edit,
 
 // ==================== END OF MODAL ====================
 
