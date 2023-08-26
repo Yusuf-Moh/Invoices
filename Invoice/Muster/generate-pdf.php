@@ -97,24 +97,7 @@ $insertInvoiceDB = false;
 if ($saveUpdate == "save") {
     // ============ Last RechnungsNR of DB-Table Rechnung ============
     $RechnungsNr = lastRechnungsNr($KundenID);
-
-    // überprüfen ob $MonatlicheRechnung == "1", dann in Tabelle INSERTEN
-    $Leistung_serialize = serialize($Leistung);
-    $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
-    $nettoPreis_serialize = serialize($nettoPreis);
-
-    $RechnungsID_save = $_POST['RechnungsID'];
-
-    include('../../dbPhp/dbOpenConnection.php');
-    $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
-    $stmt = $conn->prepare($query);
-    $stmt->bindParam(':Leistung', $Leistung_serialize);
-    $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
-    $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
-    $stmt->bindParam(':KundenID', $KundenID);
-    $stmt->bindParam(':RechnungsID', $RechnungsID_save);
-    $stmt->execute();
-    include('../../dbPhp/dbCloseConnection.php');
+    $insertInvoiceDB = true;
 } else if ($saveUpdate == "update") {
     // RechnungsID from the hidden Inputfield of the Modal
     $RechnungsID = $_POST['RechnungsID'];
@@ -277,6 +260,12 @@ function deleteRechnung($rechnungsID)
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':RechnungsID', $rechnungsID);
     $stmt->execute();
+
+    // If there is a record with the given RechnungsID in the Database Table monatliche_rechnungen, then it should be deleted aswell
+    $query = "DELETE FROM monatliche_rechnung WHERE RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
     include('../../dbPhp/dbCloseConnection.php');    // dbConnection close
 }
 
@@ -425,7 +414,7 @@ try {
     }
     $stmt->execute();
 
-    if ($saveUpdate == "update" && $insertInvoiceDB == true) {
+    if ($insertInvoiceDB == true) {
         $RechnungsID_New = $conn->lastInsertId();
     }
     // Success message
@@ -478,4 +467,20 @@ if ($saveUpdate == "update") {
         $stmt->execute();
         include('../../dbPhp/dbCloseConnection.php');
     }
+} else if ($saveUpdate == "save") {
+    // überprüfen ob $MonatlicheRechnung == "1", dann in Tabelle INSERTEN
+    $Leistung_serialize = serialize($Leistung);
+    $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
+    $nettoPreis_serialize = serialize($nettoPreis);
+
+    include('../../dbPhp/dbOpenConnection.php');
+    $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':Leistung', $Leistung_serialize);
+    $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
+    $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
+    $stmt->bindParam(':KundenID', $KundenID);
+    $stmt->bindParam(':RechnungsID', $RechnungsID_New);
+    $stmt->execute();
+    include('../../dbPhp/dbCloseConnection.php');
 }

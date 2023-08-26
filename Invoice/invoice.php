@@ -385,6 +385,12 @@ function deleteRechnung($rechnungsID)
     $stmt->bindParam(':RechnungsID', $rechnungsID);
     $stmt->execute();
 
+    // If there is a record with the given RechnungsID in the Database Table monatliche_rechnungen, then it should be deleted aswell
+    $query = "DELETE FROM monatliche_rechnung WHERE RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+
     $query = "DELETE FROM rechnung WHERE RechnungsID=:RechnungsID;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':RechnungsID', $rechnungsID);
