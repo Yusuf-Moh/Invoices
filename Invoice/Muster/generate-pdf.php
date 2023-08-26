@@ -91,31 +91,56 @@ if ($gender == "Male") {
 }
 include('../../dbPhp/dbCloseConnection.php');
 
+
+$insertInvoiceDB = false;
+
 if ($saveUpdate == "save") {
     // ============ Last RechnungsNR of DB-Table Rechnung ============
     $RechnungsNr = lastRechnungsNr($KundenID);
+
+    // überprüfen ob $MonatlicheRechnung == "1", dann in Tabelle INSERTEN
+    $Leistung_serialize = serialize($Leistung);
+    $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
+    $nettoPreis_serialize = serialize($nettoPreis);
+
+    $RechnungsID_save = $_POST['RechnungsID'];
+
+    include('../../dbPhp/dbOpenConnection.php');
+    $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':Leistung', $Leistung_serialize);
+    $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
+    $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
+    $stmt->bindParam(':KundenID', $KundenID);
+    $stmt->bindParam(':RechnungsID', $RechnungsID_save);
+    $stmt->execute();
+    include('../../dbPhp/dbCloseConnection.php');
 } else if ($saveUpdate == "update") {
-    // RechnungsID from the hidden Inputfield
+    // RechnungsID from the hidden Inputfield of the Modal
     $RechnungsID = $_POST['RechnungsID'];
 
     include('../../dbPhp/dbOpenConnection.php');
-    $query = "SELECT KundenID, RechnungsNummer FROM rechnung WHERE RechnungsID = :RechnungsID";
+    $query = "SELECT KundenID, RechnungsNummer, MonatlicheRechnungBool FROM rechnung WHERE RechnungsID = :RechnungsID";
     $stmt = $conn->prepare($query);
     $stmt->bindParam('RechnungsID', $RechnungsID, PDO::PARAM_INT);
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
     $KundenID_update = $result['KundenID'];
     $RechnungsNr_update = $result['RechnungsNummer'];
+    $MonatlicheRechnungBool_update = $result['MonatlicheRechnungBool'];
+
     include('../../dbPhp/dbCloseConnection.php');
 
     if ($KundenID_update == $KundenID) {
         $RechnungsNr = $RechnungsNr_update;
     } else {
+        // Delete the Invoice with the RechnungsID; The deleted Data is getting stored in the Table deletedRechnung, so we can have a backup and can follow the RechnungsNr.
         $RechnungsNr = lastRechnungsNr($KundenID);
         deleteRechnung($RechnungsID);
-        // Delete the Invoice with the RechnungsID; But carefully, you need to follow a row of RechnungsNr. You arent allowed to delete a Invoice and have a gap in RechnungsNr.
-        // Also you need to inform the Kunden, that the given Invoice is not valid (deleted). When you are editing a Invoice you also need to inform the Kunden.
+        $insertInvoiceDB = true;
     }
+
+    // Kunde wurde geändert, und monatlicheRechnung nicht! Aufpassen weil in der Datenbank Tabelle MonatlicheRechnung der alte Kunde (KundenID) noch drinne ist. Muss geändert werden um FolgeFehler zu vermeiden
 }
 
 $RechnungsKürzelNummer = $RechnungsKürzel . convertToMMYY($RechnungsMonatJahr) . "/" . formatRechnungsNr($RechnungsNr);
@@ -241,11 +266,13 @@ function deleteRechnung($rechnungsID)
 {
     include('../../dbPhp/dbOpenConnection.php'); // dbConnection open
 
+    // The data of the deleted Invoice is getting stored in a Table deletedRechnung as Backup.
     $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':RechnungsID', $rechnungsID);
     $stmt->execute();
 
+    // Deleting the Invoice from Table rechnung
     $query = "DELETE FROM rechnung WHERE RechnungsID=:RechnungsID;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':RechnungsID', $rechnungsID);
@@ -360,7 +387,7 @@ try {
     $AbrechnungsartList = serialize($AbrechnungsartList);
     $nettoPreis = serialize($nettoPreis);
 
-    if ($saveUpdate == "update") {
+    if ($saveUpdate == "update" && $insertInvoiceDB == false) {
         $sql = "UPDATE rechnung
         SET Leistung = :leistung,
             Abrechnungsart = :abrechnungsart,
@@ -393,13 +420,62 @@ try {
     $stmt->bindParam(':rechnungsKuerzelNummer', $RechnungsKürzelNummer);
     $stmt->bindParam(':mwSt', $gesamtBetragMwSt);
     $stmt->bindParam(':gesamtBetrag', $gesamtBetragBrutto);
-    if ($saveUpdate == "update") {
+    if ($saveUpdate == "update" && $insertInvoiceDB == false) {
         $stmt->bindParam(':rechnungsID', $RechnungsID);
     }
     $stmt->execute();
+
+    if ($saveUpdate == "update" && $insertInvoiceDB == true) {
+        $RechnungsID_New = $conn->lastInsertId();
+    }
     // Success message
 } catch (PDOException  $error) {
     // Error message
 }
-
 include('../../dbPhp/dbCloseConnection.php');
+
+
+// MonatlicheRechnung hinzufügen/löschen/updaten 
+if ($saveUpdate == "update") {
+    if ($MonatlicheRechnungBool_update == "1" && $monatlicheRechnung == "0") {
+        // MonatlicheRechnung angeklickt (von 1 => 0) := Datenbank Tabelle monatlicheRechnung löschen
+        include('../../dbPhp/dbOpenConnection.php');
+        $query = "DELETE FROM monatliche_rechnung WHERE RechnungsID = :RechnungsID;";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':RechnungsID', $RechnungsID);
+        $stmt->execute();
+        include('../../dbPhp/dbCloseConnection.php');
+    } else if ($MonatlicheRechnungBool_update == "0" && $monatlicheRechnung == "1") {
+        // MonatlicheRechnung angeklickt (von 0 => 1) := Datenbank Tabelle monatlicheRechnung hinzufügen
+        $Leistung_serialize = serialize($Leistung);
+        $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
+        $nettoPreis_serialize = serialize($nettoPreis);
+
+        include('../../dbPhp/dbOpenConnection.php');
+        $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':Leistung', $Leistung_serialize);
+        $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
+        $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
+        $stmt->bindParam(':KundenID', $KundenID);
+        $stmt->bindParam(':RechnungsID', $RechnungsID);
+        $stmt->execute();
+        include('../../dbPhp/dbCloseConnection.php');
+    } else if ($MonatlicheRechnungBool_update == "1" && $monatlicheRechnung == "1") {
+        $Leistung_serialize = serialize($Leistung);
+        $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
+        $nettoPreis_serialize = serialize($nettoPreis);
+        // anhand RechnungsID in Tabelle monatlicheRechnung, den DatenSatz updaten
+        include('../../dbPhp/dbOpenConnection.php');
+        $query = "UPDATE monatliche_rechnung SET Leistung = :Leistung, Abrechnungsart = :Abrechnungsart, NettoPreis = :NettoPreis, KundenID = :KundenID, RechnungsID = :RechnungsID_New WHERE RechnungsID = :RechnungsID_Old;";
+        $stmt = $conn->prepare($query);
+        $stmt->bindParam(':Leistung', $Leistung_serialize);
+        $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
+        $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
+        $stmt->bindParam(':KundenID', $KundenID);
+        $stmt->bindParam(':RechnungsID_New', $RechnungsID_New);
+        $stmt->bindParam(':RechnungsID_Old', $RechnungsID);
+        $stmt->execute();
+        include('../../dbPhp/dbCloseConnection.php');
+    }
+}
