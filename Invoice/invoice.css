@@ -412,6 +412,29 @@ b {
     margin-bottom: 0;
 }
 
+.ContentMonatlicheRechnungen {
+    display: contents;
+}
+
+.monatlicheRechnung-Kunde {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+}
+
+.monatlicheRechnung-Kunde input {
+    appearance: auto;
+    width: 18px;
+    height: 18px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.monatlicheRechnung-Kunde label {
+    font-size: 12px;
+}
+
 /* ================= END OF THE Style for the checkbox Monatliche Rechnung  =========================*/
 
 /* ============== END OF Modal ==============*/

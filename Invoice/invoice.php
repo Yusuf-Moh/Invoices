@@ -626,6 +626,41 @@ function stateSearchButton($currentState)
                                 <input type="date" name="RechnungsDatum-MonatlicheRechnungen" id="RechnungsDatum-MonatlicheRechnungen" required>
                                 <input type="month" name="RechnungsMonatJahr-MonatlicheRechnungen" id="RechnungsMonatJahr-MonatlicheRechnungen" required>
                             </div>
+                            <div class="ContentMonatlicheRechnungen">
+                                <?php
+                                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                                $sql_monatlicheRechnung = "SELECT m.*,
+                                CASE
+                                    WHEN k.organization = 1 THEN k.firmenname
+                                    WHEN k.person = 1 THEN k.Name_Ansprechpartner
+                                    ELSE 'Unbekannt'
+                                END AS Kundenname
+                                FROM
+                                    monatliche_rechnung m
+                                JOIN
+                                    Kunden k ON m.KundenID = k.KundenID;";
+
+
+                                $stmt = $conn->prepare($sql_monatlicheRechnung);
+                                $stmt->execute();
+                                $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                foreach ($customer as $row) {
+                                    $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
+                                    $html = '';
+                                    $html .= '<div class="monatlicheRechnung-Kunde">';
+                                    $html .= '<input type="checkbox" name="erstelleMonatlicheRechnung" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">';
+                                    $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['Kundenname'] . '</label>';
+                                    $html .= '</div>';
+                                    echo $html;
+                                }
+                                ?>
+                                <!-- <div class="monatlicheRechnung-Kunde">
+                                    <input type="checkbox" name="erstelleMonatlicheRechnung" id="erstelleMonatlicheRechnung-X">
+                                    <label for="erstelleMonatlicheRechnung-X">test</label>
+                                </div> -->
+                            </div>
+
                         </div>
                     </form>
                 </div>
