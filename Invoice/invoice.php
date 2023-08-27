@@ -606,6 +606,31 @@ function stateSearchButton($currentState)
             </div>
         </div>
 
+        <div class="MonatlicheRechnungen">
+            <!-- Open Modal for the MonatlicheRechnungen -->
+            <button type="button" id="CreateMonatlicheRechnungenModal" class="createMonatlicheRechnungen-Btn">Monatliche-Rechnung</button>
+
+            <!-- Content of the Modal -->
+            <div class="modal-MonatlicheRechnungen">
+
+                <div class="modal-header">
+                    <h2>Erstellen Monatliche-Rechnung</h2>
+                    <span class="material-icons-sharp">close</span>
+                </div>
+
+                <div class="form-container">
+                    <form method="POST" id="form-modal">
+                        <div class="datum-MonatlicheRechnungen">
+                            <label for="RechnungsDatum-MonatlicheRechnungen">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
+                            <div class="RechnungsDatum-MonatlicheRechnungen">
+                                <input type="date" name="RechnungsDatum-MonatlicheRechnungen" id="RechnungsDatum-MonatlicheRechnungen" required>
+                                <input type="month" name="RechnungsMonatJahr-MonatlicheRechnungen" id="RechnungsMonatJahr-MonatlicheRechnungen" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
 
         <!-- End of Create Contacts with Modal -->
 

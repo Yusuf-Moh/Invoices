@@ -200,7 +200,8 @@ b {
 
 
 /* ============== Create new Contacts ============== */
-.createInvoice-Btn {
+.createInvoice-Btn,
+.createMonatlicheRechnungen-Btn {
     display: inline-block;
     background-color: var(--color-info-light);
     padding: var(--padding-btn);
@@ -242,7 +243,8 @@ b {
     border-radius: var(--border-radius-1);
 }
 
-.modal {
+.modal,
+.modal-MonatlicheRechnungen {
     position: absolute;
     /* For JS to "popup"*/
     top: -150%;
@@ -260,20 +262,23 @@ b {
         transform 600ms ease-in-out 200ms;
 }
 
-.modal.active {
+.modal.active,
+.modal-MonatlicheRechnungen.active {
     top: 50%;
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
     transition: top 0ms ease-in-out 0ms, opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
 }
 
-.modal .modal-header {
+.modal .modal-header,
+.modal-MonatlicheRechnungen .modal-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
 }
 
-.modal .modal-header span {
+.modal .modal-header span,
+.modal-MonatlicheRechnungen .modal-header span {
     margin-top: 3px;
     cursor: pointer;
 }
@@ -378,11 +383,13 @@ b {
 
 /* ================= Style for the Datum (RechnungsDatum, Monat, Jahr)  =========================*/
 
-.datum {
+.datum,
+.datum-MonatlicheRechnungen {
     display: contents;
 }
 
-.RechnungsDatum {
+.RechnungsDatum,
+.RechnungsDatum-MonatlicheRechnungen {
     display: flex;
     gap: 10px;
     width: 100%;

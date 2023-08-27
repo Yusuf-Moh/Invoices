@@ -66,6 +66,15 @@ document.querySelector(".modal .modal-header span").addEventListener("click", fu
     window.location.replace('invoice.php');
 });
 
+// Modal MonatlicheRechnungen Open
+document.querySelector('#CreateMonatlicheRechnungenModal').addEventListener('click', function () {
+    document.querySelector('.modal-MonatlicheRechnungen').classList.add('active');
+});
+// Modal MonatlicheRechnungen Close
+document.querySelector('.modal-MonatlicheRechnungen .modal-header span').addEventListener('click', function () {
+    document.querySelector('.modal-MonatlicheRechnungen').classList.remove('active');
+    window.location.replace('invoice.php');
+});
 
 
 // KundenID stored in the hidden Inputfield "selectedKundenID"
