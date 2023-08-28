@@ -117,6 +117,27 @@ document.addEventListener('click', function (event) {
     }
 });
 
+// Event listener to hide RechnungsInformationen when click occurs outside the modal-MonatlicheRechnung
+document.addEventListener('click', function (event) {
+    const modalContainer = document.querySelector('.modal-MonatlicheRechnungen');
+    const rechnungsInformationenElements = document.getElementsByClassName('RechnungsInformationen');
+
+    if (!modalContainer.contains(event.target)) {
+        for (const element of rechnungsInformationenElements) {
+            element.style.display = 'none';
+        }
+    }
+});
+
+function toggleRechnungsInformationen(checkbox) {
+    const rechnungsInformationen = checkbox.closest(".monatlicheRechnung-Kunde").querySelector(".RechnungsInformationen");
+
+    if (checkbox.checked) {
+        rechnungsInformationen.style.display = "block";
+    } else {
+        rechnungsInformationen.style.display = "none";
+    }
+}
 
 
 function setRechnungsMonatJahrCurrentMonthYear() {

@@ -414,6 +414,7 @@ try {
     }
     $stmt->execute();
 
+    $RechnungsID_New = $RechnungsID;
     if ($insertInvoiceDB == true) {
         $RechnungsID_New = $conn->lastInsertId();
     }
@@ -434,52 +435,20 @@ if ($saveUpdate == "update") {
         $stmt->bindParam(':RechnungsID', $RechnungsID);
         $stmt->execute();
         include('../../dbPhp/dbCloseConnection.php');
-    } else if ($MonatlicheRechnungBool_update == "0" && $monatlicheRechnung == "1") {
-        // MonatlicheRechnung angeklickt (von 0 => 1) := Datenbank Tabelle monatlicheRechnung hinzufügen
-        $Leistung_serialize = serialize($Leistung);
-        $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
-        $nettoPreis_serialize = serialize($nettoPreis);
-
+    } else if (($MonatlicheRechnungBool_update == "0" && $monatlicheRechnung == "1") || ($insertInvoiceDB && $monatlicheRechnung == "1")) {
+        // MonatlicheRechnung angeklickt (von 0 => 1) ODER wenn eine Rechnung hinzugefügt wurde && Monatlicherechnung ist checked := Datenbank Tabelle monatlicheRechnung hinzufügen
         include('../../dbPhp/dbOpenConnection.php');
-        $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
+        $query = "INSERT INTO monatliche_rechnung (RechnungsID) VALUES (:RechnungsID);";
         $stmt = $conn->prepare($query);
-        $stmt->bindParam(':Leistung', $Leistung_serialize);
-        $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
-        $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
-        $stmt->bindParam(':KundenID', $KundenID);
-        $stmt->bindParam(':RechnungsID', $RechnungsID);
-        $stmt->execute();
-        include('../../dbPhp/dbCloseConnection.php');
-    } else if ($MonatlicheRechnungBool_update == "1" && $monatlicheRechnung == "1") {
-        $Leistung_serialize = serialize($Leistung);
-        $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
-        $nettoPreis_serialize = serialize($nettoPreis);
-        // anhand RechnungsID in Tabelle monatlicheRechnung, den DatenSatz updaten
-        include('../../dbPhp/dbOpenConnection.php');
-        $query = "UPDATE monatliche_rechnung SET Leistung = :Leistung, Abrechnungsart = :Abrechnungsart, NettoPreis = :NettoPreis, KundenID = :KundenID, RechnungsID = :RechnungsID_New WHERE RechnungsID = :RechnungsID_Old;";
-        $stmt = $conn->prepare($query);
-        $stmt->bindParam(':Leistung', $Leistung_serialize);
-        $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
-        $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
-        $stmt->bindParam(':KundenID', $KundenID);
-        $stmt->bindParam(':RechnungsID_New', $RechnungsID_New);
-        $stmt->bindParam(':RechnungsID_Old', $RechnungsID);
+        $stmt->bindParam(':RechnungsID', $RechnungsID_New);
         $stmt->execute();
         include('../../dbPhp/dbCloseConnection.php');
     }
 } else if ($saveUpdate == "save") {
     // überprüfen ob $MonatlicheRechnung == "1", dann in Tabelle INSERTEN
-    $Leistung_serialize = serialize($Leistung);
-    $AbrechnungsartList_serialize = serialize($AbrechnungsartList);
-    $nettoPreis_serialize = serialize($nettoPreis);
-
     include('../../dbPhp/dbOpenConnection.php');
-    $query = "INSERT INTO monatliche_rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, RechnungsID) VALUES (:Leistung, :Abrechnungsart, :NettoPreis, :KundenID, :RechnungsID);";
+    $query = "INSERT INTO monatliche_rechnung (RechnungsID) VALUES (:RechnungsID);";
     $stmt = $conn->prepare($query);
-    $stmt->bindParam(':Leistung', $Leistung_serialize);
-    $stmt->bindParam(':Abrechnungsart', $AbrechnungsartList_serialize);
-    $stmt->bindParam(':NettoPreis', $nettoPreis_serialize);
-    $stmt->bindParam(':KundenID', $KundenID);
     $stmt->bindParam(':RechnungsID', $RechnungsID_New);
     $stmt->execute();
     include('../../dbPhp/dbCloseConnection.php');

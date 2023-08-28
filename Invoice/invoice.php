@@ -629,16 +629,21 @@ function stateSearchButton($currentState)
                             <div class="ContentMonatlicheRechnungen">
                                 <?php
                                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                                $sql_monatlicheRechnung = "SELECT m.*,
+
+                                $sql_monatlicheRechnung = "SELECT MR.*,
                                 CASE
-                                    WHEN k.organization = 1 THEN k.firmenname
-                                    WHEN k.person = 1 THEN k.Name_Ansprechpartner
-                                    ELSE 'Unbekannt'
-                                END AS Kundenname
+                                    WHEN K.Organization = 1 THEN K.Firmenname
+                                    WHEN K.Person = 1 THEN K.Name_Ansprechpartner
+                                END AS KundenName,
+                                    R.Leistung,
+                                    R.Abrechnungsart,
+                                    R.NettoPreis
                                 FROM
-                                    monatliche_rechnung m
-                                JOIN
-                                    Kunden k ON m.KundenID = k.KundenID;";
+                                    Monatliche_rechnung MR
+                                INNER JOIN
+                                    Rechnung R ON MR.RechnungsID = R.RechnungsID
+                                INNER JOIN
+                                    Kunden K ON R.KundenID = K.KundenID;";
 
 
                                 $stmt = $conn->prepare($sql_monatlicheRechnung);
@@ -647,18 +652,38 @@ function stateSearchButton($currentState)
 
                                 foreach ($customer as $row) {
                                     $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
+                                    $Leistung_MonatlicheRechnung = unserialize($row['NettoPreis']);
+
                                     $html = '';
                                     $html .= '<div class="monatlicheRechnung-Kunde">';
-                                    $html .= '<input type="checkbox" name="erstelleMonatlicheRechnung" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">';
-                                    $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['Kundenname'] . '</label>';
+                                    $html .= '<div class="KundenName">';
+                                    $html .= '<input type="checkbox" name="erstelleMonatlicheRechnung" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this)" checked>';
+                                    $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
+                                    $html .= '</div>';
+                                    $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
+                                    $html .= '<div class="leistung-monatlicheRechnung">';
+                                    // $html .= '<span id="leistung-monatlicheRechnung">' . $Leistung_MonatlicheRechnung . '</span>';
+                                    $html .= $Leistung_MonatlicheRechnung[0];
+                                    $html .= '</div>';
+                                    $html .= '</div>';
                                     $html .= '</div>';
                                     echo $html;
                                 }
                                 ?>
-                                <!-- <div class="monatlicheRechnung-Kunde">
-                                    <input type="checkbox" name="erstelleMonatlicheRechnung" id="erstelleMonatlicheRechnung-X">
-                                    <label for="erstelleMonatlicheRechnung-X">test</label>
-                                </div> -->
+                                <!-- 
+                                <div class="monatlicheRechnung-Kunde">
+                                    <div class="KundenName">
+                                        <input type="checkbox" name="erstelleMonatlicheRechnung" id="erstelleMonatlicheRechnung-X" onclick="toggleRechnungsInformationen(this)" checked>
+                                        <label for="erstelleMonatlicheRechnung-X">test</label>
+                                    </div>
+                                    <div class="RechnungsInformationen" id="RechnungsInformationen">
+                                        <div class="leistung-monatlicheRechnung">
+                                            <span id="leistung-monatlicheRechnung">Leistung X</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                 -->
+
                             </div>
 
                         </div>

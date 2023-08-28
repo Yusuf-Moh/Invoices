@@ -412,18 +412,20 @@ b {
     margin-bottom: 0;
 }
 
-.ContentMonatlicheRechnungen {
+.ContentMonatlicheRechnungen,
+.monatlicheRechnung-Kunde {
     display: contents;
 }
 
-.monatlicheRechnung-Kunde {
+.KundenName {
     display: flex;
     align-items: center;
     gap: 4px;
     margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-.monatlicheRechnung-Kunde input {
+.KundenName input {
     appearance: auto;
     width: 18px;
     height: 18px;
@@ -431,8 +433,21 @@ b {
     vertical-align: middle;
 }
 
-.monatlicheRechnung-Kunde label {
+.KundenName label {
     font-size: 12px;
+}
+
+.RechnungsInformationen {
+    display: none;
+    margin-bottom: 8px;
+    border: 1px solid var(--color-dark);
+    padding: 10px;
+    border-radius: 4px;
+}
+
+/* Style für die Span-Elemente in der customer-details Klasse */
+.RechnungsInformationen span {
+    font-weight: normal;
 }
 
 /* ================= END OF THE Style for the checkbox Monatliche Rechnung  =========================*/
