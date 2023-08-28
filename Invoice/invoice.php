@@ -630,6 +630,7 @@ function stateSearchButton($currentState)
                                 <?php
                                 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
+                                // One Table is combined by adding Monatliche_Rechnung with Kunde & Rechnung
                                 $sql_monatlicheRechnung = "SELECT MR.*,
                                 CASE
                                     WHEN K.Organization = 1 THEN K.Firmenname
@@ -652,7 +653,9 @@ function stateSearchButton($currentState)
 
                                 foreach ($customer as $row) {
                                     $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
-                                    $Leistung_MonatlicheRechnung = unserialize($row['NettoPreis']);
+                                    $Leistung_MonatlicheRechnung = unserialize($row['Leistung']);
+                                    $Abrechnungsart_MonatlicheRechnung = unserialize($row['Abrechnungsart']);
+                                    $NettoPreis_MonatlicheRechnung = unserialize($row['NettoPreis']);
 
                                     $html = '';
                                     $html .= '<div class="monatlicheRechnung-Kunde">';
@@ -661,28 +664,43 @@ function stateSearchButton($currentState)
                                     $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
                                     $html .= '</div>';
                                     $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
-                                    $html .= '<div class="leistung-monatlicheRechnung">';
-                                    // $html .= '<span id="leistung-monatlicheRechnung">' . $Leistung_MonatlicheRechnung . '</span>';
-                                    $html .= $Leistung_MonatlicheRechnung[0];
-                                    $html .= '</div>';
+
+                                    $html .= '<table class="RechnungsInformationen-Table">';
+                                    $html .= '<tbody>';
+
+                                    for ($i = 0; $i < count($Leistung_MonatlicheRechnung); $i++) {
+                                        $html .= '<tr>';
+                                        $html .= '<td>' . $Leistung_MonatlicheRechnung[$i] . '</td>';
+                                        $html .= '<td>' . $Abrechnungsart_MonatlicheRechnung[$i] . '</td>';
+                                        $html .= '<td>' . $NettoPreis_MonatlicheRechnung[$i] . '</td>';
+                                        $html .= '</tr>';
+                                    }
+
+                                    $html .= '</tbody>';
+                                    $html .= '</table>';
+
                                     $html .= '</div>';
                                     $html .= '</div>';
                                     echo $html;
                                 }
                                 ?>
-                                <!-- 
-                                <div class="monatlicheRechnung-Kunde">
+
+                                <!-- <div class="monatlicheRechnung-Kunde">
                                     <div class="KundenName">
                                         <input type="checkbox" name="erstelleMonatlicheRechnung" id="erstelleMonatlicheRechnung-X" onclick="toggleRechnungsInformationen(this)" checked>
                                         <label for="erstelleMonatlicheRechnung-X">test</label>
                                     </div>
                                     <div class="RechnungsInformationen" id="RechnungsInformationen">
-                                        <div class="leistung-monatlicheRechnung">
-                                            <span id="leistung-monatlicheRechnung">Leistung X</span>
-                                        </div>
+                                        <table class="RechnungsInformationen-Table">
+                                            <tbody>
+                                                <td>Leistung X</td>
+                                                <td>Abrechnungsart X</td>
+                                                <td>NettoPreis X</td>
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
-                                 -->
+                                </div> -->
+
 
                             </div>
 
