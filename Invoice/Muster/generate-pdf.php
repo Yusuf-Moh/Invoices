@@ -206,6 +206,7 @@ function formatMonthYear($monthYear)
     return $months[$month] . " " . $year;
 }
 
+// Convert RechnungsNr to a format from 1 to 0001
 function formatRechnungsNr($rechnungsNr)
 {
     return str_pad($rechnungsNr, 4, '0', STR_PAD_LEFT);
