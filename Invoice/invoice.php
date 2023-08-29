@@ -619,7 +619,7 @@ function stateSearchButton($currentState)
                 </div>
 
                 <div class="form-container">
-                    <form method="POST" id="form-modal">
+                    <form method="POST" id="form-modal-MonatlicheRechnung">
                         <div class="datum-MonatlicheRechnungen">
                             <label for="RechnungsDatum-MonatlicheRechnungen">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
                             <div class="RechnungsDatum-MonatlicheRechnungen">
@@ -660,7 +660,7 @@ function stateSearchButton($currentState)
                                     $html = '';
                                     $html .= '<div class="monatlicheRechnung-Kunde">';
                                     $html .= '<div class="KundenName">';
-                                    $html .= '<input type="checkbox" name="erstelleMonatlicheRechnung" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this)" checked>';
+                                    $html .= '<input type="checkbox" value = "' . $monatlicheRechnugsID . '" name="erstelleMonatlicheRechnung[]" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this)" checked>';
                                     $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
                                     $html .= '</div>';
                                     $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
@@ -684,26 +684,9 @@ function stateSearchButton($currentState)
                                     echo $html;
                                 }
                                 ?>
-
-                                <!-- <div class="monatlicheRechnung-Kunde">
-                                    <div class="KundenName">
-                                        <input type="checkbox" name="erstelleMonatlicheRechnung" id="erstelleMonatlicheRechnung-X" onclick="toggleRechnungsInformationen(this)" checked>
-                                        <label for="erstelleMonatlicheRechnung-X">test</label>
-                                    </div>
-                                    <div class="RechnungsInformationen" id="RechnungsInformationen">
-                                        <table class="RechnungsInformationen-Table">
-                                            <tbody>
-                                                <td>Leistung X</td>
-                                                <td>Abrechnungsart X</td>
-                                                <td>NettoPreis X</td>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div> -->
-
-
                             </div>
 
+                            <button type="submit" class="sendMonatlicheRechnungData-Btn">Senden</button>
                         </div>
                     </form>
                 </div>

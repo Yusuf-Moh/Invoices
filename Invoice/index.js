@@ -153,6 +153,7 @@ function setRechnungsMonatJahrCurrentMonthYear() {
 
     // Assign the values to the input fields
     document.getElementById('RechnungsMonatJahr').value = currentYear + '-' + currentMonth;
+    document.getElementById('RechnungsMonatJahr-MonatlicheRechnungen').value = currentYear + '-' + currentMonth;
 }
 setRechnungsMonatJahrCurrentMonthYear();
 
@@ -453,6 +454,43 @@ if (messageType == "edit") {
         document.getElementById('monatlicheRechnung').checked = false;
     }
 }
+
+// Modal Monatliche-Rechnung check submit button
+document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submit', function (event) {
+    // mindestens eins der chechboxen muss "gechecked" sein, sonst => nicht abschickend
+
+    const checkboxes = document.querySelectorAll('[name="erstelleMonatlicheRechnung[]"]');
+    let anyCheckboxChecked = false;
+
+    for (const checkbox of checkboxes) {
+        if (checkbox.checked) {
+            anyCheckboxChecked = true;
+            break;
+        }
+    }
+
+    if (anyCheckboxChecked) {
+        // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+        const form_MonatlicheRechnung = document.getElementById('form-modal-MonatlicheRechnung');
+
+        // Neue Datei muss verwendet werden für erstlleung der MonatlicheRechnung
+        form_MonatlicheRechnung.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-monatlicheRechnung-pdf.php';
+        form_MonatlicheRechnung.target = '_blank';
+
+        // Am besten neuladen nach form action damit wir vernünftig fehler vermeiden könenn
+        window.location.replace('invoice.php');
+    } else {
+        const messageDiv = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+        event.preventDefault();
+        // Error Message => Klick mindestens einen Checkbox an 
+        messageDiv.style.display = 'flex';
+        messageText.innerText = 'Mindestens eine Checkbox muss angeklickt sein';
+        // Error Message Style
+        messageDiv.classList.add('error');
+    }
+
+});
 
 // ==================== END OF MODAL ====================
 

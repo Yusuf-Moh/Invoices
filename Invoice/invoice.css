@@ -212,7 +212,8 @@ b {
 
 /* ============== Modal ==============*/
 /* Form */
-.sendNewInvoiceData-Btn {
+.sendNewInvoiceData-Btn,
+.sendMonatlicheRechnungData-Btn {
     display: inline-block;
     padding: var(--padding-btn);
     background-color: var(--color-white);
