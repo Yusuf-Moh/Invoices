@@ -492,6 +492,22 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
 
 });
 
+// Uncheck every checked checkbox of monatlicheRechnung
+document.getElementById('uncheck_AllCheckboxes').addEventListener('click', function () {
+    let checkboxes = document.querySelectorAll('input[name="erstelleMonatlicheRechnung[]"]');
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.checked = false;
+    });
+});
+
+document.getElementById('checkAllCheckboxes').addEventListener('click', function () {
+    let checkboxes = document.querySelectorAll('input[name="erstelleMonatlicheRechnung[]"]');
+
+    checkboxes.forEach(function (checkbox) {
+        checkbox.checked = true;
+    });
+});
 // ==================== END OF MODAL ====================
 
 

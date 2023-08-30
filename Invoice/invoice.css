@@ -451,6 +451,23 @@ b {
     font-weight: normal;
 }
 
+.uncheck_check-AllCheckboxes{
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.uncheck_AllCheckboxes,
+.checkAllCheckboxes {
+    display: inline-block;
+    padding: var(--padding-btn);
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    margin-top: 2rem;
+    margin-bottom: 0rem;
+}
+
 /* ================= END OF THE Style for the checkbox Monatliche Rechnung  =========================*/
 
 /* ============== END OF Modal ==============*/

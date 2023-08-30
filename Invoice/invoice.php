@@ -685,6 +685,10 @@ function stateSearchButton($currentState)
                                 }
                                 ?>
                             </div>
+                            <div class="uncheck_check-AllCheckboxes">
+                                <button type="button" id="uncheck_AllCheckboxes" class="uncheck_AllCheckboxes">Uncheck All</button>
+                                <button type="button" id="checkAllCheckboxes" class="checkAllCheckboxes">Check All</button>
+                            </div>
 
                             <button type="submit" class="sendMonatlicheRechnungData-Btn">Senden</button>
                         </div>
