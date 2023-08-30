@@ -19,9 +19,13 @@ use Dompdf\Options;
 
 // Generated PDF-Filenames stored in a array to access the files in ajax later
 $generatedFiles = [];
-// Path to the Folder
-$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/" . $RechnungsMonatJahr_MonatlicheRechnungen . "/"; // Pfad zum Zielordner auf deinem Server
+// Path to the Folder, in which the files should be stored
+$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+// Invoice getting stored in the respective MonatYear of it
+$downloadPath .= $RechnungsMonatJahr_MonatlicheRechnungen . "/";
 
+// Create the folder, for the RechnungsMonatJahr, if it doesnt exist.
+createFolderIfNotExists($downloadPath);
 
 // Erstellen der Monatliche Rechnung
 for ($i = 0; $i < $countCheckedCheckboxes; $i++) {
@@ -288,4 +292,11 @@ function AbrechnungsArtPauschalStunden($abrechnungsart)
         $html .= '<td></td>';
     }
     return $html;
+}
+
+function createFolderIfNotExists($path)
+{
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
 }
