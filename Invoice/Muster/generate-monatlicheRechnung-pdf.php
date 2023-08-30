@@ -19,6 +19,8 @@ use Dompdf\Options;
 
 // Generated PDF-Filenames stored in a array to access the files in ajax later
 $generatedFiles = [];
+// Path to the Folder
+$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/" . $RechnungsMonatJahr_MonatlicheRechnungen . "/"; // Pfad zum Zielordner auf deinem Server
 
 
 // Erstellen der Monatliche Rechnung
@@ -167,14 +169,15 @@ for ($i = 0; $i < $countCheckedCheckboxes; $i++) {
     $generatedFiles = $filename;
     // Save the File to the Server, so we can create multiple pdf files. 
     $output = $dompdf->output();
-    file_put_contents($filename, $output);
+    file_put_contents($downloadPath . $filename, $output);
     // $dompdf->stream($filename, ["Attachment" => 0]);
 }
 
 // Download the files from the serverside
 echo '<script type = "text/javascript">';
 for ($i = 0; $i < count($generatedFiles); $i++) {
-    echo 'window.open("' . $generatedFiles[$i] . '");';
+    $fileUrl = $downloadPath . $generatedFiles[$i];
+    echo 'window.open("' . $fileUrl . '");';
 }
 echo '</script>';
 
