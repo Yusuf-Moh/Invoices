@@ -171,10 +171,44 @@ for ($i = 0; $i < $countCheckedCheckboxes; $i++) {
     $filename = $KundenName . " RechnungNr. " . $RechnungsNr . " " . $RechnungsMonatJahr_MonatlicheRechnungen . ".pdf";
 
     $generatedFiles = $filename;
+
+    $path_pdf = $downloadPath . $filename;
+
     // Save the File to the Server, so we can create multiple pdf files. 
     $output = $dompdf->output();
-    file_put_contents($downloadPath . $filename, $output);
-    // $dompdf->stream($filename, ["Attachment" => 0]);
+    file_put_contents($path_pdf, $output);
+
+
+    // ============ Inserting the Data into the Database Table Rechnung ============
+
+    $Leistung_serialize = serialize($LeistungArray);
+    $Abrechnungsart_serialize = serialize($AbrechnungsartArray);
+    $NettoPreis_serialize = serialize($NettoPreisArray);
+
+    $MonatlicheRechnungsBool = "0";
+    include('../../dbPhp/dbOpenConnection.php');
+
+    $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag, Pfad)
+    VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag, :pfad)";
+
+    $stmt = $conn->prepare($sql);
+
+    // Bind the values 
+    $stmt->bindParam(':leistung', $Leistung_serialize);
+    $stmt->bindParam(':abrechnungsart', $Abrechnungsart_serialize);
+    $stmt->bindParam(':nettoPreis', $NettoPreis_serialize);
+    $stmt->bindParam(':kundenID', $KundenID);
+    $stmt->bindParam(':monatlicheRechnung', $MonatlicheRechnungsBool);
+    $stmt->bindParam(':rechnungsDatum', $RechnungsDatum_MonatlicheRechnungen);
+    $stmt->bindParam(':rechnungsMonatJahr', $RechnungsMonatJahr_MonatlicheRechnungen);
+    $stmt->bindParam(':rechnungsNr', $RechnungsNr);
+    $stmt->bindParam(':rechnungsKuerzelNummer', $RechnungsKürzelNummer);
+    $stmt->bindParam(':mwSt', $gesamtBetragMwSt);
+    $stmt->bindParam(':gesamtBetrag', $gesamtBetragBrutto);
+    $stmt->bindParam(':pfad', $path_pdf);
+
+    $stmt->execute();
+    include('../../dbPhp/dbCloseConnection.php');
 }
 
 // Download the files from the serverside
@@ -184,6 +218,11 @@ for ($i = 0; $i < count($generatedFiles); $i++) {
     echo 'window.open("' . $fileUrl . '");';
 }
 echo '</script>';
+
+
+
+
+
 
 //With the Inputfield type date (invoice.php) the values for 23.05.2023 are 2023-05.23 which are not suitable for the pdf.
 function formatDate($date)

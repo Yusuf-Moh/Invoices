@@ -270,6 +270,12 @@ function deleteRechnung($rechnungsID)
     include('../../dbPhp/dbCloseConnection.php');    // dbConnection close
 }
 
+function createFolderIfNotExists($path)
+{
+    if (!is_dir($path)) {
+        mkdir($path, 0777, true);
+    }
+}
 // ============ Variables which need to be inserted into the PDF/invoiceMuster.html ============
 
 $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
@@ -317,12 +323,25 @@ if (count($nettoPreis) > 1) {
 }
 
 
-// ============ Creating the PDF ============
+// ============ Creating and downloading the PDF ============
 
 require __DIR__ . "/vendor/autoload.php";
 
 use Dompdf\Dompdf;
 use Dompdf\Options;
+
+$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+$downloadPath .= $RechnungsMonatJahr . "/";
+createFolderIfNotExists($downloadPath);
+
+if ($FirmenName != "") {
+    $KundenName = $FirmenName;
+} elseif ($Ansprechpartner != "") {
+    $KundenName = $Ansprechpartner;
+} else {
+    $KundenName = "ERROR";
+}
+$filename = $KundenName . " RechnungNr. " . $RechnungsNr . " " . $RechnungsMonatJahr . ".pdf";
 
 /**
  * Set the Dompdf options
@@ -350,23 +369,24 @@ $dompdf->setPaper("A4", "portrait");
 $dompdf->loadHtml($html);
 //Create PDF
 $dompdf->render();
-$dompdf->addInfo("Title", "An Example PDF");
+
+$output = $dompdf->output();
+file_put_contents($downloadPath . $filename, $output);
+// $dompdf->addInfo("Title", "An Example PDF");
 
 //Open new Tab with PDF
-$dompdf->stream("invoice.pdf", ["Attachment" => 0]);
+// $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
 
-// Save PDF locally
-// If there isnt a Folder with the given Month and Year of the Invoice then create a Folder with the name of the Month and Year and store the Invoice as pdf
-// $output = $dompdf->output();
 
-// Name of the File should be: "Firmenname/Ansprechpartner" RechnungNr. XX Month Year;
-// for example: Musterman GmbH RechnungNr. 1 August 2023
-// file_put_contents("file.pdf", $output);
+// Download the files from the serverside
+echo '<script type = "text/javascript">';
+$fileUrl = $downloadPath . $filename;
+echo 'window.open("' . $fileUrl . '");';
+echo '</script>';
+// ====================== End of Creating and Download PDF ======================
 
 
 // ============ Inserting the Data into the Database Table Rechnung ============
-
-
 
 // monatlicheRechnung in MonatlicheRechnungBool; 
 // Wert muss in Tabelle monatliche_rechnung später gespeichert werden und wenn man edit klickt, und den check entfernt soll auch die eingetragene Rechnung in datenbank Tabelle MonatlicheRechnung gelöscht werden
@@ -415,7 +435,9 @@ try {
     }
     $stmt->execute();
 
-    $RechnungsID_New = $RechnungsID;
+    if ($saveUpdate == "update") {
+        $RechnungsID_New = $RechnungsID;
+    }
     if ($insertInvoiceDB == true) {
         $RechnungsID_New = $conn->lastInsertId();
     }
