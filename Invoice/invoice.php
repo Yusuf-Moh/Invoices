@@ -378,6 +378,8 @@ function parseSerializedDataLeistung($serializedData)
 // Function to copy the data from the given invoice and deleting it from the database rechnung 
 function deleteRechnung($rechnungsID)
 {
+    deleteFile($rechnungsID);
+    
     include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
     $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
@@ -410,6 +412,24 @@ function stateSearchButton($currentState)
         return "false";
     }
     return $currentState;
+}
+
+function deleteFile($rechnungsID)
+{
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+    $query = "SELECT Pfad FROM rechnung where RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $pfad = $result['Pfad'];
+
+    if (file_exists($pfad)) {
+        unlink($pfad);
+    }
+
+    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
 }
 ?>
 

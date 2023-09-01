@@ -114,6 +114,9 @@ if ($saveUpdate == "save") {
 
     include('../../dbPhp/dbCloseConnection.php');
 
+    // Delete the invoice pdf file, so we can create the new pdf later without getting duplicated files in our folder "system"
+    deleteFile($RechnungsID);
+
     if ($KundenID_update == $KundenID) {
         $RechnungsNr = $RechnungsNr_update;
     } else {
@@ -248,6 +251,9 @@ function lastRechnungsNr($kundenID)
 // Function to copy the data from the given invoice and deleting it from the database rechnung 
 function deleteRechnung($rechnungsID)
 {
+
+    deleteFile($rechnungsID);
+
     include('../../dbPhp/dbOpenConnection.php'); // dbConnection open
 
     // The data of the deleted Invoice is getting stored in a Table deletedRechnung as Backup.
@@ -275,6 +281,24 @@ function createFolderIfNotExists($path)
     if (!is_dir($path)) {
         mkdir($path, 0777, true);
     }
+}
+
+function deleteFile($rechnungsID)
+{
+    include('../../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+    $query = "SELECT Pfad FROM rechnung where RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':RechnungsID', $rechnungsID);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $pfad = $result['Pfad'];
+
+    if (file_exists($pfad)) {
+        unlink($pfad);
+    }
+
+    include('../../dbPhp/dbCloseConnection.php');    // dbConnection close
 }
 // ============ Variables which need to be inserted into the PDF/invoiceMuster.html ============
 
@@ -409,11 +433,12 @@ try {
             RechnungsNummer = :rechnungsNr,
             RechnungsKürzelNummer = :rechnungsKuerzelNummer,
             MwSt = :mwSt,
-            GesamtBetrag = :gesamtBetrag
+            GesamtBetrag = :gesamtBetrag,
+            Pfad = :pfad
         WHERE RechnungsID = :rechnungsID;";
     } else {
-        $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag)
-        VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag)";
+        $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag, Pfad)
+        VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag, :pfad)";
     }
 
     $stmt = $conn->prepare($sql);
@@ -430,6 +455,7 @@ try {
     $stmt->bindParam(':rechnungsKuerzelNummer', $RechnungsKürzelNummer);
     $stmt->bindParam(':mwSt', $gesamtBetragMwSt);
     $stmt->bindParam(':gesamtBetrag', $gesamtBetragBrutto);
+    $stmt->bindParam(':pfad', $fileUrl);
     if ($saveUpdate == "update" && $insertInvoiceDB == false) {
         $stmt->bindParam(':rechnungsID', $RechnungsID);
     }
