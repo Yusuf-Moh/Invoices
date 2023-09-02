@@ -63,7 +63,7 @@ $RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_St
 $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
 if ($_SESSION['sql_query_invoice'] == "") {
-    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
     $restart = true;
 }
 
@@ -161,6 +161,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $KundenInformationen_StateSearchButton = $_POST['KundenInformationen_StateSearchButton'];
                 $_SESSION['KundenInformationen_StateSearchButton'] = stateSearchButton($KundenInformationen_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -168,6 +169,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Leistung_StateSearchButton = $_POST['Leistung_StateSearchButton'];
                 $_SESSION['Leistung_StateSearchButton'] = stateSearchButton($Leistung_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -175,6 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Abrechnungsart_StateSearchButton = $_POST['Abrechnungsart_StateSearchButton'];
                 $_SESSION['Abrechnungsart_StateSearchButton'] = stateSearchButton($Abrechnungsart_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -182,6 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $NettoPreis_StateSearchButton = $_POST['NettoPreis_StateSearchButton'];
                 $_SESSION['NettoPreis_StateSearchButton'] = stateSearchButton($NettoPreis_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -189,6 +193,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $GesamtBetrag_StateSearchButton = $_POST['GesamtBetrag_StateSearchButton'];
                 $_SESSION['GesamtBetrag_StateSearchButton'] = stateSearchButton($GesamtBetrag_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -196,6 +201,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $RechnungsDatum_StateSearchButton = $_POST['RechnungsDatum_StateSearchButton'];
                 $_SESSION['RechnungsDatum_StateSearchButton'] = stateSearchButton($RechnungsDatum_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -203,6 +209,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Monat_Jahr_StateSearchButton = $_POST['Monat_Jahr_StateSearchButton'];
                 $_SESSION['Monat_Jahr_StateSearchButton'] = stateSearchButton($Monat_Jahr_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -210,6 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $RechnungsKürzelNummer_StateSearchButton = $_POST['RechnungsKürzelNummer_StateSearchButton'];
                 $_SESSION['RechnungsKürzelNummer_StateSearchButton'] = stateSearchButton($RechnungsKürzelNummer_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
 
@@ -217,6 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $MonatlicheRechnung_StateSearchButton = $_POST['MonatlicheRechnung_StateSearchButton'];
                 $_SESSION['MonatlicheRechnung_StateSearchButton'] = stateSearchButton($MonatlicheRechnung_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
                 break;
             case 'search':
@@ -267,6 +276,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Delete the last "OR" of the Query
                     $sql_query_invoice = rtrim($sql_query_invoice, "OR");
+                    $sql_query_invoice .= "ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 } else {
                     $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                         FROM Rechnung r 
@@ -283,7 +293,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             OR Adresse LIKE :search_string 
                                             OR PLZ LIKE :search_string 
                                             OR ORT LIKE :search_string 
-                                            OR Name_Ansprechpartner LIKE :search_string;";
+                                            OR Name_Ansprechpartner LIKE :search_string
+                                            ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 }
 
                 $param_invoice = ['search_string' => $contentSearchbar];
@@ -379,7 +390,7 @@ function parseSerializedDataLeistung($serializedData)
 function deleteRechnung($rechnungsID)
 {
     deleteFile($rechnungsID);
-    
+
     include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
     $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
@@ -734,7 +745,7 @@ function deleteFile($rechnungsID)
                         <th>Monat Jahr</th>
                         <!-- <th>RechnungsNummer</th> -->
                         <th>RechnungsKürzelNummer</th>
-                        <th>MonatlicheRechnung</th>
+                        <th>Monatl.<br> Rech.</th>
                         <!-- <th>RechnungsID</th> -->
                         <th>Action</th>
                     </thead>
