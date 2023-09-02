@@ -371,7 +371,7 @@ function KundenInformationen($FirmenName, $Ansprechpartner, $Adresse, $PLZ, $Ort
 {
     $KontaktInformationen = displayStringBR($FirmenName) . displayStringBR($Ansprechpartner) . displayStringBR($Adresse) . $PLZ . " " . $Ort;
 
-    return $KontaktInformationen;
+    echo $KontaktInformationen;
 }
 
 function displayStringBR($String)
@@ -469,6 +469,7 @@ function deleteFile($rechnungsID)
     include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
 }
 
+// if the Invoice is paid, the checkbox should be checked
 function setCheckboxBezahltChecked($bezahlt_bool)
 {
     if ($bezahlt_bool == "1") {
@@ -476,10 +477,26 @@ function setCheckboxBezahltChecked($bezahlt_bool)
     }
 }
 
+// If there is a Datum, it should be inserted into the Inputfield
 function setUeberweisungsdatum($ueberweisungsdatum)
 {
     if ($ueberweisungsdatum != null) {
         echo $ueberweisungsdatum;
+    }
+}
+
+// If the Invoice is paid, the button should be disabled.
+function disableButtonBezahlt($bezahlt_bool)
+{
+    if ($bezahlt_bool == 1) {
+        echo 'disabled';
+    }
+}
+// If the invoice is not paid, the background should be red to indicate it instantly
+function unpaidInvoiceBackground($bezahlt_bool)
+{
+    if ($bezahlt_bool == "0") {
+        echo "style = 'background: indianred;'";
     }
 }
 ?>
@@ -797,7 +814,7 @@ function setUeberweisungsdatum($ueberweisungsdatum)
                         foreach ($result as $row) {
                         ?>
                             <tr>
-                                <td><?php echo KundenInformationen($row['FirmenName'], $row['Name_Ansprechpartner'], $row['Adresse'], $row['PLZ'], $row['Ort']); ?></td>
+                                <td><?php KundenInformationen($row['FirmenName'], $row['Name_Ansprechpartner'], $row['Adresse'], $row['PLZ'], $row['Ort']); ?></td>
                                 <td><?php parseSerializedDataLeistung($row['Leistung']); ?></td>
                                 <td><?php parseSerializedData($row['Abrechnungsart']); ?></td>
                                 <td><?php parseSerializedData($row['NettoPreis']); ?></td>
@@ -807,11 +824,11 @@ function setUeberweisungsdatum($ueberweisungsdatum)
                                 <td><?php echo htmlspecialchars($row['Monat_Jahr']); ?></td>
                                 <td><?php echo htmlspecialchars($row['RechnungsKürzelNummer']); ?></td>
                                 <td><?php echo htmlspecialchars($row['MonatlicheRechnungBool']); ?></td>
-                                <td>
+                                <td <?php unpaidInvoiceBackground($row['Bezahlt']); ?>>
                                     <form method="post">
                                         <div class="bezahlt_checkbox_button">
                                             <input type="checkbox" name="bezahlt_unbezahlt_checkbox" id="bezahlt_unbezahl_checkbox-<?php echo $row['RechnungsID'] ?>" class="bezahlt_unbezahl_checkbox" <?php setCheckboxBezahltChecked($row['Bezahlt']); ?> required>
-                                            <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)">Bezahlt</button>
+                                            <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)" <?php disableButtonBezahlt($row['Bezahlt']); ?>>Bezahlt</button>
                                         </div>
                                         <input type="text" class="Ueberweisungsdatum" name="Ueberweisungsdatum" placeholder="ÜberweisungsDatum" value="<?php setUeberweisungsdatum($row['UeberweisungsDatum']); ?>" required>
                                         <input type="hidden" name="RechnungsID_Bezahlt" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
