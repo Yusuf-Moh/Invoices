@@ -285,7 +285,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Delete the last "OR" of the Query
                     $sql_query_invoice = rtrim($sql_query_invoice, "OR");
-                    $sql_query_invoice .= "ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+                    $sql_query_invoice .= "ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 } else {
                     $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                         FROM Rechnung r 
@@ -303,7 +303,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             OR PLZ LIKE :search_string 
                                             OR ORT LIKE :search_string 
                                             OR Name_Ansprechpartner LIKE :search_string
-                                            ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+                                            ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 }
 
                 $param_invoice = ['search_string' => $contentSearchbar];
@@ -323,7 +323,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
             case 'bezahlt':
+                $RechnungsID_Bezahlt = $_POST['RechnungsID_Bezahlt'];
+                $Ueberweisungsdatum = $_POST['Ueberweisungsdatum'];
+                $bezahlt_unbezahlt_checkbox = $_POST['bezahlt_unbezahlt_checkbox'];
+                $bezahlt = true;
+                // Wenn Submited wird, müssen wir nur den wert in die datenbank updaten!
+                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                $sql = "UPDATE rechnung SET Bezahlt = :bezahlt, UeberweisungsDatum = :ueberweisungsDatum WHERE RechnungsID = :RechnungsID;";
+                $stmt = $conn->prepare($sql);
+                $stmt->bindParam(':bezahlt', $bezahlt);
+                $stmt->bindParam(':ueberweisungsDatum', $Ueberweisungsdatum);
+                $stmt->bindParam(':RechnungsID', $RechnungsID_Bezahlt);
 
+                $stmt->execute();
+
+                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
                 break;
         }
         $_SESSION['sql_query_invoice'] = $sql_query_invoice;
@@ -453,6 +467,20 @@ function deleteFile($rechnungsID)
     }
 
     include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+}
+
+function setCheckboxBezahltChecked($bezahlt_bool)
+{
+    if ($bezahlt_bool == "1") {
+        echo "checked";
+    }
+}
+
+function setUeberweisungsdatum($ueberweisungsdatum)
+{
+    if ($ueberweisungsdatum != null) {
+        echo $ueberweisungsdatum;
+    }
 }
 ?>
 
@@ -782,10 +810,10 @@ function deleteFile($rechnungsID)
                                 <td>
                                     <form method="post">
                                         <div class="bezahlt_checkbox_button">
-                                            <input type="checkbox" name="bezahlt_unbezahl_checkbox" id="bezahlt_unbezahl_checkbox-<?php echo $row['RechnungsID'] ?>" class="bezahlt_unbezahl_checkbox" required>
+                                            <input type="checkbox" name="bezahlt_unbezahlt_checkbox" id="bezahlt_unbezahl_checkbox-<?php echo $row['RechnungsID'] ?>" class="bezahlt_unbezahl_checkbox" <?php setCheckboxBezahltChecked($row['Bezahlt']); ?> required>
                                             <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)">Bezahlt</button>
                                         </div>
-                                        <input type="date" class="Ueberweisungsdatum" required>
+                                        <input type="text" class="Ueberweisungsdatum" name="Ueberweisungsdatum" placeholder="ÜberweisungsDatum" value="<?php setUeberweisungsdatum($row['UeberweisungsDatum']); ?>" required>
                                         <input type="hidden" name="RechnungsID_Bezahlt" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                     </form>
                                 </td>
