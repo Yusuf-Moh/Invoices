@@ -451,7 +451,7 @@ b {
     font-weight: normal;
 }
 
-.uncheck_check-AllCheckboxes{
+.uncheck_check-AllCheckboxes {
     display: flex;
     gap: 10px;
     margin-left: auto;
@@ -549,4 +549,41 @@ b {
 /* Delete btn */
 .crud .crud-table .CrudDelete {
     background-color: var(--color-danger);
+}
+
+.crud .crud-table .Ueberweisungsdatum {
+    width: 100%;
+    height: 35px;
+    display: flex;
+    flex-grow: 1;
+    padding: 8px;
+    margin-bottom: 10px;
+    border-radius: var(--border-radius-1);
+    border: 1px solid var(--color-dark-variant);
+}
+
+.crud .crud-table .bezahlt_checkbox_button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    gap: 6px;
+}
+
+.crud .crud-table .bezahlt_checkbox_button input {
+    appearance: auto;
+    width: 18px;
+    height: 18px;
+    margin-bottom: 0;
+    vertical-align: middle;
+}
+
+.crud .crud-table .bezahlt_checkbox_button .bezahlt-btn {
+    font-size: 12px;
+    padding: 2px;
+    border-radius: 0.3rem;
+    border: 1px solid var(--color-dark-variant);
+    cursor: pointer;
+    background-color: var(--color-white);
 }

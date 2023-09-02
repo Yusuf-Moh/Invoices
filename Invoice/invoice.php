@@ -163,6 +163,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_Leistung':
@@ -171,6 +172,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_Abrechnungsart':
@@ -179,6 +181,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_NettoPreis':
@@ -187,6 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_GesamtBetrag':
@@ -195,6 +199,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_RechnungsDatum':
@@ -203,6 +208,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_Monat_Jahr':
@@ -211,6 +217,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_RechnungsKürzelNummer':
@@ -219,6 +226,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
 
             case 'Search_MonatlicheRechnung':
@@ -227,6 +235,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
                 $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
                 $param_invoice = [];
+                header("Refresh:0");
                 break;
             case 'search':
                 reset_vars();
@@ -312,6 +321,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 $showMessage = "flex";
                 include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                break;
+            case 'bezahlt':
+
                 break;
         }
         $_SESSION['sql_query_invoice'] = $sql_query_invoice;
@@ -746,6 +758,7 @@ function deleteFile($rechnungsID)
                         <!-- <th>RechnungsNummer</th> -->
                         <th>RechnungsKürzelNummer</th>
                         <th>Monatl.<br> Rech.</th>
+                        <th>Bezahlt</th>
                         <!-- <th>RechnungsID</th> -->
                         <th>Action</th>
                     </thead>
@@ -766,6 +779,16 @@ function deleteFile($rechnungsID)
                                 <td><?php echo htmlspecialchars($row['Monat_Jahr']); ?></td>
                                 <td><?php echo htmlspecialchars($row['RechnungsKürzelNummer']); ?></td>
                                 <td><?php echo htmlspecialchars($row['MonatlicheRechnungBool']); ?></td>
+                                <td>
+                                    <form method="post">
+                                        <div class="bezahlt_checkbox_button">
+                                            <input type="checkbox" name="bezahlt_unbezahl_checkbox" id="bezahlt_unbezahl_checkbox-<?php echo $row['RechnungsID'] ?>" class="bezahlt_unbezahl_checkbox" required>
+                                            <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)">Bezahlt</button>
+                                        </div>
+                                        <input type="date" class="Ueberweisungsdatum" required>
+                                        <input type="hidden" name="RechnungsID_Bezahlt" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
+                                    </form>
+                                </td>
                                 <td>
                                     <form method="post">
                                         <input type="hidden" name="RechnungsID" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>

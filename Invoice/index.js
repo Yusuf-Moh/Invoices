@@ -523,5 +523,13 @@ function showDeleteConfirmation(button) {
 }
 
 
+function bezahlt(button) {
+    let form = button.closest("form");
+
+    button.type = "submit";
+    if (form.checkValidity()) {
+        button.type = "submit";
+    }
+}
 // ==================== END OF Crud ====================
 
