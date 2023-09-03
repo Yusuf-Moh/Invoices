@@ -1,6 +1,8 @@
 <?php
 session_start();
 
+global $search_Color;
+$search_Color = "black";
 function reset_vars()
 {
 
@@ -35,6 +37,8 @@ function reset_vars()
 
     global $showMessage;
     $showMessage = "none";
+
+    $search_Color = "black";
 }
 
 global $KundenInformationen_StateSearchButton, $Leistung_StateSearchButton, $Abrechnungsart_StateSearchButton, $NettoPreis_StateSearchButton, $GesamtBetrag_StateSearchButton, $RechnungsDatum_StateSearchButton, $Monat_Jahr_StateSearchButton, $RechnungsKürzelNummer_StateSearchButton, $MonatlicheRechnung_StateSearchButton;
@@ -307,6 +311,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 }
 
+                if ($_POST['Search-Input'] != "") {
+                    // If there is a Search, with a Search Input then the Search-Span should be red to show it
+                    $search_Color = "#F62217";
+                }
+
                 $param_invoice = ['search_string' => $contentSearchbar];
                 break;
 
@@ -526,7 +535,7 @@ function unpaidInvoiceBackground($bezahlt_bool)
                 <div class="search-container">
                     <form method="POST" class="search-form">
                         <div class="search">
-                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp">search</span></button>
+                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp" style="color: <?php echo $search_Color; ?>">search</span></button>
                             <input type="search" id="search" name="Search-Input" class="Search-Input" placeholder="Search..." autocomplete="off">
                         </div>
                         <div class="buttons-container">
