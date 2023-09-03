@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Modal open
 document.querySelector("#CreateInvoiceModal").addEventListener("click", function () {
-    document.querySelector(".modal").classList.add("active");
+    const MonatlicheRechnungenModal = document.querySelector('.modal-MonatlicheRechnungen');
+    // When MonatlicheRechnungen is currently opened, the Modal shouldnt be opened
+    if (!MonatlicheRechnungenModal.classList.contains('active')) {
+        document.querySelector(".modal").classList.add("active");
+    }
 });
 // Modal close 
 document.querySelector(".modal .modal-header span").addEventListener("click", function () {
@@ -68,7 +72,11 @@ document.querySelector(".modal .modal-header span").addEventListener("click", fu
 
 // Modal MonatlicheRechnungen Open
 document.querySelector('#CreateMonatlicheRechnungenModal').addEventListener('click', function () {
-    document.querySelector('.modal-MonatlicheRechnungen').classList.add('active');
+    const modal = document.querySelector(".modal");
+    // When Modal is currently opened, the MonatlicheRechnungenModal shouldnt be opened
+    if (!modal.classList.contains('active')) {
+        document.querySelector('.modal-MonatlicheRechnungen').classList.add('active');
+    }
 });
 // Modal MonatlicheRechnungen Close
 document.querySelector('.modal-MonatlicheRechnungen .modal-header span').addEventListener('click', function () {
