@@ -195,6 +195,9 @@ ClassicEditor
         // Insert value into the ckEditor if we edit the given Invoice
         if (messageType == "edit") {
             editor.setData(jsonEditData.Leistung_edit[0]);
+            if (jsonEditData.Bezahlt_edit == "1") {
+                editor.enableReadOnlyMode("editor");
+            }
         }
     })
     .catch(error => {
@@ -240,7 +243,7 @@ function addDienstleistungsRow() {
             </div>
         </td>
         <td class="delete-icon-cell">
-            <span class="material-icons-sharp" onclick="deleteRow(this)">delete</span>
+            <span class="material-icons-sharp" name="deleteRow[]" onclick="deleteRow(this)">delete</span>
         </td>
     `;
 
@@ -261,6 +264,11 @@ function addDienstleistungsRow() {
 
             if (messageType == "edit" && editorCount < jsonEditData.Leistung_edit.length) {
                 editor.setData(jsonEditData.Leistung_edit[editorCount]);
+
+                // If the invoice is paid, the ckeditor will be in a readOnlyMode so we cant change it
+                if (jsonEditData.Bezahlt_edit == "1") {
+                    editor.enableReadOnlyMode("editor");
+                }
             }
 
         })
@@ -314,14 +322,18 @@ document.getElementById('form-modal').addEventListener('submit', function (event
     // all ckEditors are filled => reload website
     if (allCkEditorFilled) {
         const submitButton = event.target.querySelector('button[type="submit"]');
-        if (submitButton.value === 'save' || submitButton.value == "update") {
-            const form = document.getElementById('form-modal');
+        const form = document.getElementById('form-modal');
 
-            // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
-            form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
-            form.target = '_blank';
-            if (submitButton.value == "update") {
-                messageType = "";
+        // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+        form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
+        form.target = '_blank';
+
+        if (submitButton.value == "update") {
+            messageType = "";
+            // If you have a paid Invoice, you can only edit the checkbox MonatlicheRechnung.
+            if (jsonEditData.Bezahlt_edit == "1") {
+                form.action = '/projekt/website_vereinfacht/Invoice/Muster/editBezahlteRechnung.php';
+                form.target = '_blank';
             }
         }
         window.location.replace('invoice.php');
@@ -452,6 +464,36 @@ if (messageType == "edit") {
     } else {
         // If MonatlicheRechnungBool_edit is "0", uncheck the checkbox
         document.getElementById('monatlicheRechnung').checked = false;
+    }
+
+    // Invoice is paid so every inputfield should be disabled besides checkbox for monatlicheRechnung
+    // Removing deleteRow-Spans and addRow-Label
+    if (jsonEditData.Bezahlt_edit == "1") {
+        const customerList = document.getElementById('customerList');
+        const rechnungsDatum = document.getElementById('RechnungsDatum');
+        const rechnungsMonatJahr = document.getElementById('RechnungsMonatJahr');
+        const abrechnungsartList = document.querySelectorAll('select[name="AbrechnungsartList[]"]');
+        const stunden_AbrechnungsartList = document.querySelectorAll('input[name="Stunden[]"]');
+        const nettoPreisInputs = document.querySelectorAll('input[name="nettoPreis[]"]');
+
+        const deleteRowSpans = document.querySelectorAll('span[name="deleteRow[]"]');
+        const addRowLabel = document.getElementById('add-row');
+
+
+        customerList.disabled = true;
+        rechnungsDatum.disabled = true;
+        rechnungsMonatJahr.disabled = true;
+
+        for (let i = 0; i < nettoPreisInputs.length; i++) {
+            nettoPreisInputs[i].disabled = true;
+            abrechnungsartList[i].disabled = true;
+            stunden_AbrechnungsartList[i].disabled = true;
+        }
+        deleteRowSpans.forEach(function (span) {
+            span.remove();
+
+        });
+        addRowLabel.remove();
     }
 }
 

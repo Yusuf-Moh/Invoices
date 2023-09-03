@@ -63,7 +63,7 @@ $RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_St
 $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
 if ($_SESSION['sql_query_invoice'] == "") {
-    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+    $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
     $restart = true;
 }
 
@@ -119,9 +119,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $RechnungsKürzelNummer_edit = $result['RechnungsKürzelNummer'];
                 $MwSt_edit = $result['MwSt'];
                 $GesamtBetrag_edit = $result['GesamtBetrag'];
+                $Bezahlt_edit = $result['Bezahlt'];
 
                 // Storing the data from the selected Rechnung into the inputfields of the modal by transfering the values from php to js
-
 
                 // Create a array with all values and transfer it to javascript
                 $data = array(
@@ -136,6 +136,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     'RechnungsKürzelNummer_edit' => $RechnungsKürzelNummer_edit,
                     'MwSt_edit' => $MwSt_edit,
                     'GesamtBetrag_edit' => $GesamtBetrag_edit,
+                    'Bezahlt_edit' => $Bezahlt_edit,
                 );
 
                 // Convert the array to a JSON string safely
@@ -161,7 +162,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $KundenInformationen_StateSearchButton = $_POST['KundenInformationen_StateSearchButton'];
                 $_SESSION['KundenInformationen_StateSearchButton'] = stateSearchButton($KundenInformationen_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -170,7 +171,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Leistung_StateSearchButton = $_POST['Leistung_StateSearchButton'];
                 $_SESSION['Leistung_StateSearchButton'] = stateSearchButton($Leistung_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -179,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Abrechnungsart_StateSearchButton = $_POST['Abrechnungsart_StateSearchButton'];
                 $_SESSION['Abrechnungsart_StateSearchButton'] = stateSearchButton($Abrechnungsart_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -188,7 +189,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $NettoPreis_StateSearchButton = $_POST['NettoPreis_StateSearchButton'];
                 $_SESSION['NettoPreis_StateSearchButton'] = stateSearchButton($NettoPreis_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -197,7 +198,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $GesamtBetrag_StateSearchButton = $_POST['GesamtBetrag_StateSearchButton'];
                 $_SESSION['GesamtBetrag_StateSearchButton'] = stateSearchButton($GesamtBetrag_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -206,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $RechnungsDatum_StateSearchButton = $_POST['RechnungsDatum_StateSearchButton'];
                 $_SESSION['RechnungsDatum_StateSearchButton'] = stateSearchButton($RechnungsDatum_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -215,7 +216,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Monat_Jahr_StateSearchButton = $_POST['Monat_Jahr_StateSearchButton'];
                 $_SESSION['Monat_Jahr_StateSearchButton'] = stateSearchButton($Monat_Jahr_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -224,7 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $RechnungsKürzelNummer_StateSearchButton = $_POST['RechnungsKürzelNummer_StateSearchButton'];
                 $_SESSION['RechnungsKürzelNummer_StateSearchButton'] = stateSearchButton($RechnungsKürzelNummer_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -233,7 +234,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $MonatlicheRechnung_StateSearchButton = $_POST['MonatlicheRechnung_StateSearchButton'];
                 $_SESSION['MonatlicheRechnung_StateSearchButton'] = stateSearchButton($MonatlicheRechnung_StateSearchButton);
                 $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC";
+                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 $param_invoice = [];
                 header("Refresh:0");
                 break;
@@ -285,7 +286,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Delete the last "OR" of the Query
                     $sql_query_invoice = rtrim($sql_query_invoice, "OR");
-                    $sql_query_invoice .= "ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+                    $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 } else {
                     $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                         FROM Rechnung r 
@@ -473,7 +474,7 @@ function deleteFile($rechnungsID)
 function setCheckboxBezahltChecked($bezahlt_bool)
 {
     if ($bezahlt_bool == "1") {
-        echo "checked";
+        echo "checked disabled";
     }
 }
 
@@ -486,7 +487,7 @@ function setUeberweisungsdatum($ueberweisungsdatum)
 }
 
 // If the Invoice is paid, the button should be disabled.
-function disableButtonBezahlt($bezahlt_bool)
+function disableButton($bezahlt_bool)
 {
     if ($bezahlt_bool == 1) {
         echo 'disabled';
@@ -664,7 +665,7 @@ function unpaidInvoiceBackground($bezahlt_bool)
                                 <tfoot>
                                     <tr>
                                         <td colspan="3" class="add-row">
-                                            <label onclick="addDienstleistungsRow()">+ Hinzufügen weitere Leistung</label>
+                                            <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -828,9 +829,9 @@ function unpaidInvoiceBackground($bezahlt_bool)
                                     <form method="post">
                                         <div class="bezahlt_checkbox_button">
                                             <input type="checkbox" name="bezahlt_unbezahlt_checkbox" id="bezahlt_unbezahl_checkbox-<?php echo $row['RechnungsID'] ?>" class="bezahlt_unbezahl_checkbox" <?php setCheckboxBezahltChecked($row['Bezahlt']); ?> required>
-                                            <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)" <?php disableButtonBezahlt($row['Bezahlt']); ?>>Bezahlt</button>
+                                            <button type="button" name="button" value="bezahlt" class="bezahlt-btn" onclick="bezahlt(this)" <?php disableButton($row['Bezahlt']); ?>>Bezahlt</button>
                                         </div>
-                                        <input type="text" class="Ueberweisungsdatum" name="Ueberweisungsdatum" placeholder="ÜberweisungsDatum" value="<?php setUeberweisungsdatum($row['UeberweisungsDatum']); ?>" required>
+                                        <input type="text" class="Ueberweisungsdatum" name="Ueberweisungsdatum" placeholder="ÜberweisungsDatum" value="<?php setUeberweisungsdatum($row['UeberweisungsDatum']); ?>" <?php disableButton($row['Bezahlt']); ?> required>
                                         <input type="hidden" name="RechnungsID_Bezahlt" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                     </form>
                                 </td>
@@ -838,7 +839,7 @@ function unpaidInvoiceBackground($bezahlt_bool)
                                     <form method="post">
                                         <input type="hidden" name="RechnungsID" value=<?php echo htmlspecialchars($row['RechnungsID']); ?>>
                                         <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
-                                        <button type="submit" class="CrudDelete" name="button" value="delete" onclick="showDeleteConfirmation()">Delete</button>
+                                        <button type="submit" class="CrudDelete" name="button" value="delete" onclick="showDeleteConfirmation()" <?php disableButton($row['Bezahlt']); ?>>Delete</button>
                                     </form>
                                 </td>
                             </tr>
