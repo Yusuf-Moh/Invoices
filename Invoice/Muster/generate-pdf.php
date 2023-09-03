@@ -354,7 +354,12 @@ require __DIR__ . "/vendor/autoload.php";
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
+
+$splitedRechnungsMonatJahr = explode(" ", $RechnungsMonatJahr);
+$Jahr = end($splitedRechnungsMonatJahr);
+
 $downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+$downloadPath .= $Jahr . "/";
 $downloadPath .= $RechnungsMonatJahr . "/";
 createFolderIfNotExists($downloadPath);
 

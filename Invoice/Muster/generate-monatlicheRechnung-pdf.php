@@ -19,8 +19,12 @@ use Dompdf\Options;
 
 // Generated PDF-Filenames stored in a array to access the files in ajax later
 $generatedFiles = [];
+$splitedRechnungsMonatJahr = explode(" ", $RechnungsMonatJahr_MonatlicheRechnungen);
+$Jahr = end($splitedRechnungsMonatJahr);
+
 // Path to the Folder, in which the files should be stored
 $downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+$downloadPath .= $Jahr . "/";
 // Invoice getting stored in the respective MonatYear of it
 $downloadPath .= $RechnungsMonatJahr_MonatlicheRechnungen . "/";
 
