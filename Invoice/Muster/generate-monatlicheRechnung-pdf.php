@@ -1,4 +1,7 @@
 <?php
+// Session Start and check for a current Login
+// Otherwise, you will get redirected to the login page
+include "../../loginSystem/checkLogin.php";
 
 $RechnungsDatum_MonatlicheRechnungen = $_POST['RechnungsDatum-MonatlicheRechnungen'];
 $RechnungsMonatJahr_MonatlicheRechnungen = $_POST['RechnungsMonatJahr-MonatlicheRechnungen'];

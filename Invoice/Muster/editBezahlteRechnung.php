@@ -1,4 +1,10 @@
 <?php
+
+// Session Start and check for a current Login
+// Otherwise, you will get redirected to the login page
+include "../../loginSystem/checkLogin.php";
+
+
 $RechnungsID = $_POST['RechnungsID'];
 // Storing the value of the checkbox MonatlicheRechnung 
 $monatlicheRechnung = "0";

@@ -1,5 +1,7 @@
 <?php
-session_start();
+// Session Start and check for a current Login
+// Otherwise, you will get redirected to the login page
+include "../loginSystem/checkLogin.php";
 
 function reset_vars()
 {
@@ -532,7 +534,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $Gender_StateSearchButton = "false";
                 }
                 $_SESSION['Gender_StateSearchButton'] = $Gender_StateSearchButton;
-                
+
                 $sql_query = "SELECT * FROM `kunden`";
                 $param = [];
                 break;

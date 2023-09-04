@@ -1,5 +1,9 @@
 <?php
 
+// Session Start and check for a current Login
+// Otherwise, you will get redirected to the login page
+include "../../loginSystem/checkLogin.php";
+
 // ============ Values from invoice.php ============
 
 $KundenID = $_POST['selectedKundenID'];

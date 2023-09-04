@@ -1,5 +1,7 @@
 <?php
-session_start();
+// Session Start and check for a current Login
+// Otherwise, you will get redirected to the login page
+include "../loginSystem/checkLogin.php";
 
 global $search_Color;
 $search_Color = "black";
@@ -563,6 +565,7 @@ function unpaidInvoiceBackground($bezahlt_bool)
                     </form>
                 </div>
             </div>
+            <a href="../loginSystem/logout.php"><span class="material-icons-sharp">logout</span></a>
         </div>
 
 
