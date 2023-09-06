@@ -121,7 +121,7 @@ b {
     width: 100%;
 }
 
-.buttons-container{
+.buttons-container {
     display: flex;
     justify-content: left;
 }
@@ -139,12 +139,12 @@ b {
     margin-right: 8px;
 }
 
-.search-buttons button:last-child{
+.search-buttons button:last-child {
     margin-right: 0px;
 }
 
 /* hier muss der code verbessert werden */
-.buttons-container .search-buttons button.clicked{
+.buttons-container .search-buttons button.clicked {
     background-color: red;
 }
 
@@ -253,14 +253,28 @@ input[type="radio"] {
 .gender-container {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .gender-container label {
     margin-right: 10px;
 }
 
+.male_organization,
+.female_organization,
+.male_person,
+.female_person {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.male_female-container {
+    display: contents;
+}
+
 .gender-container input[type="radio"] {
-    display: none;
+    margin: 0;
 }
 
 .gender-container input[type="radio"]+label {
@@ -273,6 +287,14 @@ input[type="radio"] {
 .gender-container input[type="radio"]:checked+label {
     background-color: var(--color-primary);
     color: white;
+}
+
+.gender-container .uncheck_gender_radioBtns {
+    display: inline-block;
+    padding: 6px 12px;
+    background-color: var(--color-white);
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 /* ============== End of Radio Buttons ============== */
@@ -336,7 +358,8 @@ input[type="radio"] {
     background: var(--color-warning);
 }
 
-.errorUpdate, .errorDelete {
+.errorUpdate,
+.errorDelete {
     background: var(--color-danger);
 }
 

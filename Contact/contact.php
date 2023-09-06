@@ -106,7 +106,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $Ort_organization = $_POST['Ort_organization'];
                 $Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
                 $Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-                $gender_organization = $_POST['gender_organization'];
+                if (isset($_POST['gender_organization'])) {
+                    $gender_organization = $_POST['gender_organization'];
+                } else {
+                    $gender_organization = "";
+                }
+
 
                 //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
                 if ($Vertragsdatum_organization == "") {
@@ -890,11 +895,24 @@ function setSessionVariableFalse($session)
                             <input type="text" id="Ansprechpartner_organization" name="Ansprechpartner_organization" placeholder="Ansprechpartner (Vorname Nachname)">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender_organization" id="male_organization" value="Male">
-                                <label for="male_organization">Male</label>
 
-                                <input type="radio" name="gender_organization" id="female_organization" value="Female">
-                                <label for="female_organization">Female</label>
+                                <div class="male_female-container">
+
+                                    <div class="male_organization">
+                                        <input type="radio" name="gender_organization" id="male_organization" value="Male">
+                                        <label for="male_organization">Male</label>
+                                    </div>
+
+                                    <div class="female_organization">
+                                        <input type="radio" name="gender_organization" id="female_organization" value="Female">
+                                        <label for="female_organization">Female</label>
+                                    </div>
+                                </div>
+
+
+                                <div class="uncheck_gender">
+                                    <button type="button" class="uncheck_gender_radioBtns" onclick="uncheck_gender_organization()">Uncheck</button>
+                                </div>
                             </div>
 
                             <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->
@@ -923,11 +941,21 @@ function setSessionVariableFalse($session)
                             <input type="text" id="Vertragsdatum_Person" name="Vertragsdatum_Person" placeholder="Vertragsdatum">
 
                             <div class="gender-container">
-                                <input type="radio" name="gender_person" id="male_Person" value="Male" required>
-                                <label for="male_Person">Male*</label>
+                                <div class="male_female-container">
 
-                                <input type="radio" name="gender_person" id="female_Person" value="Female" required>
-                                <label for="female_Person">Female*</label>
+                                    <div class="male_person">
+                                        <input type="radio" name="gender_person" id="male_Person" value="Male" required>
+                                        <label for="male_Person">Male*</label>
+                                    </div>
+
+                                    <div class="female_person">
+                                        <input type="radio" name="gender_person" id="female_Person" value="Female">
+                                        <label for="female_Person">Female*</label>
+                                    </div>
+                                </div>
+                                <div class="uncheck_gender">
+                                    <button type="button" class="uncheck_gender_radioBtns" onclick="uncheck_gender_person()">Uncheck</button>
+                                </div>
                             </div>
 
                             <!-- Store KundenID in hidden Inputfield to get access in update Switch Case-->

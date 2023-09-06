@@ -80,7 +80,7 @@ if (organizationBtn.classList.contains('clicked')) {
             femaleRadio_organization.checked = true;
         }
 
-        if(messageType=="edit"){
+        if (messageType == "edit") {
             personBtn.style.display = "none";
             // updateOrganization = true;
             // updatePerson = false;
@@ -104,7 +104,7 @@ if (personBtn.classList.contains('clicked')) {
             femaleRadio_Person.checked = true;
         }
 
-        if(messageType=="edit"){
+        if (messageType == "edit") {
             organizationBtn.style.display = "none";
             // updatePerson = true;
             // updateOrganization = false;
@@ -124,30 +124,59 @@ document.querySelector(".modal .modal-header span").addEventListener("click", fu
 });
 
 
+// element of the Inputfield Ansprechpartner_organization
+const AnsprechpartnerInput_organization = document.getElementById("Ansprechpartner_organization");
+
+// if there is a input, the radioBtn, should be set to required
+AnsprechpartnerInput_organization.addEventListener('input', function () {
+    if (AnsprechpartnerInput_organization.value.trim() != '') {
+        maleRadio_organization.required = true;
+    } else {
+        maleRadio_organization.required = false;
+    }
+});
+
+// Set Inputfield Ansprechpartner_organization required after clicking male radiobutton
+maleRadio_organization.addEventListener('click', function () {
+    AnsprechpartnerInput_organization.required = true;
+});
+// Set Inputfield Ansprechpartner_organization required after clicking female radiobutton
+femaleRadio_organization.addEventListener('click', function () {
+    AnsprechpartnerInput_organization.required = true;
+});
+
+// Uncheck the radioBtns of Modal-organization and remove required of Inputfield Ansprechpartner_organization
+function uncheck_gender_organization() {
+    maleRadio_organization.checked = false;
+    femaleRadio_organization.checked = false;
+    AnsprechpartnerInput_organization.required = false;
+}
+
+// Uncheck the radioBtns of Modal-Person
+function uncheck_gender_person() {
+    maleRadio_Person.checked = false;
+    femaleRadio_Person.checked = false;
+}
+
+
 // Detect page reloads
 if (performance.navigation.type === 1) {
     // Page reload detected, do the redirect to the same page
     window.location.replace('contact.php');
 }
 
-
-
-
 // Select Search-Input-Element
 var searchInput = document.getElementById('search');
 
 // Event-Listener for Keydown
-searchInput.addEventListener('keydown', function(event) {
-  // Check, if the holding key is the enter-key
-  if (event.key === 'Enter') {
-    // Select and Click Button-Element for switchcase in php
-    var searchButton = document.getElementById('searchButton');
-    searchButton.click();
-  }
+searchInput.addEventListener('keydown', function (event) {
+    // Check, if the holding key is the enter-key
+    if (event.key === 'Enter') {
+        // Select and Click Button-Element for switchcase in php
+        var searchButton = document.getElementById('searchButton');
+        searchButton.click();
+    }
 });
-
-
-
 
 
 // Search-Btns
@@ -164,9 +193,9 @@ function changeBackground(button) {
 }
 
 // Prüfe den Zustand der Buttons beim Laden der Seite
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     var buttons = document.querySelectorAll('.search-buttons button');
-    buttons.forEach(function(button) {
+    buttons.forEach(function (button) {
         var buttonState = localStorage.getItem(button.value);
         if (buttonState === 'clicked') {
             button.classList.add('clicked');
