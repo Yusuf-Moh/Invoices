@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 02. Sep 2023 um 21:34
+-- Erstellungszeit: 06. Sep 2023 um 20:47
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -20,7 +20,8 @@ SET time_zone = "+00:00";
 --
 -- Datenbank: `software`
 --
-
+CREATE DATABASE `software`;
+use `software`;
 -- --------------------------------------------------------
 
 --
@@ -41,7 +42,10 @@ CREATE TABLE `deletedrechnung` (
   `MwSt` text DEFAULT NULL,
   `GesamtBetrag` text DEFAULT NULL,
   `Zeitpunkt_Loeschung` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Zeitpunkt der Löschung',
-  `Pfad` text DEFAULT NULL
+  `Pfad` text DEFAULT NULL,
+  `Bezahlt` tinyint(1) NOT NULL DEFAULT 0,
+  `UeberweisungsDatum` text DEFAULT NULL,
+  `Zeitpunkt_Erstellung` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -96,8 +100,29 @@ CREATE TABLE `rechnung` (
   `GesamtBetrag` text DEFAULT NULL,
   `Pfad` text DEFAULT NULL,
   `Bezahlt` tinyint(1) NOT NULL DEFAULT 0,
-  `UeberweisungsDatum` text DEFAULT NULL
+  `UeberweisungsDatum` text DEFAULT NULL,
+  `Zeitpunkt_Erstellung` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Tabellenstruktur für Tabelle `users`
+--
+
+CREATE TABLE `users` (
+  `UserID` int(11) NOT NULL,
+  `Benutzername` text NOT NULL,
+  `Passwort` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Daten für Tabelle `users`
+--
+
+INSERT INTO `users` (`UserID`, `Benutzername`, `Passwort`, `created_at`) VALUES
+(1, 'admin', '21232f297a57a5a743894a0e4a801fc3', '2023-09-04 08:28:44');
 
 --
 -- Indizes der exportierten Tabellen
@@ -128,6 +153,12 @@ ALTER TABLE `rechnung`
   ADD PRIMARY KEY (`RechnungsID`);
 
 --
+-- Indizes für die Tabelle `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`UserID`);
+
+--
 -- AUTO_INCREMENT für exportierte Tabellen
 --
 
@@ -148,6 +179,12 @@ ALTER TABLE `monatliche_rechnung`
 --
 ALTER TABLE `rechnung`
   MODIFY `RechnungsID` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT für Tabelle `users`
+--
+ALTER TABLE `users`
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
