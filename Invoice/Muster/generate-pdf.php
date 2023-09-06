@@ -502,7 +502,7 @@ if ($saveUpdate == "update") {
         $stmt->execute();
         include('../../dbPhp/dbCloseConnection.php');
     }
-} else if ($saveUpdate == "save") {
+} else if ($saveUpdate == "save" && $monatlicheRechnung == "1") {
     // überprüfen ob $MonatlicheRechnung == "1", dann in Tabelle INSERTEN
     include('../../dbPhp/dbOpenConnection.php');
     $query = "INSERT INTO monatliche_rechnung (RechnungsID) VALUES (:RechnungsID);";
@@ -511,3 +511,7 @@ if ($saveUpdate == "update") {
     $stmt->execute();
     include('../../dbPhp/dbCloseConnection.php');
 }
+
+
+
+header("location: ../invoice.php");

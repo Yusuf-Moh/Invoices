@@ -177,7 +177,7 @@ for ($i = 0; $i < $countCheckedCheckboxes; $i++) {
 
     $filename = $KundenName . " RechnungNr. " . $RechnungsNr . " " . $RechnungsMonatJahr_MonatlicheRechnungen . ".pdf";
 
-    $generatedFiles = $filename;
+    $generatedFiles[] = $filename;
 
     $path_pdf = $downloadPath . $filename;
 
@@ -226,10 +226,7 @@ for ($i = 0; $i < count($generatedFiles); $i++) {
 }
 echo '</script>';
 
-
-
-
-
+header("location: ../invoice.php");
 
 //With the Inputfield type date (invoice.php) the values for 23.05.2023 are 2023-05.23 which are not suitable for the pdf.
 function formatDate($date)

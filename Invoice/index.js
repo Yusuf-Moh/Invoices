@@ -1,3 +1,9 @@
+// XAMPP = localhost + path; 
+
+const form_MonatlicheRechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/generate-monatlicheRechnung-pdf.php';
+const form_Rechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
+const form_editBezahlteRechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/editBezahlteRechnung.php';
+
 // Close Error/ Success Message 
 var closeBtn = document.querySelector(".message span");
 closeBtn.addEventListener("click", function () {
@@ -333,18 +339,15 @@ document.getElementById('form-modal').addEventListener('submit', function (event
         const form = document.getElementById('form-modal');
 
         // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
-        form.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
-        form.target = '_blank';
+        form.action = form_Rechnung_Path;
 
         if (submitButton.value == "update") {
             messageType = "";
             // If you have a paid Invoice, you can only edit the checkbox MonatlicheRechnung.
             if (jsonEditData.Bezahlt_edit == "1") {
-                form.action = '/projekt/website_vereinfacht/Invoice/Muster/editBezahlteRechnung.php';
-                form.target = '_blank';
+                form.action = form_editBezahlteRechnung_Path;
             }
         }
-        window.location.replace('invoice.php');
     } else {
         const messageDiv = document.getElementById('message');
         const messageText = document.getElementById('messageText');
@@ -524,11 +527,8 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
         const form_MonatlicheRechnung = document.getElementById('form-modal-MonatlicheRechnung');
 
         // Neue Datei muss verwendet werden für erstlleung der MonatlicheRechnung
-        form_MonatlicheRechnung.action = '/projekt/website_vereinfacht/Invoice/Muster/generate-monatlicheRechnung-pdf.php';
-        form_MonatlicheRechnung.target = '_blank';
+        form_MonatlicheRechnung.action = form_MonatlicheRechnung_Path;
 
-        // Am besten neuladen nach form action damit wir vernünftig fehler vermeiden könenn
-        window.location.replace('invoice.php');
     } else {
         const messageDiv = document.getElementById('message');
         const messageText = document.getElementById('messageText');
