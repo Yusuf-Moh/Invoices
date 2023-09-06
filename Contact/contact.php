@@ -64,13 +64,20 @@ setSessionVariableFalse('Vertragsdatum_StateSearchButton');
 setSessionVariableFalse('Ansprechpartner_StateSearchButton');
 setSessionVariableFalse('Gender_StateSearchButton');
 
-if ($_SESSION['sql_query'] == "") {
+if (!isset($_SESSION['sql_query'])) {
     $_SESSION['sql_query'] = "SELECT * FROM `kunden`";
     $restart = true;
 }
 
-if ($_SESSION['param'] == "") {
+if (!isset($_SESSION['param'])) {
     $_SESSION['param'] = [];
+    $restart = true;
+}
+
+if (isset($_SESSION['search_Color_Contact'])) {
+    $search_Color_Contact = $_SESSION['search_Color_Contact'];
+} else {
+    $_SESSION['search_Color_Contact'] = 'black';
     $restart = true;
 }
 
@@ -589,6 +596,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } else {
                     $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";
                 }
+
+                if ($_POST['Search-Input'] != "") {
+                    $search_Color_Contact = "#F62217";
+                } else {
+                    $search_Color_Contact = 'black';
+                }
+
                 $param = ['search_string' => $contentSearchbar];
                 break;
 
@@ -612,6 +626,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $_SESSION['sql_query'] = $sql_query;
         $_SESSION['param'] = $param;
+        $_SESSION['search_Color_Contact'] = $search_Color_Contact;
     }
 }
 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
@@ -791,8 +806,9 @@ function checkPersonDataChangedValues($Ansprechpartner_Person, $updated_Ansprech
 
 function setSessionVariableFalse($session)
 {
-    if ($_SESSION[$session] != "false" && $_SESSION[$session] != "true") {
+    if (($_SESSION[$session] != "false" && $_SESSION[$session] != "true") || !isset($_SESSION[$session])) {
         $_SESSION[$session] = "false";
+        global $restart;
         $restart = true;
     }
 }
@@ -824,7 +840,7 @@ function setSessionVariableFalse($session)
                 <div class="search-container">
                     <form method="POST" class="search-form">
                         <div class="search">
-                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp">search</span></button>
+                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp" style="color: <?php echo $search_Color_Contact; ?>">search</span></button>
                             <input type="search" id="search" name="Search-Input" class="Search-Input" placeholder="Search..." autocomplete="off">
                         </div>
                         <div class="buttons-container">

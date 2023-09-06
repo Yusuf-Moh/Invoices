@@ -171,6 +171,7 @@ b {
 
 .search span {
     vertical-align: middle;
+    background-color: var(--color-background);
 }
 
 .search input {

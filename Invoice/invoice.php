@@ -68,15 +68,23 @@ $Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
 $RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
 $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
-if ($_SESSION['sql_query_invoice'] == "") {
+if (!isset($_SESSION['sql_query_invoice'])) {
     $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
     $restart = true;
 }
 
-if ($_SESSION['param_invoice'] == "") {
+if (!isset($_SESSION['param_invoice'])) {
     $_SESSION['param_invoice'] = [];
     $restart = true;
 }
+
+if (isset($_SESSION['search_Color_Invoice'])) {
+    $search_Color_Invoice = $_SESSION['search_Color_Invoice'];
+} else {
+    $_SESSION['search_Color_Invoice'] = 'black';
+    $restart = true;
+}
+
 
 if ($restart) {
     header("Refresh:0");
@@ -314,8 +322,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 if ($_POST['Search-Input'] != "") {
-                    // If there is a Search, with a Search Input then the Search-Span should be red to show it
-                    $search_Color = "#F62217";
+                    $search_Color_Invoice = "#F62217";
+                } else {
+                    $search_Color_Invoice = 'black';
                 }
 
                 $param_invoice = ['search_string' => $contentSearchbar];
@@ -354,6 +363,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $_SESSION['sql_query_invoice'] = $sql_query_invoice;
         $_SESSION['param_invoice'] = $param_invoice;
+        $_SESSION['search_Color_Invoice'] = $search_Color_Invoice;
     }
 }
 include('../dbPhp/dbOpenConnection.php'); // dbConnection open
@@ -373,8 +383,9 @@ function notEqualString($string0, $string1)
 
 function setSessionVariableFalse($session)
 {
-    if ($_SESSION[$session] != "false" && $_SESSION[$session] != "true") {
+    if (($_SESSION[$session] != "false" && $_SESSION[$session] != "true") || !isset($_SESSION[$session])) {
         $_SESSION[$session] = "false";
+        global $restart;
         $restart = true;
     }
 }
@@ -537,7 +548,7 @@ function unpaidInvoiceBackground($bezahlt_bool)
                 <div class="search-container">
                     <form method="POST" class="search-form">
                         <div class="search">
-                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp" style="color: <?php echo $search_Color; ?>">search</span></button>
+                            <button type="submit" name="button" value="search" class="Search-Btn" id="searchButton"><span class="material-icons-sharp" style="color: <?php echo $search_Color_Invoice; ?>">search</span></button>
                             <input type="search" id="search" name="Search-Input" class="Search-Input" placeholder="Search..." autocomplete="off">
                         </div>
                         <div class="buttons-container">
