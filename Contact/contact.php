@@ -74,6 +74,8 @@ if (!isset($_SESSION['param'])) {
     $restart = true;
 }
 
+// If there is a value for the color of the Search-Icon stored in Session then it should be written in the variable search_Color_Contact,
+// Otherwise the session should be decleared the value black and the website should be restarted to get the information out of session to avoid errors
 if (isset($_SESSION['search_Color_Contact'])) {
     $search_Color_Contact = $_SESSION['search_Color_Contact'];
 } else {

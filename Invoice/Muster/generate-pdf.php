@@ -1,5 +1,7 @@
 <?php
 
+$UserPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+
 // Session Start and check for a current Login
 // Otherwise, you will get redirected to the login page
 include "../../loginSystem/checkLogin.php";
@@ -362,7 +364,7 @@ use Dompdf\Options;
 $splitedRechnungsMonatJahr = explode(" ", $RechnungsMonatJahr);
 $Jahr = end($splitedRechnungsMonatJahr);
 
-$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+$downloadPath = $UserPath;
 $downloadPath .= $Jahr . "/";
 $downloadPath .= $RechnungsMonatJahr . "/";
 createFolderIfNotExists($downloadPath);

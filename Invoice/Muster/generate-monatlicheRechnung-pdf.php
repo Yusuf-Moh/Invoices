@@ -1,4 +1,7 @@
 <?php
+
+$UserPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+
 // Session Start and check for a current Login
 // Otherwise, you will get redirected to the login page
 include "../../loginSystem/checkLogin.php";
@@ -26,7 +29,7 @@ $splitedRechnungsMonatJahr = explode(" ", $RechnungsMonatJahr_MonatlicheRechnung
 $Jahr = end($splitedRechnungsMonatJahr);
 
 // Path to the Folder, in which the files should be stored
-$downloadPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
+$downloadPath = $UserPath;
 $downloadPath .= $Jahr . "/";
 // Invoice getting stored in the respective MonatYear of it
 $downloadPath .= $RechnungsMonatJahr_MonatlicheRechnungen . "/";
