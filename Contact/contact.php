@@ -422,7 +422,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         if (!checkIfValueExists('RechnungsKürzel', $updated_rechnungsKuerzel_Person)) {
                             $messageType = "success";
                             $message = "Daten wurden erfolgreich bearbeitet!";
-                            updatePersonDataIntoKundenTable($KundenID, $updated_Ansprechpartner_Person, $updated_Adresse_Person, $updated_rechnungsKuerzel_Person, $updated_PLZ_Person, $updated_Ort_Person, $updated_Vertragsdatum_Person, $updated_gender_Person);
+                            updatePersonDataIntoKundenTable($KundenID, $updated_Adresse_Person, $updated_rechnungsKuerzel_Person, $updated_PLZ_Person, $updated_Ort_Person, $updated_Vertragsdatum_Person, $updated_Ansprechpartner_Person, $updated_gender_Person);
                         } else {
                             $messageType = "errorUpdate";
                             $message = "Fehler: Geänderter Rechnungskürzel ($updated_rechnungsKuerzel_Person) exisitiert bereits in der Datenbank. ";
@@ -430,7 +430,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     } else {
                         $messageType = "success";
                         $message = "Daten wurden erfolgreich bearbeitet!";
-                        updatePersonDataIntoKundenTable($KundenID, $updated_Ansprechpartner_Person, $updated_Adresse_Person, $updated_rechnungsKuerzel_Person, $updated_PLZ_Person, $updated_Ort_Person, $updated_Vertragsdatum_Person, $updated_gender_Person);
+                        updatePersonDataIntoKundenTable($KundenID, $updated_Adresse_Person, $updated_rechnungsKuerzel_Person, $updated_PLZ_Person, $updated_Ort_Person, $updated_Vertragsdatum_Person, $updated_Ansprechpartner_Person, $updated_gender_Person);
                     }
                 } // The data in the input fields match the data in the database
                 else {
