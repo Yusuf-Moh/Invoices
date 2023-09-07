@@ -49,16 +49,21 @@ var messageType;
 //Organization-Form all input values from PHP with "echo"
 var firmenName_organization, firmenAdresse_organization, rechnungsKuerzel_organization, PLZ_organization, Ort_organization, Vertragsdatum_organization, Ansprechpartner_organization;
 var gender_organization;
+//radio buttons are abit special to insert value into the input field
 var maleRadio_organization = document.getElementById("male_organization");
 var femaleRadio_organization = document.getElementById("female_organization");
-//radio buttons are abit special to insert value into the input field
+
+// element of the Inputfield Ansprechpartner_organization
+const AnsprechpartnerInput_organization = document.getElementById("Ansprechpartner_organization");
+
 
 //Person-Form all input values from PHP with "echo"
 var Ansprechpartner_Person, Adresse_Person, rechnungsKuerzel_Person, PLZ_Person, Ort_Person, Vertragsdatum_Person;
 var gender_Person;
+//radio buttons are abit special to insert value into the input field
 var maleRadio_Person = document.getElementById("male_Person");
 var femaleRadio_Person = document.getElementById("female_Person");
-//radio buttons are abit special to insert value into the input field
+
 
 var updatePerson = false, updateOrganization = false;
 
@@ -73,11 +78,19 @@ if (organizationBtn.classList.contains('clicked')) {
         document.getElementById("PLZ_organization").value = PLZ_organization;
         document.getElementById("Ort_organization").value = Ort_organization;
         document.getElementById("Vertragsdatum_organization").value = Vertragsdatum_organization;
-        document.getElementById("Ansprechpartner_organization").value = Ansprechpartner_organization;
+        AnsprechpartnerInput_organization.value = Ansprechpartner_organization;
         if (gender_organization == "Male") {
             maleRadio_organization.checked = true;
+            AnsprechpartnerInput_organization.required = true;
         } else if (gender_organization == "Female") {
             femaleRadio_organization.checked = true;
+            AnsprechpartnerInput_organization.required = true;
+        }
+
+        // There is a value for the Ansprechpartner = set the inputfield to required and the gender radio button.
+        if (Ansprechpartner_organization != "") {
+            AnsprechpartnerInput_organization.required = true;
+            maleRadio_organization.required = true;
         }
 
         if (messageType == "edit") {
@@ -123,9 +136,6 @@ document.querySelector(".modal .modal-header span").addEventListener("click", fu
 
 });
 
-
-// element of the Inputfield Ansprechpartner_organization
-const AnsprechpartnerInput_organization = document.getElementById("Ansprechpartner_organization");
 
 // if there is a input, the radioBtn, should be set to required
 AnsprechpartnerInput_organization.addEventListener('input', function () {

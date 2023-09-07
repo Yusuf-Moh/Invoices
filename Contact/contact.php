@@ -310,7 +310,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $updated_Ort_organization = $_POST['Ort_organization'];
                 $updated_Vertragsdatum_organization = $_POST['Vertragsdatum_organization'];
                 $updated_Ansprechpartner_organization = $_POST['Ansprechpartner_organization'];
-                $updated_gender_organization = $_POST['gender_organization'];
+                if (isset($_POST['gender_organization'])) {
+                    $updated_gender_organization = $_POST['gender_organization'];
+                } else {
+                    $updated_gender_organization = "";
+                }
 
                 //assigning null to the not required input fields if its empty, so the DB gets the value Null. 
                 if ($updated_Vertragsdatum_organization == "") {
