@@ -263,7 +263,10 @@ function deleteRechnung($rechnungsID)
     include('../../dbPhp/dbOpenConnection.php'); // dbConnection open
 
     // The data of the deleted Invoice is getting stored in a Table deletedRechnung as Backup.
-    $query = "INSERT INTO deletedRechnung SELECT *, NOW() AS Zeitpunkt_Loeschung FROM rechnung WHERE RechnungsID =:RechnungsID;";
+    $query = "INSERT INTO deletedrechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, RechnungsID, MwSt, GesamtBetrag, Pfad, Bezahlt, UeberweisungsDatum, Zeitpunkt_Erstellung)
+    SELECT Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, RechnungsID, MwSt, GesamtBetrag, Pfad, Bezahlt, UeberweisungsDatum, Zeitpunkt_Erstellung
+    FROM rechnung
+    WHERE RechnungsID = :RechnungsID;";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':RechnungsID', $rechnungsID);
     $stmt->execute();
