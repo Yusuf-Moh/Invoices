@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 06. Sep 2023 um 20:47
+-- Erstellungszeit: 07. Sep 2023 um 18:26
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -41,11 +41,11 @@ CREATE TABLE `deletedrechnung` (
   `RechnungsID` int(11) NOT NULL,
   `MwSt` text DEFAULT NULL,
   `GesamtBetrag` text DEFAULT NULL,
-  `Zeitpunkt_Loeschung` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT 'Zeitpunkt der Löschung',
+  `Zeitpunkt_Loeschung` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'Zeitpunkt der Löschung',
   `Pfad` text DEFAULT NULL,
   `Bezahlt` tinyint(1) NOT NULL DEFAULT 0,
   `UeberweisungsDatum` text DEFAULT NULL,
-  `Zeitpunkt_Erstellung` text DEFAULT NULL
+  `Zeitpunkt_Erstellung` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
