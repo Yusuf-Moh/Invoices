@@ -13,12 +13,38 @@ if (isset($_POST['monatlicheRechnung'])) {
 }
 include('../../dbPhp/dbOpenConnection.php');
 
+$query = "SELECT MonatlicheRechnungBool from rechnung WHERE RechnungsID = :rechnungsID;";
+$stmt = $conn->prepare($query);
+
+$stmt->bindParam(':rechnungsID', $RechnungsID);
+$stmt->execute();
+
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$monatlicheRechnung_old = $result['MonatlicheRechnungBool'];
+
+
 $query = "UPDATE rechnung SET MonatlicheRechnungBool = :monatlicheRechnung WHERE RechnungsID = :rechnungsID;";
 $stmt = $conn->prepare($query);
 
 $stmt->bindParam(':monatlicheRechnung', $monatlicheRechnung);
 $stmt->bindParam(':rechnungsID', $RechnungsID);
 $stmt->execute();
+
+// monatlicheRechnung from 1 (checked) to 0 (unchecked): Delete Data-Record from MonatlicheRechnung Table 
+if ($monatlicheRechnung_old == "1" && $monatlicheRechnung == "0") {
+    $query = "DELETE FROM monatliche_rechnung WHERE RechnungsID = :rechnungsID;";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':rechnungsID', $RechnungsID);
+    $stmt->execute();
+}
+// monatlicheRechnung from 0 (unchecked) to 1 (checked): Insert into MonatlicheRechnung Table 
+else if ($monatlicheRechnung_old == "0" && $monatlicheRechnung == "1") {
+    $query = "INSERT INTO monatliche_rechnung (RechnungsID) VALUES (:rechnungsID);";
+    $stmt = $conn->prepare($query);
+    $stmt->bindParam(':rechnungsID', $RechnungsID);
+    $stmt->execute();
+}
 
 include('../../dbPhp/dbCloseConnection.php');
 
