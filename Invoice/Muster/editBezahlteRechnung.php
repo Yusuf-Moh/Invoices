@@ -21,3 +21,5 @@ $stmt->bindParam(':rechnungsID', $RechnungsID);
 $stmt->execute();
 
 include('../../dbPhp/dbCloseConnection.php');
+
+header("location: ../invoice.php");
