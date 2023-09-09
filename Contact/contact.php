@@ -496,23 +496,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             case 'search':
                 reset_vars();
                 $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
+                $SelectEveryData = false;
 
                 //If any of the Filter Buttons are active/clicked
                 if ($_SESSION['Firmenname_StateSearchButton'] || $_SESSION['Adresse_StateSearchButton'] || $_SESSION['RechnungsKürzel_StateSearchButton'] || $_SESSION['PLZ_StateSearchButton'] || $_SESSION['Ort_StateSearchButton'] || $_SESSION['Vertragsdatum_StateSearchButton'] || $_SESSION['Ansprechpartner_StateSearchButton'] || $_SESSION['Gender_StateSearchButton']) {
-                    $sql_query = "SELECT * FROM `kunden` WHERE";
+                    if ($_POST['Search-Input'] == "") {
+                        $sql_query = "SELECT * FROM `kunden`";
+                        $SelectEveryData = true;
+                    } else {
+                        $sql_query = "SELECT * FROM `kunden` WHERE";
 
 
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Firmenname_StateSearchButton'], " Firmenname LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Adresse_StateSearchButton'], " Adresse LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsKürzel_StateSearchButton'], " RechnungsKürzel LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['PLZ_StateSearchButton'], " PLZ LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Ort_StateSearchButton'], " Ort LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Vertragsdatum_StateSearchButton'], " Vertragsdatum LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Ansprechpartner_StateSearchButton'], " Name_Ansprechpartner LIKE :search_string OR");
-                    $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Gender_StateSearchButton'], " Gender LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Firmenname_StateSearchButton'], " Firmenname LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Adresse_StateSearchButton'], " Adresse LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsKürzel_StateSearchButton'], " RechnungsKürzel LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['PLZ_StateSearchButton'], " PLZ LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Ort_StateSearchButton'], " Ort LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Vertragsdatum_StateSearchButton'], " Vertragsdatum LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Ansprechpartner_StateSearchButton'], " Name_Ansprechpartner LIKE :search_string OR");
+                        $sql_query .= updateSearchQueryStateSearchButtons($_SESSION['Gender_StateSearchButton'], " Gender LIKE :search_string OR");
 
-                    // Delete the last "OR" of the Query
-                    $sql_query = rtrim($sql_query, "OR");
+                        // Delete the last "OR" of the Query
+                        $sql_query = rtrim($sql_query, "OR");
+                    }
                 } else {
                     $sql_query = "SELECT * FROM `kunden` WHERE Firmenname LIKE :search_string OR Adresse LIKE :search_string OR RechnungsKürzel LIKE :search_string OR PLZ LIKE :search_string OR Ort LIKE :search_string OR Vertragsdatum LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR Gender LIKE :search_string";
                 }
@@ -524,6 +530,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $param = ['search_string' => $contentSearchbar];
+
+                if ($_POST['Search-Input'] == "" && $SelectEveryData) {
+                    $param = [];
+                }
                 break;
 
             case 'delete':

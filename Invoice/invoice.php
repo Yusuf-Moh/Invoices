@@ -43,7 +43,7 @@ function reset_vars()
     $search_Color = "black";
 }
 
-global $KundenInformationen_StateSearchButton, $Leistung_StateSearchButton, $Abrechnungsart_StateSearchButton, $NettoPreis_StateSearchButton, $GesamtBetrag_StateSearchButton, $RechnungsDatum_StateSearchButton, $Monat_Jahr_StateSearchButton, $RechnungsKürzelNummer_StateSearchButton, $MonatlicheRechnung_StateSearchButton;
+global $KundenInformationen_StateSearchButton, $Leistung_StateSearchButton, $Abrechnungsart_StateSearchButton, $NettoPreis_StateSearchButton, $GesamtBetrag_StateSearchButton, $RechnungsDatum_StateSearchButton, $Monat_Jahr_StateSearchButton, $RechnungsKürzelNummer_StateSearchButton, $MonatlicheRechnung_StateSearchButton, $Bezahlt_StateSearchButton, $UeberweisungsDatum_StateSearchButton;
 
 setSessionVariableFalse('KundenInformationen_StateSearchButton');
 setSessionVariableFalse('Leistung_StateSearchButton');
@@ -54,6 +54,8 @@ setSessionVariableFalse('RechnungsDatum_StateSearchButton');
 setSessionVariableFalse('Monat_Jahr_StateSearchButton');
 setSessionVariableFalse('RechnungsKürzelNummer_StateSearchButton');
 setSessionVariableFalse('MonatlicheRechnung_StateSearchButton');
+setSessionVariableFalse('Bezahlt_StateSearchButton');
+setSessionVariableFalse('UeberweisungsDatum_StateSearchButton');
 
 global $restart;
 $restart = false;
@@ -90,6 +92,8 @@ $RechnungsDatum_StateSearchButton = $_SESSION['RechnungsDatum_StateSearchButton'
 $Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
 $RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
 $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
+$Bezahlt_StateSearchButton = $_SESSION['Bezahlt_StateSearchButton'];
+$UeberweisungsDatum_StateSearchButton = $_SESSION['UeberweisungsDatum_StateSearchButton'];
 
 $sql_query_invoice = $_SESSION['sql_query_invoice'];
 $param_invoice = $_SESSION['param_invoice'];
@@ -226,29 +230,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
                 resetSearch();
                 break;
+            case 'Search_Bezahlt':
+                $_SESSION['Bezahlt_StateSearchButton'] = stateSearchButton($Bezahlt_StateSearchButton);
+                $Bezahlt_StateSearchButton = $_SESSION['Bezahlt_StateSearchButton'];
+                resetSearch();
+                break;
+            case 'Search_UeberweisungsDatum':
+                $_SESSION['UeberweisungsDatum_StateSearchButton'] = stateSearchButton($UeberweisungsDatum_StateSearchButton);
+                $UeberweisungsDatum_StateSearchButton = $_SESSION['UeberweisungsDatum_StateSearchButton'];
+                resetSearch();
+                break;
             case 'search':
                 reset_vars();
                 $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
+                $SelectEveryData = false;
 
-                if ($_SESSION['KundenInformationen_StateSearchButton'] || $_SESSION['Leistung_StateSearchButton'] || $_SESSION['Abrechnungsart_StateSearchButton'] || $_SESSION['NettoPreis_StateSearchButton'] || $_SESSION['GesamtBetrag_StateSearchButton'] || $_SESSION['RechnungsDatum_StateSearchButton'] || $_SESSION['Monat_Jahr_StateSearchButton'] || $_SESSION['RechnungsKürzelNummer_StateSearchButton'] || $_SESSION['MonatlicheRechnung_StateSearchButton']) {
+                if ($_SESSION['KundenInformationen_StateSearchButton'] || $_SESSION['Leistung_StateSearchButton'] || $_SESSION['Abrechnungsart_StateSearchButton'] || $_SESSION['NettoPreis_StateSearchButton'] || $_SESSION['GesamtBetrag_StateSearchButton'] || $_SESSION['RechnungsDatum_StateSearchButton'] || $_SESSION['Monat_Jahr_StateSearchButton'] || $_SESSION['RechnungsKürzelNummer_StateSearchButton'] || $_SESSION['MonatlicheRechnung_StateSearchButton'] || $_SESSION['Bezahlt_StateSearchButton'] || $_SESSION['UeberweisungsDatum_StateSearchButton']) {
 
-                    $sql_query_invoice = 'SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
+                    // Check for a empty Input so we can select every record from the database
+                    if ($_POST['Search-Input'] == "") {
+                        $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
+                        FROM Rechnung r 
+                        JOIN Kunden k ON r.KundenID = k.KundenID";
+                        $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+
+                        $SelectEveryData = true;
+                    } else {
+                        $sql_query_invoice = 'SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                             FROM Rechnung r 
                                             JOIN Kunden k ON r.KundenID = k.KundenID WHERE';
 
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['KundenInformationen_StateSearchButton'], " FirmenName LIKE :search_string OR Adresse LIKE :search_string OR PLZ LIKE :search_string OR ORT LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Leistung_StateSearchButton'], " Leistung LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Abrechnungsart_StateSearchButton'], " Abrechnungsart LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['NettoPreis_StateSearchButton'], " NettoPreis LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['GesamtBetrag_StateSearchButton'], " GesamtBetrag LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsDatum_StateSearchButton'], " RechnungsDatum LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Monat_Jahr_StateSearchButton'], " Monat_Jahr LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsKürzelNummer_StateSearchButton'], " RechnungsKürzelNummer LIKE :search_string OR");
-                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['MonatlicheRechnung_StateSearchButton'], " MonatlicheRechnungBool LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['KundenInformationen_StateSearchButton'], " FirmenName LIKE :search_string OR Adresse LIKE :search_string OR PLZ LIKE :search_string OR ORT LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Leistung_StateSearchButton'], " Leistung LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Abrechnungsart_StateSearchButton'], " Abrechnungsart LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['NettoPreis_StateSearchButton'], " NettoPreis LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['GesamtBetrag_StateSearchButton'], " GesamtBetrag LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsDatum_StateSearchButton'], " RechnungsDatum LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Monat_Jahr_StateSearchButton'], " Monat_Jahr LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsKürzelNummer_StateSearchButton'], " RechnungsKürzelNummer LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['MonatlicheRechnung_StateSearchButton'], " MonatlicheRechnungBool LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Bezahlt_StateSearchButton'], " Bezahlt LIKE :search_string OR");
+                        $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['UeberweisungsDatum_StateSearchButton'], " UeberweisungsDatum LIKE :search_string OR");
 
-                    // Delete the last "OR" of the Query
-                    $sql_query_invoice = rtrim($sql_query_invoice, "OR");
-                    $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+                        // Delete the last "OR" of the Query
+                        $sql_query_invoice = rtrim($sql_query_invoice, "OR");
+                        $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+                    }
                 } else {
                     $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                         FROM Rechnung r 
@@ -266,6 +293,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             OR PLZ LIKE :search_string 
                                             OR ORT LIKE :search_string 
                                             OR Name_Ansprechpartner LIKE :search_string
+                                            OR Bezahlt LIKE :search_string
+                                            OR UeberweisungsDatum LIKE :search_string
                                             ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
                 }
 
@@ -276,6 +305,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 $param_invoice = ['search_string' => $contentSearchbar];
+
+                // If searchInput is empty and the bool SelectEveryData is true, the param_invoice should be a empty array because the query is selecting every record of the Table Invoice
+                if ($_POST['Search-Input'] == "" && $SelectEveryData) {
+                    $param_invoice = [];
+                }
                 break;
 
             case 'delete':
@@ -541,6 +575,8 @@ function changeBackgroundSearchButton($bool)
                                 <button type="submit" name="button" value="Search_Monat_Jahr" class="<?php changeBackgroundSearchButton($Monat_Jahr_StateSearchButton); ?>">Monat Jahr</button>
                                 <button type="submit" name="button" value="Search_RechnungsKürzelNummer" class="<?php changeBackgroundSearchButton($RechnungsKürzelNummer_StateSearchButton); ?>">RechnungsKürzelNummer</button>
                                 <button type="submit" name="button" value="Search_MonatlicheRechnung" class="<?php changeBackgroundSearchButton($MonatlicheRechnung_StateSearchButton); ?>">MonatlicheRechnung</button>
+                                <button type="submit" name="button" value="Search_Bezahlt" class="<?php changeBackgroundSearchButton($Bezahlt_StateSearchButton); ?>">Bezahlt (1/0)</button>
+                                <button type="submit" name="button" value="Search_UeberweisungsDatum" class="<?php changeBackgroundSearchButton($UeberweisungsDatum_StateSearchButton); ?>">Überweisungsdatum</button>
                             </div>
                         </div>
                     </form>
