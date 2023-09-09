@@ -187,28 +187,3 @@ searchInput.addEventListener('keydown', function (event) {
         searchButton.click();
     }
 });
-
-
-// Search-Btns
-
-function changeBackground(button) {
-    var buttonState = localStorage.getItem(button.value);
-    if (buttonState === 'clicked') {
-        button.classList.remove('clicked');
-        localStorage.setItem(button.value, 'unclicked');
-    } else {
-        button.classList.add('clicked');
-        localStorage.setItem(button.value, 'clicked');
-    }
-}
-
-// Prüfe den Zustand der Buttons beim Laden der Seite
-document.addEventListener('DOMContentLoaded', function () {
-    var buttons = document.querySelectorAll('.search-buttons button');
-    buttons.forEach(function (button) {
-        var buttonState = localStorage.getItem(button.value);
-        if (buttonState === 'clicked') {
-            button.classList.add('clicked');
-        }
-    });
-});
