@@ -66,6 +66,11 @@ body {
     gap: 1.8rem;
 }
 
+table th,
+table td {
+    font-size: 12px;
+}
+
 a {
     color: var(--color-dark);
 }
@@ -520,7 +525,6 @@ b {
     /* border-bottom: 1px solid #ddd; */
     border: 1px solid #ddd;
     color: var(--color-dark);
-    /* font-size: 16px; */
 }
 
 .crud .crud-table table tr:nth-child(even) {
