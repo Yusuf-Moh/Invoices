@@ -489,6 +489,7 @@ function resetSearch()
     $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
     $param_invoice = [];
     $search_Color_Invoice = 'black';
+    header("Refresh:0");
 }
 
 function changeBackgroundSearchButton($bool)

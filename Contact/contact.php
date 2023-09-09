@@ -757,6 +757,7 @@ function resetSearch()
     $sql_query = "SELECT * FROM `kunden`";
     $param = [];
     $search_Color_Contact = 'black';
+    header("Refresh:0");
 }
 
 function changeBackgroundSearchButton($bool)
