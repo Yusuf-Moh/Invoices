@@ -58,15 +58,6 @@ setSessionVariableFalse('MonatlicheRechnung_StateSearchButton');
 global $restart;
 $restart = false;
 
-$KundenInformationen_StateSearchButton = $_SESSION['KundenInformationen_StateSearchButton'];
-$Leistung_StateSearchButton = $_SESSION['Leistung_StateSearchButton'];
-$Abrechnungsart_StateSearchButton = $_SESSION['Abrechnungsart_StateSearchButton'];
-$NettoPreis_StateSearchButton = $_SESSION['NettoPreis_StateSearchButton'];
-$GesamtBetrag_StateSearchButton = $_SESSION['GesamtBetrag_StateSearchButton'];
-$RechnungsDatum_StateSearchButton = $_SESSION['RechnungsDatum_StateSearchButton'];
-$Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
-$RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
-$MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
 if (!isset($_SESSION['sql_query_invoice'])) {
     $_SESSION['sql_query_invoice'] = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
@@ -89,6 +80,16 @@ if (isset($_SESSION['search_Color_Invoice'])) {
 if ($restart) {
     header("Refresh:0");
 }
+
+$KundenInformationen_StateSearchButton = $_SESSION['KundenInformationen_StateSearchButton'];
+$Leistung_StateSearchButton = $_SESSION['Leistung_StateSearchButton'];
+$Abrechnungsart_StateSearchButton = $_SESSION['Abrechnungsart_StateSearchButton'];
+$NettoPreis_StateSearchButton = $_SESSION['NettoPreis_StateSearchButton'];
+$GesamtBetrag_StateSearchButton = $_SESSION['GesamtBetrag_StateSearchButton'];
+$RechnungsDatum_StateSearchButton = $_SESSION['RechnungsDatum_StateSearchButton'];
+$Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
+$RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
+$MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
 
 $sql_query_invoice = $_SESSION['sql_query_invoice'];
 $param_invoice = $_SESSION['param_invoice'];
@@ -173,130 +174,77 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Refresh:0");
                 break;
             case 'Search_KundenInformationen':
-                $KundenInformationen_StateSearchButton = $_POST['KundenInformationen_StateSearchButton'];
                 $_SESSION['KundenInformationen_StateSearchButton'] = stateSearchButton($KundenInformationen_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $KundenInformationen_StateSearchButton = $_SESSION['KundenInformationen_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_Leistung':
-                $Leistung_StateSearchButton = $_POST['Leistung_StateSearchButton'];
                 $_SESSION['Leistung_StateSearchButton'] = stateSearchButton($Leistung_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $Leistung_StateSearchButton = $_SESSION['Leistung_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_Abrechnungsart':
-                $Abrechnungsart_StateSearchButton = $_POST['Abrechnungsart_StateSearchButton'];
                 $_SESSION['Abrechnungsart_StateSearchButton'] = stateSearchButton($Abrechnungsart_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $Abrechnungsart_StateSearchButton = $_SESSION['Abrechnungsart_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_NettoPreis':
-                $NettoPreis_StateSearchButton = $_POST['NettoPreis_StateSearchButton'];
                 $_SESSION['NettoPreis_StateSearchButton'] = stateSearchButton($NettoPreis_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $NettoPreis_StateSearchButton = $_SESSION['NettoPreis_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_GesamtBetrag':
-                $GesamtBetrag_StateSearchButton = $_POST['GesamtBetrag_StateSearchButton'];
                 $_SESSION['GesamtBetrag_StateSearchButton'] = stateSearchButton($GesamtBetrag_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $GesamtBetrag_StateSearchButton = $_SESSION['GesamtBetrag_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_RechnungsDatum':
-                $RechnungsDatum_StateSearchButton = $_POST['RechnungsDatum_StateSearchButton'];
                 $_SESSION['RechnungsDatum_StateSearchButton'] = stateSearchButton($RechnungsDatum_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $RechnungsDatum_StateSearchButton = $_SESSION['RechnungsDatum_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_Monat_Jahr':
-                $Monat_Jahr_StateSearchButton = $_POST['Monat_Jahr_StateSearchButton'];
                 $_SESSION['Monat_Jahr_StateSearchButton'] = stateSearchButton($Monat_Jahr_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $Monat_Jahr_StateSearchButton = $_SESSION['Monat_Jahr_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_RechnungsKürzelNummer':
-                $RechnungsKürzelNummer_StateSearchButton = $_POST['RechnungsKürzelNummer_StateSearchButton'];
                 $_SESSION['RechnungsKürzelNummer_StateSearchButton'] = stateSearchButton($RechnungsKürzelNummer_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $RechnungsKürzelNummer_StateSearchButton = $_SESSION['RechnungsKürzelNummer_StateSearchButton'];
+                resetSearch();
                 break;
 
             case 'Search_MonatlicheRechnung':
-                $MonatlicheRechnung_StateSearchButton = $_POST['MonatlicheRechnung_StateSearchButton'];
                 $_SESSION['MonatlicheRechnung_StateSearchButton'] = stateSearchButton($MonatlicheRechnung_StateSearchButton);
-                $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
-                $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
-                $param_invoice = [];
-                header("Refresh:0");
+                $MonatlicheRechnung_StateSearchButton = $_SESSION['MonatlicheRechnung_StateSearchButton'];
+                resetSearch();
                 break;
             case 'search':
                 reset_vars();
                 $contentSearchbar = '%' . $_POST['Search-Input'] . '%';
 
-                if ($_POST['KundenInformationen_StateSearchButton'] == "true" || $_POST['Leistung_StateSearchButton'] == "true" || $_POST['Abrechnungsart_StateSearchButton'] == "true" || $_POST['NettoPreis_StateSearchButton'] == "true" || $_POST['GesamtBetrag_StateSearchButton'] == "true" || $_POST['RechnungsDatum_StateSearchButton'] == "true" || $_POST['Monat_Jahr_StateSearchButton'] == "true" || $_POST['RechnungsKürzelNummer_StateSearchButton'] == "true" || $_POST['MonatlicheRechnung_StateSearchButton'] == "true") {
+                if ($_SESSION['KundenInformationen_StateSearchButton'] || $_SESSION['Leistung_StateSearchButton'] || $_SESSION['Abrechnungsart_StateSearchButton'] || $_SESSION['NettoPreis_StateSearchButton'] || $_SESSION['GesamtBetrag_StateSearchButton'] || $_SESSION['RechnungsDatum_StateSearchButton'] || $_SESSION['Monat_Jahr_StateSearchButton'] || $_SESSION['RechnungsKürzelNummer_StateSearchButton'] || $_SESSION['MonatlicheRechnung_StateSearchButton']) {
 
                     $sql_query_invoice = 'SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner 
                                             FROM Rechnung r 
                                             JOIN Kunden k ON r.KundenID = k.KundenID WHERE';
 
-                    if ($_POST['KundenInformationen_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " FirmenName LIKE :search_string OR Adresse LIKE :search_string OR PLZ LIKE :search_string OR ORT LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Leistung_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " Leistung LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Abrechnungsart_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " Abrechnungsart LIKE :search_string OR";
-                    }
-
-                    if ($_POST['NettoPreis_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " NettoPreis LIKE :search_string OR";
-                    }
-
-                    if ($_POST['GesamtBetrag_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " GesamtBetrag LIKE :search_string OR";
-                    }
-
-                    if ($_POST['RechnungsDatum_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " RechnungsDatum LIKE :search_string OR";
-                    }
-
-                    if ($_POST['Monat_Jahr_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " Monat_Jahr LIKE :search_string OR";
-                    }
-
-                    if ($_POST['RechnungsKürzelNummer_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " RechnungsKürzelNummer LIKE :search_string OR";
-                    }
-
-                    if ($_POST['MonatlicheRechnung_StateSearchButton'] == "true") {
-                        $sql_query_invoice .= " MonatlicheRechnungBool LIKE :search_string OR";
-                    }
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['KundenInformationen_StateSearchButton'], " FirmenName LIKE :search_string OR Adresse LIKE :search_string OR PLZ LIKE :search_string OR ORT LIKE :search_string OR Name_Ansprechpartner LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Leistung_StateSearchButton'], " Leistung LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Abrechnungsart_StateSearchButton'], " Abrechnungsart LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['NettoPreis_StateSearchButton'], " NettoPreis LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['GesamtBetrag_StateSearchButton'], " GesamtBetrag LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsDatum_StateSearchButton'], " RechnungsDatum LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['Monat_Jahr_StateSearchButton'], " Monat_Jahr LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['RechnungsKürzelNummer_StateSearchButton'], " RechnungsKürzelNummer LIKE :search_string OR");
+                    $sql_query_invoice .= updateSearchQueryStateSearchButtons($_SESSION['MonatlicheRechnung_StateSearchButton'], " MonatlicheRechnungBool LIKE :search_string OR");
 
                     // Delete the last "OR" of the Query
                     $sql_query_invoice = rtrim($sql_query_invoice, "OR");
@@ -383,8 +331,8 @@ function notEqualString($string0, $string1)
 
 function setSessionVariableFalse($session)
 {
-    if (($_SESSION[$session] != "false" && $_SESSION[$session] != "true") || !isset($_SESSION[$session])) {
-        $_SESSION[$session] = "false";
+    if (($_SESSION[$session] != 0 && $_SESSION[$session] != 1) || !isset($_SESSION[$session])) {
+        $_SESSION[$session] = 0;
         global $restart;
         $restart = true;
     }
@@ -469,12 +417,11 @@ function deleteRechnung($rechnungsID)
 
 function stateSearchButton($currentState)
 {
-    if ($currentState == "false") {
-        return "true";
-    } elseif ($currentState == "true") {
-        return "false";
+    if ($currentState) {
+        return 0;
+    } else {
+        return 1;
     }
-    return $currentState;
 }
 
 function deleteFile($rechnungsID)
@@ -525,6 +472,34 @@ function unpaidInvoiceBackground($bezahlt_bool)
         echo "style = 'background: indianred;'";
     }
 }
+
+function updateSearchQueryStateSearchButtons($bool, $query)
+{
+    if ($bool) {
+        return $query;
+    } else {
+        return "";
+    }
+}
+
+function resetSearch()
+{
+    global $sql_query_invoice, $param_invoice, $search_Color_Invoice;
+    $sql_query_invoice = "SELECT r.*, k.FirmenName, k.Adresse, k.PLZ, k.Ort, k.Name_Ansprechpartner FROM Rechnung r JOIN Kunden k ON r.KundenID = k.KundenID";
+    $sql_query_invoice .= " ORDER BY CASE WHEN Bezahlt = 0 THEN 0 ELSE 1 END, STR_TO_DATE(Rechnungsdatum, '%d.%m.%Y') DESC;";
+    $param_invoice = [];
+    $search_Color_Invoice = 'black';
+}
+
+function changeBackgroundSearchButton($bool)
+{
+    if ($bool) {
+        echo "clicked";
+    } else {
+        echo "";
+    }
+}
+
 ?>
 
 
@@ -556,26 +531,17 @@ function unpaidInvoiceBackground($bezahlt_bool)
                         </div>
                         <div class="buttons-container">
                             <div class="search-buttons">
-                                <button type="submit" name="button" value="Search_KundenInformationen" onclick="changeBackground(this)">KundenInformationen</button>
-                                <button type="submit" name="button" value="Search_Leistung" onclick="changeBackground(this)">Leistung</button>
-                                <button type="submit" name="button" value="Search_Abrechnungsart" onclick="changeBackground(this)">Abrechnungsart</button>
-                                <button type="submit" name="button" value="Search_NettoPreis" onclick="changeBackground(this)">NettoPreis</button>
-                                <button type="submit" name="button" value="Search_GesamtBetrag" onclick="changeBackground(this)">GesamtBetrag</button>
-                                <button type="submit" name="button" value="Search_RechnungsDatum" onclick="changeBackground(this)">RechnungsDatum</button>
-                                <button type="submit" name="button" value="Search_Monat_Jahr" onclick="changeBackground(this)">Monat Jahr</button>
-                                <button type="submit" name="button" value="Search_RechnungsKürzelNummer" onclick="changeBackground(this)">RechnungsKürzelNummer</button>
-                                <button type="submit" name="button" value="Search_MonatlicheRechnung" onclick="changeBackground(this)">MonatlicheRechnung</button>
+                                <button type="submit" name="button" value="Search_KundenInformationen" class="<?php changeBackgroundSearchButton($KundenInformationen_StateSearchButton); ?>">KundenInformationen</button>
+                                <button type="submit" name="button" value="Search_Leistung" class="<?php changeBackgroundSearchButton($Leistung_StateSearchButton); ?>">Leistung</button>
+                                <button type="submit" name="button" value="Search_Abrechnungsart" class="<?php changeBackgroundSearchButton($Abrechnungsart_StateSearchButton); ?>">Abrechnungsart</button>
+                                <button type="submit" name="button" value="Search_NettoPreis" class="<?php changeBackgroundSearchButton($NettoPreis_StateSearchButton); ?>">NettoPreis</button>
+                                <button type="submit" name="button" value="Search_GesamtBetrag" class="<?php changeBackgroundSearchButton($GesamtBetrag_StateSearchButton); ?>">GesamtBetrag</button>
+                                <button type="submit" name="button" value="Search_RechnungsDatum" class="<?php changeBackgroundSearchButton($RechnungsDatum_StateSearchButton); ?>">RechnungsDatum</button>
+                                <button type="submit" name="button" value="Search_Monat_Jahr" class="<?php changeBackgroundSearchButton($Monat_Jahr_StateSearchButton); ?>">Monat Jahr</button>
+                                <button type="submit" name="button" value="Search_RechnungsKürzelNummer" class="<?php changeBackgroundSearchButton($RechnungsKürzelNummer_StateSearchButton); ?>">RechnungsKürzelNummer</button>
+                                <button type="submit" name="button" value="Search_MonatlicheRechnung" class="<?php changeBackgroundSearchButton($MonatlicheRechnung_StateSearchButton); ?>">MonatlicheRechnung</button>
                             </div>
                         </div>
-                        <input type="hidden" name="KundenInformationen_StateSearchButton" value="<?php echo $KundenInformationen_StateSearchButton; ?>">
-                        <input type="hidden" name="Leistung_StateSearchButton" value="<?php echo $Leistung_StateSearchButton; ?>">
-                        <input type="hidden" name="Abrechnungsart_StateSearchButton" value="<?php echo $Abrechnungsart_StateSearchButton; ?>">
-                        <input type="hidden" name="NettoPreis_StateSearchButton" value="<?php echo $NettoPreis_StateSearchButton; ?>">
-                        <input type="hidden" name="GesamtBetrag_StateSearchButton" value="<?php echo $GesamtBetrag_StateSearchButton; ?>">
-                        <input type="hidden" name="RechnungsDatum_StateSearchButton" value="<?php echo $RechnungsDatum_StateSearchButton; ?>">
-                        <input type="hidden" name="Monat_Jahr_StateSearchButton" value="<?php echo $Monat_Jahr_StateSearchButton; ?>">
-                        <input type="hidden" name="RechnungsKürzelNummer_StateSearchButton" value="<?php echo $RechnungsKürzelNummer_StateSearchButton; ?>">
-                        <input type="hidden" name="MonatlicheRechnung_StateSearchButton" value="<?php echo $MonatlicheRechnung_StateSearchButton; ?>">
                     </form>
                 </div>
             </div>
