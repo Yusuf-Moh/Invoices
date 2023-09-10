@@ -798,9 +798,11 @@ function changeBackgroundSearchButton($bool)
 </head>
 
 <body>
+    <header> <?php include '../NavBar/navbar.html'; ?></header>
     <div class="container">
+
         <div class="header">
-            <h1 class="WebsiteHeadline">Kontakte</h1>
+            <!-- <h1 class="WebsiteHeadline">Kontakte</h1> -->
             <div class="header-search">
 
                 <div class="search-container">

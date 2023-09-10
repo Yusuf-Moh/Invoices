@@ -553,9 +553,11 @@ function changeBackgroundSearchButton($bool)
 </head>
 
 <body>
+    <header> <?php include '../NavBar/navbar.html'; ?></header>
     <div class="container">
+
         <div class="header">
-            <h1 class="WebsiteHeadline">Rechnung</h1>
+            <!-- <h1 class="WebsiteHeadline">Rechnung</h1> -->
             <div class="header-search">
 
                 <div class="search-container">
@@ -582,7 +584,6 @@ function changeBackgroundSearchButton($bool)
                     </form>
                 </div>
             </div>
-            <a href="../loginSystem/logout.php"><span class="material-icons-sharp">logout</span></a>
         </div>
 
 

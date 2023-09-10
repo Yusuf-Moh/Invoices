@@ -1,0 +1,38 @@
+header {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: #b5baf9;
+    padding: 1rem 2rem;
+}
+
+.navbar li,
+.navbar a {
+    font-size: 16px;
+    /* color: var(); */
+    text-decoration: none;
+    list-style: none;
+}
+
+.brand {
+    /* cursor: pointer; */
+    margin-right: auto;
+}
+
+.nav_links li {
+    display: inline-block;
+    padding: 0px 20px;
+}
+
+.nav_links li a {
+    transition: all 0.3s ease 0s;
+}
+
+.nav_links li a:hover {
+    color: #fff;
+}
+
+.logout span {
+    vertical-align: middle;
+    padding-left: 20px;
+}
