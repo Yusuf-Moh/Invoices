@@ -1,8 +1,8 @@
 // XAMPP = localhost + path; 
 
-const form_MonatlicheRechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/generate-monatlicheRechnung-pdf.php';
-const form_Rechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/generate-pdf.php';
-const form_editBezahlteRechnung_Path = '/projekt/website_vereinfacht/Invoice/Muster/editBezahlteRechnung.php';
+const form_MonatlicheRechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/generate-monatlicheRechnung-pdf.php';
+const form_Rechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/generate-pdf.php';
+const form_editBezahlteRechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/editBezahlteRechnung.php';
 
 // Close Error/ Success Message 
 var closeBtn = document.querySelector(".message span");

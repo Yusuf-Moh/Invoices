@@ -1,5 +1,6 @@
 <?php
-
+// Path in which the Invoice are getting stored
+// Need to be changed
 $UserPath = "C:/Users/yusuf/OneDrive/Desktop/Rechnung/";
 
 // Session Start and check for a current Login
