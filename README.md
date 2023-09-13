@@ -1,5 +1,5 @@
 # Invoices
-1. XAMPP Installieren: Installiere XAMPP, um PHP und eine Datenbank (phpMyAdmin) zu verwenden.
+1. XAMPP Installieren: Installiere XAMPP, um PHP und eine Datenbank (phpMyAdmin) zu verwenden. XAMPP Download Webseite: https://www.apachefriends.org/de/download.html
 2. Repositorium Herunterladen: Lade das Repository als ZIP-Datei herunter und extrahiere es. Du erhältst den Ordner "Invoices-main".
 3. XAMPP-Ordner: Stelle sicher, dass du XAMPP unter "C:\xampp" installiert hast.
 4. Projekteordner Erstellen: Erstelle unter "C:\xampp\htdocs" einen Ordner namens "Projekte".
