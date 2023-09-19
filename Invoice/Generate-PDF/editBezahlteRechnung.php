@@ -4,6 +4,7 @@
 // Otherwise, you will get redirected to the login page
 include "../../loginSystem/checkLogin.php";
 
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $RechnungsID = $_POST['RechnungsID'];
 // Storing the value of the checkbox MonatlicheRechnung 
@@ -49,3 +50,6 @@ else if ($monatlicheRechnung_old == "0" && $monatlicheRechnung == "1") {
 include('../../dbPhp/dbCloseConnection.php');
 
 header("location: ../invoice.php");
+}else{
+    header("location: ../invoice.php");
+}
