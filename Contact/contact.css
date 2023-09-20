@@ -189,6 +189,12 @@ b {
     outline: none;
 }
 
+.search-container {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+}
+
 /* ============== End of Searchbar ============== */
 
 
