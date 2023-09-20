@@ -585,17 +585,14 @@ function changeBackgroundSearchButton($bool)
                 </div>
             </div>
         </div>
-
+        <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
+            <h2 id="messageText"><?php echo $message; ?></h2>
+            <span class="material-icons-sharp">close</span>
+        </div>
         <div class="Modals">
 
             <!--Create New Invoice with Button to open Modal-->
             <div class="createInvoices">
-
-                <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
-                    <h2 id="messageText"><?php echo $message; ?></h2>
-                    <span class="material-icons-sharp">close</span>
-                </div>
-
                 <!-- Trigger/Open The Modal -->
                 <button type="button" id="CreateInvoiceModal" class="createInvoice-Btn">Rechnung erstellen</button>
 

@@ -376,6 +376,7 @@ b {
     display: inline-flex;
     justify-content: center;
     align-items: center;
+    vertical-align: middle;
 }
 
 /* ckEditor doing the styling everything on its own. Only thing I added is width: 100%; ckeditor/build/ckeditor.js (.ck.ck-editor{position:relative;width:100%;}) */
