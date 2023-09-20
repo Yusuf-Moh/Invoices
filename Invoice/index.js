@@ -324,6 +324,12 @@ document.getElementById('form-modal').addEventListener('submit', function (event
                 form.action = form_editBezahlteRechnung_Path;
             }
         }
+
+        // Hier wird nochmal gefragt, ob man wirklick die Rechnunge erstellen möchte
+        var confirmation = confirm("Bist du dir sicher, dass du eine Rechnung erstellen möchtest?")
+        if (!confirmation) {
+            event.preventDefault();
+        }
     } else {
         const messageDiv = document.getElementById('message');
         const messageText = document.getElementById('messageText');
@@ -505,6 +511,12 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
         // Neue Datei muss verwendet werden für erstlleung der MonatlicheRechnung
         form_MonatlicheRechnung.action = form_MonatlicheRechnung_Path;
 
+        // Hier wird nochmal gefragt, ob man wirklick die Monatlichen Rechnungen erstellen möchte
+        var confirmation = confirm("Bist du dir sicher, dass du eine Monatliche-Rechnungen erstellen möchtest?")
+        if (!confirmation) {
+            event.preventDefault();
+        }
+
     } else {
         const messageDiv = document.getElementById('message');
         const messageText = document.getElementById('messageText');
@@ -527,6 +539,7 @@ document.getElementById('uncheck_AllCheckboxes').addEventListener('click', funct
     });
 });
 
+// Check every checkbox of monatlicheRechnung
 document.getElementById('checkAllCheckboxes').addEventListener('click', function () {
     let checkboxes = document.querySelectorAll('input[name="erstelleMonatlicheRechnung[]"]');
 
