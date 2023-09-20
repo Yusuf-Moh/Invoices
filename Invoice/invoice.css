@@ -211,6 +211,12 @@ b {
 /* ============== End of Searchbar ============== */
 
 
+.Modals {
+    display: flex;
+    gap: 8px;
+}
+
+
 /* ============== Create new Contacts ============== */
 .createInvoice-Btn,
 .createMonatlicheRechnungen-Btn {

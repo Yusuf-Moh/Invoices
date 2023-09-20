@@ -586,171 +586,172 @@ function changeBackgroundSearchButton($bool)
             </div>
         </div>
 
+        <div class="Modals">
 
-        <!--Create New Invoice with Button to open Modal-->
-        <div class="createInvoices">
+            <!--Create New Invoice with Button to open Modal-->
+            <div class="createInvoices">
 
-            <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
-                <h2 id="messageText"><?php echo $message; ?></h2>
-                <span class="material-icons-sharp">close</span>
-            </div>
-
-            <!-- Trigger/Open The Modal -->
-            <button type="button" id="CreateInvoiceModal" class="createInvoice-Btn">Rechnung erstellen</button>
-
-            <div class="modal">
-                <!-- Modal content -->
-                <div class="modal-header">
-                    <h2><?php echo $modalHeadline; ?></h2>
+                <div class="message <?php echo $messageType; ?>" id="message" style="display: <?php echo $showMessage; ?>">
+                    <h2 id="messageText"><?php echo $message; ?></h2>
                     <span class="material-icons-sharp">close</span>
                 </div>
 
-                <div class="form-container">
+                <!-- Trigger/Open The Modal -->
+                <button type="button" id="CreateInvoiceModal" class="createInvoice-Btn">Rechnung erstellen</button>
 
-                    <form method="POST" id="form-modal">
+                <div class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-header">
+                        <h2><?php echo $modalHeadline; ?></h2>
+                        <span class="material-icons-sharp">close</span>
+                    </div>
 
-                        <!-- DropDown List for Customers -->
-                        <div class="kundenListe">
-                            <label for="customerList">Wähle einen Kunden:</label>
-                            <select name="customerList" id="customerList" required>
-                                <option value="" class="firstSelectedOption">Bitte auswählen</option>
-                                <?php
-                                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
-                                $sql_customer = "SELECT KundenID, FirmenName, Name_Ansprechpartner, RechnungsKürzel, Adresse, PLZ, Ort, person, organization FROM kunden ORDER BY organization DESC, CASE WHEN organization = 1 THEN FirmenName ELSE Name_Ansprechpartner END;";
-                                $stmt = $conn->prepare($sql_customer);
-                                $stmt->execute();
-                                $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    <div class="form-container">
 
-                                foreach ($customer as $row) {
+                        <form method="POST" id="form-modal">
 
-                                    if ($row['organization'] == 1) {
-                                        $name = htmlspecialchars($row['FirmenName']);
-                                        echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
-                                    } elseif ($row['person'] == 1) {
-                                        $name = htmlspecialchars($row['Name_Ansprechpartner']);
-                                        echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                            <!-- DropDown List for Customers -->
+                            <div class="kundenListe">
+                                <label for="customerList">Wähle einen Kunden:</label>
+                                <select name="customerList" id="customerList" required>
+                                    <option value="" class="firstSelectedOption">Bitte auswählen</option>
+                                    <?php
+                                    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                                    $sql_customer = "SELECT KundenID, FirmenName, Name_Ansprechpartner, RechnungsKürzel, Adresse, PLZ, Ort, person, organization FROM kunden ORDER BY organization DESC, CASE WHEN organization = 1 THEN FirmenName ELSE Name_Ansprechpartner END;";
+                                    $stmt = $conn->prepare($sql_customer);
+                                    $stmt->execute();
+                                    $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                    foreach ($customer as $row) {
+
+                                        if ($row['organization'] == 1) {
+                                            $name = htmlspecialchars($row['FirmenName']);
+                                            echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                                        } elseif ($row['person'] == 1) {
+                                            $name = htmlspecialchars($row['Name_Ansprechpartner']);
+                                            echo '<option value="' . htmlspecialchars($row['KundenID']) . '" data-rechnungskuerzel="' . htmlspecialchars($row['RechnungsKürzel']) . '" data-adresse="' . htmlspecialchars($row['Adresse']) . '" data-plz="' . htmlspecialchars($row['PLZ']) . '" data-ort="' . htmlspecialchars($row['Ort']) . '">' . $name . '</option>';
+                                        }
                                     }
-                                }
 
-                                include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
-                                ?>
+                                    include('../dbPhp/dbCLoseConnection.php'); // dbConnection close
+                                    ?>
 
-                            </select>
+                                </select>
 
-                            <div class="customer-details" id="customer-details">
-                                <div class="rechnungskuerzel">
-                                    <span id="rechnungskuerzel"></span>
-                                    <label> (Rechnungskürzel)</label>
-                                </div>
-                                <span id="adresse"></span>
+                                <div class="customer-details" id="customer-details">
+                                    <div class="rechnungskuerzel">
+                                        <span id="rechnungskuerzel"></span>
+                                        <label> (Rechnungskürzel)</label>
+                                    </div>
+                                    <span id="adresse"></span>
 
-                                <div class="plz-ort">
-                                    <span id="plz"></span>
-                                    <span id="ort"></span>
+                                    <div class="plz-ort">
+                                        <span id="plz"></span>
+                                        <span id="ort"></span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="datum">
-                            <label for="RechnungsDatum">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
-                            <div class="RechnungsDatum">
-                                <input type="date" name="RechnungsDatum" id="RechnungsDatum" required>
-                                <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr" required>
+                            <div class="datum">
+                                <label for="RechnungsDatum">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
+                                <div class="RechnungsDatum">
+                                    <input type="date" name="RechnungsDatum" id="RechnungsDatum" required>
+                                    <input type="month" name="RechnungsMonatJahr" id="RechnungsMonatJahr" required>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- ckEditor 5 CustomBuild -->
-                        <div class="dienstleistungs-details">
-                            <table>
-                                <thead>
-                                    <th>Leistung und ggf. Leistungsstraße:</th>
-                                    <th>Wähle die Abrechnungsart aus:</th>
-                                    <th>NettoPreis:</th>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div class="leistung">
-                                                <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="abrechnungsart">
-                                                <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
-                                                    <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
-                                                    <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
-                                                        <option value="Pauschal">Pauschal</option>
-                                                        <option value="Stunden">Stunden</option>
-                                                    </select>
+                            <!-- ckEditor 5 CustomBuild -->
+                            <div class="dienstleistungs-details">
+                                <table>
+                                    <thead>
+                                        <th>Leistung und ggf. Leistungsstraße:</th>
+                                        <th>Wähle die Abrechnungsart aus:</th>
+                                        <th>NettoPreis:</th>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="leistung">
+                                                    <textarea class="leistungEditor" id="leistungEditor" name="leistungEditor[]"></textarea>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="preis">
-                                                <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="3" class="add-row">
-                                            <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
-                                        </td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                                            </td>
+                                            <td>
+                                                <div class="abrechnungsart">
+                                                    <div class="Abrechnungsart-container" onchange="toggleInputField(this)">
+                                                        <input type="number" name="Stunden[]" id="Stunden" value="" placeholder="Anzahl der Stunden" style="display: none;" step="any">
+                                                        <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
+                                                            <option value="Pauschal">Pauschal</option>
+                                                            <option value="Stunden">Stunden</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="preis">
+                                                    <input type="number" name="nettoPreis[]" id="nettoPreis" value="" placeholder="NettoPreis*" step="0.01" required>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="add-row">
+                                                <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
 
-                        <div class="monatlicheRechnung">
-                            <input type="checkbox" name="monatlicheRechnung" id="monatlicheRechnung">
-                            <label for="monatlicheRechnung">Monatliche Rechnung</label>
-                        </div>
+                            <div class="monatlicheRechnung">
+                                <input type="checkbox" name="monatlicheRechnung" id="monatlicheRechnung">
+                                <label for="monatlicheRechnung">Monatliche Rechnung</label>
+                            </div>
 
-                        <!-- Store KundenID from div KundenListe of the selected Customer for the future -->
-                        <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
+                            <!-- Store KundenID from div KundenListe of the selected Customer for the future -->
+                            <input type="hidden" name="selectedKundenID" id="selectedKundenID" value="">
 
-                        <!-- Store RechnungsID in hidden Inputfield to get access in update Switch Case-->
-                        <input type="hidden" name="RechnungsID" id="RechnungsID" value="<?php echo htmlspecialchars($RechnungsID); ?>">
+                            <!-- Store RechnungsID in hidden Inputfield to get access in update Switch Case-->
+                            <input type="hidden" name="RechnungsID" id="RechnungsID" value="<?php echo htmlspecialchars($RechnungsID); ?>">
 
-                        <input type="hidden" name="saveUpdate" value="<?php echo $saveUpdate; ?>">
+                            <input type="hidden" name="saveUpdate" value="<?php echo $saveUpdate; ?>">
 
-                        <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
-                                                                                                                                                                    echo "Senden";
-                                                                                                                                                                } elseif ($saveUpdate == "update") {
-                                                                                                                                                                    echo "Update";
-                                                                                                                                                                } ?></button>
-                    </form>
+                            <button type="submit" name="button" value="<?php echo $saveUpdate; ?>" class="sendNewInvoiceData-Btn" id="<?php echo $saveUpdate ?>"><?php if ($saveUpdate == "save") {
+                                                                                                                                                                        echo "Senden";
+                                                                                                                                                                    } elseif ($saveUpdate == "update") {
+                                                                                                                                                                        echo "Update";
+                                                                                                                                                                    } ?></button>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="MonatlicheRechnungen">
-            <!-- Open Modal for the MonatlicheRechnungen -->
-            <button type="button" id="CreateMonatlicheRechnungenModal" class="createMonatlicheRechnungen-Btn">Monatliche-Rechnung</button>
+            <div class="MonatlicheRechnungen">
+                <!-- Open Modal for the MonatlicheRechnungen -->
+                <button type="button" id="CreateMonatlicheRechnungenModal" class="createMonatlicheRechnungen-Btn">Monatliche-Rechnung</button>
 
-            <!-- Content of the Modal -->
-            <div class="modal-MonatlicheRechnungen">
+                <!-- Content of the Modal -->
+                <div class="modal-MonatlicheRechnungen">
 
-                <div class="modal-header">
-                    <h2>Erstellen Monatliche-Rechnung</h2>
-                    <span class="material-icons-sharp">close</span>
-                </div>
+                    <div class="modal-header">
+                        <h2>Erstellen Monatliche-Rechnung</h2>
+                        <span class="material-icons-sharp">close</span>
+                    </div>
 
-                <div class="form-container">
-                    <form method="POST" id="form-modal-MonatlicheRechnung">
-                        <div class="datum-MonatlicheRechnungen">
-                            <label for="RechnungsDatum-MonatlicheRechnungen">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
-                            <div class="RechnungsDatum-MonatlicheRechnungen">
-                                <input type="date" name="RechnungsDatum-MonatlicheRechnungen" id="RechnungsDatum-MonatlicheRechnungen" required>
-                                <input type="month" name="RechnungsMonatJahr-MonatlicheRechnungen" id="RechnungsMonatJahr-MonatlicheRechnungen" required>
-                            </div>
-                            <div class="ContentMonatlicheRechnungen">
-                                <?php
-                                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+                    <div class="form-container">
+                        <form method="POST" id="form-modal-MonatlicheRechnung">
+                            <div class="datum-MonatlicheRechnungen">
+                                <label for="RechnungsDatum-MonatlicheRechnungen">Wähle das Rechnungsdatum sowie den Monat und das Jahr für die Rechnung aus:</label>
+                                <div class="RechnungsDatum-MonatlicheRechnungen">
+                                    <input type="date" name="RechnungsDatum-MonatlicheRechnungen" id="RechnungsDatum-MonatlicheRechnungen" required>
+                                    <input type="month" name="RechnungsMonatJahr-MonatlicheRechnungen" id="RechnungsMonatJahr-MonatlicheRechnungen" required>
+                                </div>
+                                <div class="ContentMonatlicheRechnungen">
+                                    <?php
+                                    include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
-                                // One Table is combined by adding Monatliche_Rechnung with Kunde & Rechnung
-                                $sql_monatlicheRechnung = "SELECT MR.*,
+                                    // One Table is combined by adding Monatliche_Rechnung with Kunde & Rechnung
+                                    $sql_monatlicheRechnung = "SELECT MR.*,
                                 CASE
                                     WHEN K.Organization = 1 THEN K.Firmenname
                                     WHEN K.Person = 1 THEN K.Name_Ansprechpartner
@@ -766,56 +767,57 @@ function changeBackgroundSearchButton($bool)
                                     Kunden K ON R.KundenID = K.KundenID;";
 
 
-                                $stmt = $conn->prepare($sql_monatlicheRechnung);
-                                $stmt->execute();
-                                $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    $stmt = $conn->prepare($sql_monatlicheRechnung);
+                                    $stmt->execute();
+                                    $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                foreach ($customer as $row) {
-                                    $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
-                                    $Leistung_MonatlicheRechnung = unserialize($row['Leistung']);
-                                    $Abrechnungsart_MonatlicheRechnung = unserialize($row['Abrechnungsart']);
-                                    $NettoPreis_MonatlicheRechnung = unserialize($row['NettoPreis']);
+                                    foreach ($customer as $row) {
+                                        $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
+                                        $Leistung_MonatlicheRechnung = unserialize($row['Leistung']);
+                                        $Abrechnungsart_MonatlicheRechnung = unserialize($row['Abrechnungsart']);
+                                        $NettoPreis_MonatlicheRechnung = unserialize($row['NettoPreis']);
 
-                                    $html = '';
-                                    $html .= '<div class="monatlicheRechnung-Kunde">';
-                                    $html .= '<div class="KundenName">';
-                                    $html .= '<input type="checkbox" value = "' . $monatlicheRechnugsID . '" name="erstelleMonatlicheRechnung[]" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this)" checked>';
-                                    $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
-                                    $html .= '</div>';
-                                    $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
+                                        $html = '';
+                                        $html .= '<div class="monatlicheRechnung-Kunde">';
+                                        $html .= '<div class="KundenName">';
+                                        $html .= '<input type="checkbox" value = "' . $monatlicheRechnugsID . '" name="erstelleMonatlicheRechnung[]" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this)" checked>';
+                                        $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
+                                        $html .= '</div>';
+                                        $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
 
-                                    $html .= '<table class="RechnungsInformationen-Table">';
-                                    $html .= '<tbody>';
+                                        $html .= '<table class="RechnungsInformationen-Table">';
+                                        $html .= '<tbody>';
 
-                                    for ($i = 0; $i < count($Leistung_MonatlicheRechnung); $i++) {
-                                        $html .= '<tr>';
-                                        $html .= '<td>' . $Leistung_MonatlicheRechnung[$i] . '</td>';
-                                        $html .= '<td>' . $Abrechnungsart_MonatlicheRechnung[$i] . '</td>';
-                                        $html .= '<td>' . $NettoPreis_MonatlicheRechnung[$i] . '</td>';
-                                        $html .= '</tr>';
+                                        for ($i = 0; $i < count($Leistung_MonatlicheRechnung); $i++) {
+                                            $html .= '<tr>';
+                                            $html .= '<td>' . $Leistung_MonatlicheRechnung[$i] . '</td>';
+                                            $html .= '<td>' . $Abrechnungsart_MonatlicheRechnung[$i] . '</td>';
+                                            $html .= '<td>' . $NettoPreis_MonatlicheRechnung[$i] . '</td>';
+                                            $html .= '</tr>';
+                                        }
+
+                                        $html .= '</tbody>';
+                                        $html .= '</table>';
+
+                                        $html .= '</div>';
+                                        $html .= '</div>';
+                                        echo $html;
                                     }
+                                    ?>
+                                </div>
+                                <div class="uncheck_check-AllCheckboxes">
+                                    <button type="button" id="uncheck_AllCheckboxes" class="uncheck_AllCheckboxes">Uncheck All</button>
+                                    <button type="button" id="checkAllCheckboxes" class="checkAllCheckboxes">Check All</button>
+                                </div>
 
-                                    $html .= '</tbody>';
-                                    $html .= '</table>';
-
-                                    $html .= '</div>';
-                                    $html .= '</div>';
-                                    echo $html;
-                                }
-                                ?>
+                                <button type="submit" class="sendMonatlicheRechnungData-Btn">Senden</button>
                             </div>
-                            <div class="uncheck_check-AllCheckboxes">
-                                <button type="button" id="uncheck_AllCheckboxes" class="uncheck_AllCheckboxes">Uncheck All</button>
-                                <button type="button" id="checkAllCheckboxes" class="checkAllCheckboxes">Check All</button>
-                            </div>
-
-                            <button type="submit" class="sendMonatlicheRechnungData-Btn">Senden</button>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
         <!-- End of Create Contacts with Modal -->
 
         <!-- Beginning of the Crud Table -->
