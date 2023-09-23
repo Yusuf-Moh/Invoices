@@ -3,6 +3,27 @@
 // Otherwise, you will get redirected to the login page
 include "../loginSystem/checkLogin.php";
 
+include "../dbPhp/dbOpenConnection.php";
+
+// Umsatz
+$sql = "SELECT SUBSTRING_INDEX(Monat_Jahr, ' ', -1) AS Jahr,
+SUM(CASE WHEN bezahlt = 1 THEN CAST(REPLACE(REPLACE(GesamtBetrag, '.', ''), ',', '.') AS DECIMAL(10, 2)) ELSE 0 END) AS BezahltBetrag,
+SUM(CASE WHEN bezahlt = 0 THEN CAST(REPLACE(REPLACE(GesamtBetrag, '.', ''), ',', '.') AS DECIMAL(10, 2)) ELSE 0 END) AS NichtBezahltBetrag,
+SUM(CAST(REPLACE(REPLACE(GesamtBetrag, '.', ''), ',', '.') AS DECIMAL(10, 2))) AS GesamtBetrag
+FROM
+rechnung
+GROUP BY
+SUBSTRING_INDEX(Monat_Jahr, ' ', -1)
+ORDER BY
+Jahr;";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+global $Umsatz;
+$Umsatz = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Ausgaben
+
+include "../dbPhp/dbCloseConnection.php";
 ?>
 
 
@@ -18,7 +39,7 @@ include "../loginSystem/checkLogin.php";
     <!--Link to Material Icons-->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
 
-    <!-- ChartJS for a PieChart and Graph -->
+    <!-- ChartJS for a DoughnutChart and Graph -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -33,23 +54,30 @@ include "../loginSystem/checkLogin.php";
                     <div class="Umsatz">
                         <div class="Header">
                             <h2>Umsatz nach Status</h2>
-                            <select name="" id="">
-                                <option value="2022">2022</option>
-                                <option value="2023">2023</option>
+                            <select name="UmsatzJahr" id="UmsatzJahr">
+                                <?php
+                                foreach ($Umsatz as $row) {
+                                ?>
+                                    <option value="<?php echo $row['Jahr']; ?>" <?php echo 'data-BezahltBetrag = "' . $row['BezahltBetrag'] . '"';
+                                                                                echo  ' data-NichtBezahltBetrag ="' . $row['NichtBezahltBetrag'] . '"';
+                                                                                echo ' data-GesamtBetrag ="' . $row['GesamtBetrag'] . '"'; ?>><?php echo $row['Jahr']; ?></option>
+                                <?php
+                                }
+                                ?>
                             </select>
                         </div>
                         <div class="UmsatzContainer">
                             <div class="UmsatzRow">
                                 <h3 class="warning">Offen</h3>
-                                <h3>100,00 Euro</h3>
+                                <h3 class="UmsatzOffen" id="UmsatzOffen"></h3>
                             </div>
                             <div class="UmsatzRow">
                                 <h3 class="success">Bezahlt</h3>
-                                <h3>1.000,00 Euro</h3>
+                                <h3 class="UmsatzBezahlt" id="UmsatzBezahlt"></h3>
                             </div>
                             <div class="UmsatzRow">
                                 <h3>Summe</h3>
-                                <h3>1.100,00 Euro</h3>
+                                <h3 class="UmsatzSumme" id="UmsatzSumme">Keinen Umsatz generiert</h3>
                             </div>
                         </div>
                     </div>
@@ -145,7 +173,7 @@ include "../loginSystem/checkLogin.php";
         </div>
     </div>
     <script>
-        // Dateb für den DoughnutCircle
+        // Daten für den DoughnutCircle
         var dataChart = {
             labels: ['Gewonnen', 'Offen', 'Verloren'],
             datasets: [{
@@ -239,6 +267,29 @@ include "../loginSystem/checkLogin.php";
             },
             plugins: [doughnutLabel, customDataLabels]
         });
+
+
+
+        const UmsatzJahr = document.getElementById('UmsatzJahr');
+
+        const UmsatzOffen = document.getElementById('UmsatzOffen');
+        const UmsatzBezahlt = document.getElementById('UmsatzBezahlt');
+        const UmsatzSumme = document.getElementById('UmsatzSumme');
+
+        function aktualisiereUmsatzDaten() {
+            const ausgewähltesJahr = UmsatzJahr.options[UmsatzJahr.selectedIndex];
+
+            const bezahltBetrag = ausgewähltesJahr.getAttribute('data-BezahltBetrag');
+            const nichtBezahltBetrag = ausgewähltesJahr.getAttribute('data-NichtBezahltBetrag');
+            const gesamtBetrag = ausgewähltesJahr.getAttribute('data-GesamtBetrag');
+
+            UmsatzOffen.textContent = nichtBezahltBetrag + ' Euro';
+            UmsatzBezahlt.textContent = bezahltBetrag + ' Euro';
+            UmsatzSumme.textContent = gesamtBetrag + ' Euro';
+        }
+
+        UmsatzJahr.addEventListener('change', aktualisiereUmsatzDaten);
+        aktualisiereUmsatzDaten();
     </script>
 </body>
 
