@@ -21,12 +21,25 @@ $stmt->execute();
 global $Umsatz;
 $Umsatz = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Ausgaben
+// Ausgaben; Feature in Bearbeitung
+
+// Offene Rechnung
+$sql = 'SELECT SUBSTRING_INDEX(Monat_Jahr, " ",-1) as Jahr,
+        SUM(CASE WHEN Bezahlt = 0 THEN 1 ELSE 0 END) AS AnzahlNichtBezahlt,
+        SUM(CASE WHEN Bezahlt = 1 THEN 1 ELSE 0 END) AS AnzahlBezahlt,
+        COUNT(*) as AnzahlRechnungen
+        FROM `rechnung` GROUP by Jahr;';
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+global $offeneRechnung;
+$offeneRechnung = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 include "../dbPhp/dbCloseConnection.php";
 
+
 // Function to convert numbers 1000.00 to 1.000,00
-function prizeFormat($prize){
+function prizeFormat($prize)
+{
     $prize = number_format($prize, 2, ',', '.');
     return $prize;
 }
@@ -90,7 +103,7 @@ function prizeFormat($prize){
 
                     <div class="Ausgaben">
                         <div class="Header">
-                            <h2>Ausgaben</h2>
+                            <h2>Ausgaben; <br>Feature in Bearbeitung</h2>
                             <select name="" id="">
                                 <option value="2022">2022</option>
                                 <option value="2023">2023</option>
@@ -120,14 +133,16 @@ function prizeFormat($prize){
                             <h2>Offene Rechnungen</h2>
                         </div>
                         <div class="OffeneRechnungContainer">
-                            <div class="OffeneRechnungRow">
-                                <div class="Jahr">2022</div>
-                                <div class="AnzahlOffeneRechnungen">20</div>
-                            </div>
-                            <div class="OffeneRechnungRow">
-                                <div class="Jahr">2023</div>
-                                <div class="AnzahlOffeneRechnungen">23</div>
-                            </div>
+                            <?php
+                            foreach ($offeneRechnung as $row) {
+                            ?>
+                                <div class="OffeneRechnungRow">
+                                    <div class="Jahr"><?php echo $row['Jahr']; ?></div>
+                                    <div class="AnzahlOffeneRechnungen"><?php echo $row['AnzahlNichtBezahlt'] . ' ' . $row['AnzahlBezahlt'] . ' ' . $row['AnzahlRechnungen']; ?></div>
+                                </div>
+                            <?php
+                            }
+                            ?>
                         </div>
                     </div>
                     <div class="FaelligeRechnung">

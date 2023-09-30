@@ -198,6 +198,7 @@ b {
 
 .OffeneRechnungRow {
     border-bottom: 1px solid #ccc;
+    gap: 10%;
 }
 
 .FaelligeRechnungRow {
