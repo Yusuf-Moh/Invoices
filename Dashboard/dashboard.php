@@ -24,6 +24,12 @@ $Umsatz = $stmt->fetchAll(PDO::FETCH_ASSOC);
 // Ausgaben
 
 include "../dbPhp/dbCloseConnection.php";
+
+// Function to convert numbers 1000.00 to 1.000,00
+function prizeFormat($prize){
+    $prize = number_format($prize, 2, ',', '.');
+    return $prize;
+}
 ?>
 
 
@@ -58,9 +64,9 @@ include "../dbPhp/dbCloseConnection.php";
                                 <?php
                                 foreach ($Umsatz as $row) {
                                 ?>
-                                    <option value="<?php echo $row['Jahr']; ?>" <?php echo 'data-BezahltBetrag = "' . $row['BezahltBetrag'] . '"';
-                                                                                echo  ' data-NichtBezahltBetrag ="' . $row['NichtBezahltBetrag'] . '"';
-                                                                                echo ' data-GesamtBetrag ="' . $row['GesamtBetrag'] . '"'; ?>><?php echo $row['Jahr']; ?></option>
+                                    <option value="<?php echo $row['Jahr']; ?>" <?php echo 'data-BezahltBetrag = "' . prizeFormat($row['BezahltBetrag']) . '"';
+                                                                                echo  ' data-NichtBezahltBetrag ="' . prizeFormat($row['NichtBezahltBetrag']) . '"';
+                                                                                echo ' data-GesamtBetrag ="' . prizeFormat($row['GesamtBetrag']) . '"'; ?>><?php echo $row['Jahr']; ?></option>
                                 <?php
                                 }
                                 ?>
@@ -146,7 +152,7 @@ include "../dbPhp/dbCloseConnection.php";
 
                 <div class="Angebotsstatistik">
                     <div class="Header">
-                        <h2>Angebotsstatistik</h2>
+                        <h2>Angebotsstatistik; Feature in Bearbeitung</h2>
                         <select name="" id="">
                             <option value="2022">2022</option>
                             <option value="2023">2023</option>
