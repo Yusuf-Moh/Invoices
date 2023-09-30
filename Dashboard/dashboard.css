@@ -209,7 +209,7 @@ b {
 
 .UmsatzRow:last-child,
 .FaelligeRechnungRow:last-child,
-.table-OffeneRechnung tbody > tr:last-child > td {
+.table-OffeneRechnung tbody>tr:last-child>td {
     border-bottom: 0;
     padding-bottom: 0;
 }

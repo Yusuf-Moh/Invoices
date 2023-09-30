@@ -43,6 +43,16 @@ function prizeFormat($prize)
     $prize = number_format($prize, 2, ',', '.');
     return $prize;
 }
+
+// If the Value is higher then 1, then the color danger(red) should be added to the given text
+function addColor($number)
+{
+    if ($number > 0) {
+        return ' class= "danger"';
+    } else {
+        return ' class = "success"';
+    }
+}
 ?>
 
 
@@ -79,7 +89,9 @@ function prizeFormat($prize)
                                 ?>
                                     <option value="<?php echo $row['Jahr']; ?>" <?php echo 'data-BezahltBetrag = "' . prizeFormat($row['BezahltBetrag']) . '"';
                                                                                 echo  ' data-NichtBezahltBetrag ="' . prizeFormat($row['NichtBezahltBetrag']) . '"';
-                                                                                echo ' data-GesamtBetrag ="' . prizeFormat($row['GesamtBetrag']) . '"'; ?>><?php echo $row['Jahr']; ?>
+                                                                                echo ' data-GesamtBetrag ="' . prizeFormat($row['GesamtBetrag']) . '"';
+                                                                                echo addColor($row['NichtBezahltBetrag']); ?>>
+                                        <?php echo $row['Jahr']; ?>
                                     </option>
                                 <?php
                                 }
@@ -329,6 +341,14 @@ function prizeFormat($prize)
             UmsatzOffen.textContent = nichtBezahltBetrag + ' Euro';
             UmsatzBezahlt.textContent = bezahltBetrag + ' Euro';
             UmsatzSumme.textContent = gesamtBetrag + ' Euro';
+
+            if (ausgewähltesJahr.classList.contains("danger")) {
+                UmsatzJahr.classList.add("danger");
+                UmsatzJahr.classList.remove("success");
+            } else {
+                UmsatzJahr.classList.remove("danger");
+                UmsatzJahr.classList.add("success");
+            }
         }
 
         UmsatzJahr.addEventListener('change', aktualisiereUmsatzDaten);
