@@ -79,7 +79,8 @@ function prizeFormat($prize)
                                 ?>
                                     <option value="<?php echo $row['Jahr']; ?>" <?php echo 'data-BezahltBetrag = "' . prizeFormat($row['BezahltBetrag']) . '"';
                                                                                 echo  ' data-NichtBezahltBetrag ="' . prizeFormat($row['NichtBezahltBetrag']) . '"';
-                                                                                echo ' data-GesamtBetrag ="' . prizeFormat($row['GesamtBetrag']) . '"'; ?>><?php echo $row['Jahr']; ?></option>
+                                                                                echo ' data-GesamtBetrag ="' . prizeFormat($row['GesamtBetrag']) . '"'; ?>><?php echo $row['Jahr']; ?>
+                                    </option>
                                 <?php
                                 }
                                 ?>
@@ -142,13 +143,22 @@ function prizeFormat($prize)
                                 </thead>
                                 <tbody>
                                     <?php
-                                    foreach ($offeneRechnung as $row) {
+                                    if (!empty($offeneRechnung)) {
+                                        foreach ($offeneRechnung as $row) {
                                     ?>
+                                            <tr>
+                                                <td class="cell-left"><?php echo $row['Jahr']; ?></td>
+                                                <td class="cell-center"><?php echo $row['AnzahlNichtBezahlt'] ?></td>
+                                                <td class="cell-center"><?php echo $row['AnzahlBezahlt'] ?></td>
+                                                <td class="cell-center"><?php echo $row['AnzahlRechnungen'] ?></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                    } else {
+                                        ?>
+
                                         <tr>
-                                            <td class="cell-left"><?php echo $row['Jahr']; ?></td>
-                                            <td class="cell-center"><?php echo $row['AnzahlNichtBezahlt'] ?></td>
-                                            <td class="cell-center"><?php echo $row['AnzahlBezahlt'] ?></td>
-                                            <td class="cell-center"><?php echo $row['AnzahlRechnungen'] ?></td>
+                                            <td colspan="4">Keine erstellten Rechnungen vorhanden</td>
                                         </tr>
                                     <?php
                                     }
@@ -322,7 +332,10 @@ function prizeFormat($prize)
         }
 
         UmsatzJahr.addEventListener('change', aktualisiereUmsatzDaten);
-        aktualisiereUmsatzDaten();
+        // If there is any options available, execute the function, to get the first data into the Rows
+        if (UmsatzJahr.options.length > 0) {
+            aktualisiereUmsatzDaten();
+        }
     </script>
 </body>
 
