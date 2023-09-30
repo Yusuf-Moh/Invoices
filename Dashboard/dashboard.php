@@ -133,16 +133,28 @@ function prizeFormat($prize)
                             <h2>Offene Rechnungen</h2>
                         </div>
                         <div class="OffeneRechnungContainer">
-                            <?php
-                            foreach ($offeneRechnung as $row) {
-                            ?>
-                                <div class="OffeneRechnungRow">
-                                    <div class="Jahr"><?php echo $row['Jahr']; ?></div>
-                                    <div class="AnzahlOffeneRechnungen"><?php echo $row['AnzahlNichtBezahlt'] . ' ' . $row['AnzahlBezahlt'] . ' ' . $row['AnzahlRechnungen']; ?></div>
-                                </div>
-                            <?php
-                            }
-                            ?>
+                            <table class="table-OffeneRechnung">
+                                <thead>
+                                    <th class="cell-left">Jahr</th>
+                                    <th class="cell-center warning">Offen</th>
+                                    <th class="cell-center success">Bezahlt</th>
+                                    <th class="cell-center">Summe</th>
+                                </thead>
+                                <tbody>
+                                    <?php
+                                    foreach ($offeneRechnung as $row) {
+                                    ?>
+                                        <tr>
+                                            <td class="cell-left"><?php echo $row['Jahr']; ?></td>
+                                            <td class="cell-center"><?php echo $row['AnzahlNichtBezahlt'] ?></td>
+                                            <td class="cell-center"><?php echo $row['AnzahlBezahlt'] ?></td>
+                                            <td class="cell-center"><?php echo $row['AnzahlRechnungen'] ?></td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="FaelligeRechnung">

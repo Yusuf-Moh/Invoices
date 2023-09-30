@@ -164,7 +164,7 @@ b {
 }
 
 .Header select {
-    padding: 6px;
+    padding: 5px;
     appearance: auto;
     border-radius: var(--border-radius-1);
     border: 1px solid #ccc;
@@ -198,7 +198,6 @@ b {
 
 .OffeneRechnungRow {
     border-bottom: 1px solid #ccc;
-    gap: 10%;
 }
 
 .FaelligeRechnungRow {
@@ -210,8 +209,8 @@ b {
 
 .UmsatzRow:last-child,
 .FaelligeRechnungRow:last-child,
-.OffeneRechnungRow:last-child {
-    border-bottom: none;
+.table-OffeneRechnung tbody > tr:last-child > td {
+    border-bottom: 0;
     padding-bottom: 0;
 }
 
@@ -228,4 +227,24 @@ b {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.table-OffeneRechnung {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.table-OffeneRechnung th,
+.table-OffeneRechnung td {
+    padding: 6px 0px;
+    /* border: 1px solid #ddd; */
+    border-bottom: 1px solid #ccc;
+}
+
+.cell-left {
+    text-align: left;
+}
+
+.cell-center {
+    text-align: center;
 }
