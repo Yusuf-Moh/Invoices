@@ -23,7 +23,7 @@ $Umsatz = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Ausgaben; Feature in Bearbeitung
 
-// Offene Rechnung
+// Offene Rechnungen
 $sql = 'SELECT SUBSTRING_INDEX(Monat_Jahr, " ",-1) as Jahr,
         SUM(CASE WHEN Bezahlt = 0 THEN 1 ELSE 0 END) AS AnzahlNichtBezahlt,
         SUM(CASE WHEN Bezahlt = 1 THEN 1 ELSE 0 END) AS AnzahlBezahlt,
@@ -33,6 +33,18 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 global $offeneRechnung;
 $offeneRechnung = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Fällige Rechnungen
+$sql = "SELECT Monat_Jahr,
+        COUNT(*) AS AnzahlFaelligeRechnungen
+        FROM rechnung
+        WHERE Bezahlt = 0 AND DATEDIFF(NOW(), STR_TO_DATE(RechnungsDatum, '%d.%m.%Y')) > 10
+        GROUP BY Monat_Jahr
+        ORDER BY STR_TO_DATE(CONCAT('01 ', Monat_Jahr), '%d %M %Y') ASC;";
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+global $faelligeRechnungen;
+$faelligeRechnungen = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 include "../dbPhp/dbCloseConnection.php";
 
@@ -44,7 +56,7 @@ function prizeFormat($prize)
     return $prize;
 }
 
-// If the Value is higher then 1, then the color danger(red) should be added to the given text
+// If the Value is higher then 1, then the color danger(red) should be added to the given text. Otherwise the color should be success (green)
 function addColor($number)
 {
     if ($number > 0) {
@@ -184,14 +196,16 @@ function addColor($number)
                             <h2>Fällige Rechnungen</h2>
                         </div>
                         <div class="FaelligeRechnungContainer">
-                            <div class="FaelligeRechnungRow">
-                                <div class="MonatJahr">Januar 2023</div>
-                                <div class="AnzahlFaelligeRechnung">12</div>
-                            </div>
-                            <div class="FaelligeRechnungRow">
-                                <div class="MonatJahr">Mai 2023</div>
-                                <div class="AnzahlFaelligeRechnung">22</div>
-                            </div>
+                            <?php foreach ($faelligeRechnungen as $row) {
+                            ?>
+                                <div class="FaelligeRechnungRow">
+                                    <div class="MonatJahr"><?php echo $row['Monat_Jahr']; ?></div>
+                                    <div class="AnzahlFaelligeRechnung"><?php echo $row['AnzahlFaelligeRechnungen']; ?></div>
+                                </div>
+                            <?php
+                            }
+                            ?>
+
                         </div>
                     </div>
                     <div class="Belege">
