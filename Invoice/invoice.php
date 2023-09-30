@@ -365,7 +365,7 @@ function notEqualString($string0, $string1)
 
 function setSessionVariableFalse($session)
 {
-    if (($_SESSION[$session] != 0 && $_SESSION[$session] != 1) || !isset($_SESSION[$session])) {
+    if (!isset($_SESSION[$session])) {
         $_SESSION[$session] = 0;
         global $restart;
         $restart = true;
