@@ -41,9 +41,11 @@
 
 html {
     font-size: 14px;
+    height: 100%;
 }
 
 body {
+    height: 100%;
     /*
     Errors with searchbar not compleltly to the right
     width: 100vh;
@@ -126,7 +128,7 @@ b {
 
 .dashboard-bottom {
     margin-top: 16px;
-    height: 80%;
+    height: 50vh;
 }
 
 .Umsatz-Ausgaben,
@@ -260,7 +262,11 @@ b {
     /* overflow-x: auto; */
 }
 
-
+/* For LinearGraph/Canvas */
+.UmsatzentwicklungContainer {
+    position: relative;
+    height: 90%;
+}
 
 .FaelligeAngebote {
     width: 25%;

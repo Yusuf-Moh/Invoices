@@ -287,7 +287,7 @@ function addColor($number)
 
                     </div>
                     <div class="UmsatzentwicklungContainer">
-                        <canvas id="UmsatzentwicklungChart"></canvas>
+                        <canvas class="UmsatzentwicklungChart" id="UmsatzentwicklungChart"></canvas>
                     </div>
                 </div>
                 <div class="FaelligeAngebote">
@@ -506,7 +506,18 @@ function addColor($number)
         const selectElement_UmsatzEntwicklung = document.getElementById('UmsatzentwicklungJahr');
         selectElement_UmsatzEntwicklung.addEventListener('change', createLinearChart);
 
-        createLinearChart();
+        if (selectElement_UmsatzEntwicklung.options.length > 0) {
+            createLinearChart();
+        } else {
+            const canvasElement = document.getElementById('UmsatzentwicklungChart');
+            canvasElement.remove();
+
+            const messageElement = document.createElement('h1');
+            messageElement.textContent = 'Keine Umsatzdaten verfügbar.';
+
+            const containerElement = document.querySelector('.UmsatzentwicklungContainer');
+            containerElement.appendChild(messageElement);
+        }
     </script>
 </body>
 
