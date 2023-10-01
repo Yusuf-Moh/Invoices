@@ -46,6 +46,38 @@ $stmt->execute();
 global $faelligeRechnungen;
 $faelligeRechnungen = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+
+// Umsatzentwicklung:
+
+# Rausfiltern von allen UmsatzJahren
+$sql = 'SELECT SUBSTRING_INDEX(Monat_Jahr, " ", -1) AS UmsatzJahr FROM rechnung GROUP BY UmsatzJahr ASC;';
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+global $UmsatzJahr;
+$UmsatzJahr = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Umsatzdaten von dem jeweiligen Jahr
+// Werte: UmsatzMonat & GesamtUmsatzMonat
+
+global $UmsatzDaten;
+$Umsatzdaten = array();
+
+$sql = 'SELECT SUBSTRING_INDEX(Monat_Jahr, " ", 1) AS UmsatzMonat, SUM(CAST(REPLACE(REPLACE(GesamtBetrag, ".", ""), ",", ".") AS DECIMAL(10, 2))) AS GesamtUmsatzMonat
+        FROM rechnung 
+        WHERE SUBSTRING_INDEX(Monat_Jahr, " ", -1) = :UmsatzJahr
+        GROUP BY UmsatzMonat
+        ORDER by MONTH(UmsatzMonat);';
+
+foreach ($UmsatzJahr as $row) {
+    $Jahr = $row['UmsatzJahr'];
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':UmsatzJahr', $Jahr, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $UmsatzDaten[$Jahr] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
+
 include "../dbPhp/dbCloseConnection.php";
 
 
@@ -233,10 +265,39 @@ function addColor($number)
             <!-- Content of dashboard-bottom -->
             <div class="dashboard-bottom">
                 <div class="Umsatzentwicklung">
+                    <div class="Header">
+                        <h2>Umsatzentwicklung</h2>
+                        <!-- Selection for the given UmsatzJahr -->
+                        <select name="UmsatzentwicklungJahr" id="UmsatzentwicklungJahr">
+                            <?php
+                            foreach ($UmsatzJahr as $row) {
+                                $Jahr = $row['UmsatzJahr'];
+                                $UmsatzDatenJahr = $UmsatzDaten[$Jahr];
 
+                                $UmsatzDatenJahrJSON = json_encode($UmsatzDatenJahr);
+
+                            ?>
+                                <option value="<?php echo $Jahr; ?>" data-umsatzdaten='<?php echo htmlspecialchars_decode($UmsatzDatenJahrJSON); ?>'>
+                                    <?php echo $Jahr; ?>
+                                </option>
+                            <?php
+                            }
+                            ?>
+                        </select>
+
+                    </div>
+                    <div class="UmsatzentwicklungContainer">
+                        <canvas id="UmsatzentwicklungChart"></canvas>
+                    </div>
                 </div>
                 <div class="FaelligeAngebote">
+                    <div class="Header">
+                        <h2>FälligeAngebote</h2>
+                        <h2>Feature in Bearbeitung</h2>
+                    </div>
+                    <div class="FaelligeAngeboteContainer">
 
+                    </div>
                 </div>
             </div>
         </div>
@@ -370,6 +431,82 @@ function addColor($number)
         if (UmsatzJahr.options.length > 0) {
             aktualisiereUmsatzDaten();
         }
+
+        // ================ Linear Chart for the Umsatzentwicklung ================
+        let chartUmsatzEntwicklung = null;
+        var months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+
+        var dataUmsatzentwicklungChart = {
+            labels: months,
+            datasets: [{
+                data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                label: 'Umsatz',
+                borderColor: '#98FB98',
+                borderWidth: 3
+            }]
+        };
+
+        function createBaseLinearChart() {
+            const ctx = document.getElementById('UmsatzentwicklungChart').getContext('2d');
+
+            chartUmsatzEntwicklung = new Chart(ctx, {
+                type: 'line',
+                data: dataUmsatzentwicklungChart,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateLinearChart(UmsatzDaten) {
+            // Reset the datasets
+            for (var i = 0; i < 12; i++) {
+                chartUmsatzEntwicklung.data.datasets[0].data[i] = 0;
+            }
+
+            // Elements of the given Array
+            for (var i = 0; i < UmsatzDaten.length; i++) {
+                // 12 Months              
+                for (var j = 0; j < 12; j++) {
+                    // Add the data from the given Month to the dataset
+                    if (UmsatzDaten[i].UmsatzMonat == months[j]) {
+                        chartUmsatzEntwicklung.data.datasets[0].data[j] = parseNumberWithCommas(UmsatzDaten[i].GesamtUmsatzMonat);
+                    }
+                }
+            }
+            chartUmsatzEntwicklung.update();
+
+        }
+
+        function createLinearChart() {
+            // Destroy the existing Chart, to create a new one specialized for the selected year
+            if (chartUmsatzEntwicklung) {
+                chartUmsatzEntwicklung.destroy();
+            }
+
+            const selectedOption_UmsatzEntwicklung = selectElement_UmsatzEntwicklung.options[selectElement_UmsatzEntwicklung.selectedIndex];
+            const umsatzdaten = JSON.parse(selectedOption_UmsatzEntwicklung.getAttribute('data-umsatzdaten'));
+
+            createBaseLinearChart();
+            updateLinearChart(umsatzdaten);
+
+        }
+
+        function parseNumberWithCommas(string) {
+            return parseFloat(string.replace(/,/g, '').replace('.', '.'));
+        }
+
+        // Event-Listener für Auswahl des Jahres
+        const selectElement_UmsatzEntwicklung = document.getElementById('UmsatzentwicklungJahr');
+        selectElement_UmsatzEntwicklung.addEventListener('change', createLinearChart);
+
+        createLinearChart();
     </script>
 </body>
 

@@ -124,6 +124,10 @@ b {
     display: flex;
 }
 
+.dashboard-bottom {
+    margin-top: 16px;
+    height: 80%;
+}
 
 .Umsatz-Ausgaben,
 .OffeneRechnung-FaelligeRechnung-Belege {
@@ -181,8 +185,7 @@ b {
     padding: 6px 0px;
 }
 
-.AusgabenRow,
-.OffeneRechnungRow {
+.AusgabenRow {
     padding: 6px 0px;
     display: flex;
     gap: 6px;
@@ -196,9 +199,6 @@ b {
     border-radius: var(--border-radius-1);
 }
 
-.OffeneRechnungRow {
-    border-bottom: 1px solid #ccc;
-}
 
 .FaelligeRechnungRow {
     display: flex;
@@ -247,4 +247,28 @@ b {
 
 .cell-center {
     text-align: center;
+}
+
+.Umsatzentwicklung {
+    width: 75%;
+    margin-right: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius-1);
+    display: block;
+    padding: 8px;
+    /* overflow-y: auto; */
+    /* overflow-x: auto; */
+}
+
+
+
+.FaelligeAngebote {
+    width: 25%;
+    /* background-color: red; */
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius-1);
+    display: block;
+    padding: 8px;
+    overflow-y: auto;
+    overflow-x: auto;
 }
