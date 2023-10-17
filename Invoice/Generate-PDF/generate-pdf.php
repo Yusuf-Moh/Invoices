@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Replace Stunden with the inputfield number
     for ($i = 0; $i < count($AbrechnungsartList); $i++) {
-        if ($AbrechnungsartList[$i] != "Pauschal") {
+        if ($AbrechnungsartList[$i] != "Pauschal" && $AbrechnungsartList[$i] != "Gutschrift") {
             $AbrechnungsartList[$i] = $AbrechnungsartStunden[$i] . ' Stunden';
         }
     }
@@ -166,7 +166,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         $TABLE_ROWS .= '<tr>';
         $TABLE_ROWS .= '<td style="text-align: left;">' . $Leistung[$i] . '</td>';
-        $TABLE_ROWS .= AbrechnungsArtPauschalStunden($AbrechnungsartList[$i]);
+        $TABLE_ROWS .= AbrechnungsArtPauschalStundenGutschrift($AbrechnungsartList[$i]);
         $TABLE_ROWS .= '<td>' . number_format($nettoPreis[$i], 2, ',', '.') . ' Euro</td>';
         $TABLE_ROWS .= '</tr>';
         $gesamtNettoPreis += $nettoPreis[$i];
@@ -438,10 +438,10 @@ function formatRechnungsNr($rechnungsNr)
     return str_pad($rechnungsNr, 4, '0', STR_PAD_LEFT);
 }
 
-function AbrechnungsArtPauschalStunden($abrechnungsart)
+function AbrechnungsArtPauschalStundenGutschrift($abrechnungsart)
 {
     $html = '';
-    if ($abrechnungsart == 'Pauschal') {
+    if ($abrechnungsart == 'Pauschal' || $abrechnungsart == 'Gutschrift') {
         $html .= '<td></td>';
         $html .= '<td>' . $abrechnungsart . '</td>';
     } else {

@@ -576,7 +576,7 @@ function changeBackgroundSearchButton($bool)
                                 <button type="submit" name="button" value="Search_RechnungsDatum" class="<?php changeBackgroundSearchButton($RechnungsDatum_StateSearchButton); ?>">RechnungsDatum</button>
                                 <button type="submit" name="button" value="Search_Monat_Jahr" class="<?php changeBackgroundSearchButton($Monat_Jahr_StateSearchButton); ?>">Monat Jahr</button>
                                 <button type="submit" name="button" value="Search_RechnungsKürzelNummer" class="<?php changeBackgroundSearchButton($RechnungsKürzelNummer_StateSearchButton); ?>">RechnungsKürzelNummer</button>
-                                <button type="submit" name="button" value="Search_MonatlicheRechnung" class="<?php changeBackgroundSearchButton($MonatlicheRechnung_StateSearchButton); ?>">MonatlicheRechnung</button>
+                                <button type="submit" name="button" value="Search_MonatlicheRechnung" class="<?php changeBackgroundSearchButton($MonatlicheRechnung_StateSearchButton); ?>">MonatlicheRechnung (1/0)</button>
                                 <button type="submit" name="button" value="Search_Bezahlt" class="<?php changeBackgroundSearchButton($Bezahlt_StateSearchButton); ?>">Bezahlt (1/0)</button>
                                 <button type="submit" name="button" value="Search_UeberweisungsDatum" class="<?php changeBackgroundSearchButton($UeberweisungsDatum_StateSearchButton); ?>">Überweisungsdatum</button>
                             </div>
@@ -679,6 +679,7 @@ function changeBackgroundSearchButton($bool)
                                                         <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
                                                             <option value="Pauschal">Pauschal</option>
                                                             <option value="Stunden">Stunden</option>
+                                                            <option value="Gutschrift">Gutschrift</option>
                                                         </select>
                                                     </div>
                                                 </div>

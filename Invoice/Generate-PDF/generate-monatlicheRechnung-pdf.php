@@ -121,7 +121,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             //format the number from for example, 1000 to 1.000,00
             $TABLE_ROWS .= '<tr>';
             $TABLE_ROWS .= '<td style="text-align: left;">' . $LeistungArray[$m] . '</td>';
-            $TABLE_ROWS .= AbrechnungsArtPauschalStunden($AbrechnungsartArray[$m]);
+            $TABLE_ROWS .= AbrechnungsArtPauschalStundenGutschrift($AbrechnungsartArray[$m]);
             $TABLE_ROWS .= '<td>' . number_format($NettoPreisArray[$m], 2, ',', '.') . ' Euro</td>';
             $TABLE_ROWS .= '</tr>';
             $gesamtNettoPreis += $NettoPreisArray[$m];
@@ -336,10 +336,10 @@ function displayVertragsdatum($vertragsDatum)
     }
 }
 
-function AbrechnungsArtPauschalStunden($abrechnungsart)
+function AbrechnungsArtPauschalStundenGutschrift($abrechnungsart)
 {
     $html = '';
-    if ($abrechnungsart == 'Pauschal') {
+    if ($abrechnungsart == 'Pauschal' || $abrechnungsart == 'Gutschrift') {
         $html .= '<td></td>';
         $html .= '<td>' . $abrechnungsart . '</td>';
     } else {

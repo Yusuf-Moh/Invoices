@@ -223,6 +223,7 @@ function addDienstleistungsRow() {
                     <select name="AbrechnungsartList[]" id="AbrechnungsartList" required>
                         <option value="Pauschal">Pauschal</option>
                         <option value="Stunden">Stunden</option>
+                        <option value="Gutschrift">Gutschrift</option>
                     </select>
                 </div>
             </div>
@@ -405,9 +406,13 @@ if (messageType == "edit") {
 
 
 
-    if (AbrechnungsartArray[0] == "Pauschal") {
-        AbrechnungsartSelectFields[0].value = "Pauschal";
-        AbrechnungsartStundenInputFields[0].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+    if (AbrechnungsartArray[0] == "Pauschal" || AbrechnungsartArray[0] == "Gutschrift") {
+        if (AbrechnungsartArray[0] == "Pauschal") {
+            AbrechnungsartSelectFields[0].value = "Pauschal";
+        } else if (AbrechnungsartArray[0] == "Gutschrift") {
+            AbrechnungsartSelectFields[0].value = "Gutschrift";
+        }
+        AbrechnungsartStundenInputFields[0].style.display = "none"; // Hide the input field of the AmountStunden if "Pauschal" or other option is selected
         AbrechnungsartStundenInputFields[0].value = ""; // Set the input field value to empty when hiding it
         AbrechnungsartStundenInputFields[0].required = false; // Set the "required" attribute to false
 
@@ -428,9 +433,13 @@ if (messageType == "edit") {
             AbrechnungsartStundenInputFields = document.querySelectorAll("input[name='Stunden[]']");
             AbrechnungsartSelectFields = document.querySelectorAll("select[name='AbrechnungsartList[]']");
 
-            if (AbrechnungsartArray[i] == "Pauschal") {
-                AbrechnungsartSelectFields[i].value = "Pauschal";
-                AbrechnungsartStundenInputFields[i].style.display = "none"; // Hide the input field if "Pauschal" or other option is selected
+            if (AbrechnungsartArray[i] == "Pauschal" || AbrechnungsartArray[i] == "Gutschrift") {
+                if (AbrechnungsartArray[i] == "Pauschal") {
+                    AbrechnungsartSelectFields[i].value = "Pauschal";
+                } else if (AbrechnungsartArray[i] == "Gutschrift") {
+                    AbrechnungsartSelectFields[i].value = "Gutschrift";
+                }
+                AbrechnungsartStundenInputFields[i].style.display = "none"; // Hide the input field of the AmountStunden if "Pauschal" or other option is selected
                 AbrechnungsartStundenInputFields[i].value = ""; // Set the input field value to empty when hiding it
                 AbrechnungsartStundenInputFields[i].required = false; // Set the "required" attribute to false
 
