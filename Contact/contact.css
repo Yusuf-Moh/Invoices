@@ -377,11 +377,18 @@ input[type="radio"] {
 }
 
 /* ========================= Crud table css ========================= */
+
+.crud .crud-table {
+    /* Overflow of the Table */
+    height: 68vh;
+    width: 100%;
+    overflow: auto;
+}
+
 .crud .crud-table table {
     border-collapse: collapse;
     width: 100%;
-    /* doesnt work */
-    /* overflow-x: auto; */
+    /* height: 100%; */
 }
 
 .crud .crud-table table th,
@@ -401,6 +408,9 @@ td {
 /* head of table */
 .crud .crud-table table th {
     background-color: var(--color-primary);
+    /* Fixed Table Header */
+    position: sticky;
+    top: 0;
 }
 
 /* edit and error btn */
