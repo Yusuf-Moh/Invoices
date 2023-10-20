@@ -124,9 +124,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $TABLE_ROWS .= AbrechnungsArtPauschalStundenGutschrift($AbrechnungsartArray[$m]);
             $TABLE_ROWS .= '<td>' . number_format($NettoPreisArray[$m], 2, ',', '.') . ' Euro</td>';
             $TABLE_ROWS .= '</tr>';
-            $gesamtNettoPreis += $NettoPreisArray[$m];
-            $gesamtBetragMwSt += $MwStArray[$m];
-            $gesamtBetragBrutto += $GesamtBetragArray[$m];
+            if ($AbrechnungsartList[$i] == 'Gutschrift') {
+                $gesamtNettoPreis -= $nettoPreis[$i];
+                $gesamtBetragMwSt -= $MwStArray[$i];
+                $gesamtBetragBrutto -= $GesamtBetragArray[$i];
+            } else {
+                $gesamtNettoPreis += $nettoPreis[$i];
+                $gesamtBetragMwSt += $MwStArray[$i];
+                $gesamtBetragBrutto += $GesamtBetragArray[$i];
+            }
         }
         //format the number from for example, 1000 to 1.000,00
         $gesamtNettoPreis = number_format($gesamtNettoPreis, 2, ',', '.');
