@@ -241,11 +241,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     $output = $dompdf->output();
     file_put_contents($downloadPath . $filename, $output);
-    // $dompdf->addInfo("Title", "An Example PDF");
-
-    //Open new Tab with PDF
-    // $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
-
 
     // Download the files from the serverside
     echo '<script type = "text/javascript">';

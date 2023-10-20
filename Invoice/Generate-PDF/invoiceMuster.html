@@ -32,10 +32,6 @@
             width: 100%;
         }
 
-        .pagenum:before {
-            content: counter(page);
-        }
-
         /* display flex and spacebetween not working because of domPDF */
         .ÜberschriftFirma {
             /* position of the div left*/
@@ -92,6 +88,30 @@
             text-align: center;
             padding: 6.5pt 6.5pt 6.5pt 6.5pt;
         }
+
+
+        .RechnungsDaten {
+            text-align: left;
+            display: table;
+            margin-left: auto;
+            position: fixed;
+            /* right: 1px; */
+        }
+
+        .RechnungsDaten table {
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .RechnungsDaten td,
+        .RechnungsDaten th {
+            padding: 2px 8px;
+        }
+
+        .RechnungsDaten tbody td:first-child,
+        .RechnungsDaten tbody th:first-child {
+            border-right: 1px solid black;
+        }
     </style>
     <title>MusterRechnung</title>
 </head>
@@ -139,19 +159,39 @@
         <div class="content">
 
             <div class="Kontaktinformationen">
-                <p>%KontaktInformationen%</p>
-            </div>
-            <div class="RechnungsDatum">
-                <p style="text-align:right;">Rechnungsdatum: %Rechnungsdatum%</p>
-            </div>
-            <div class="RechnungsNr">
-                <br>
-                <p><strong>RECHNUNG NR.: %RechnungsKürzelNummer%<strong><br><span style="font-size: 10pt;">Bitte bei
-                                Zahlung angeben</span></p>
+                <p style="margin-top: 4px;">%KontaktInformationen%</p>
             </div>
 
+            <div class="RechnungsDaten">
+                <table>
+                    <thead>
+                        <th colspan="2" style="text-align: left;">
+                            <span style="font-size:8pt; margin-top: 4px;">Bei Zahlung bitte <br> die Rechnungs-Nr.
+                                angeben</span>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rechnung-Nr.:</td>
+                            <td style="text-align: right;">%RechnungsKürzelNummer%</td>
+                        </tr>
+                        <tr>
+                            <td>Rechnungsdatum:</td>
+                            <td style="text-align: right;">%Rechnungsdatum%</td>
+                        </tr>
+                        <!-- <tr>
+                            <td>Seite:</td>
+                            <td style="text-align: right;">1 von 2</td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+
+            <br>
+            <span><strong style="font-size: 14pt;">Rechnung</strong></span>
+
             <div class="Anrede">
-                <br>
+                <!-- <br> -->
                 <p>%Anrede%</p>
                 <p>hiermit übersenden wir Ihnen die Rechnung v. %RechnungsMonatJahr_ggfVertragsDatum% für folgende
                     Leistungen:</p>
@@ -193,7 +233,8 @@
             </div>
 
             <div class="Zahlungsaufforderung">
-                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von %gesamtBetragBrutto% Euro innerhalb von 10 Tage nach
+                <p>Wir möchten Sie bitten, den Rechnungsbetrag in Höhe von %gesamtBetragBrutto% Euro innerhalb von 10
+                    Tage nach
                     Rechnungszustellung auf unser unten genanntes Bankonto zu überweisen.
                 </p>
                 <br>
