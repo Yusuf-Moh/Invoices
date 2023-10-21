@@ -691,14 +691,18 @@ function changeBackgroundSearchButton($bool)
                                             </td>
                                         </tr>
                                     </tbody>
-                                    <tfoot>
+                                    <!-- <tfoot>
                                         <tr>
                                             <td colspan="3" class="add-row">
                                                 <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
                                             </td>
                                         </tr>
-                                    </tfoot>
+                                    </tfoot> -->
                                 </table>
+                            </div>
+
+                            <div class="add-row">
+                                <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
                             </div>
 
                             <div class="monatlicheRechnung">
