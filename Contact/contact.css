@@ -442,7 +442,17 @@ td {
     background-color: var(--color-success);
 }
 
+.crud .crud-table .CrudEdit:hover {
+    background-color: #adf0ad;
+    transition-delay: 0.1s;
+}
+
 /* Delete btn */
 .crud .crud-table .CrudDelete {
     background-color: var(--color-danger);
+}
+
+.crud .crud-table .CrudDelete:hover {
+    background-color: #ffa2aa;
+    transition-delay: 0.1s;
 }
