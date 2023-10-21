@@ -46,11 +46,6 @@ html {
 }
 
 body {
-    /*
-    Errors with searchbar not compleltly to the right
-    width: 100vh;
-    height: 100vh;
-    */
     font-family: poppins, sans-serif;
     font-size: 0.88rem;
     background: var(--color-background);
@@ -140,22 +135,32 @@ b {
 
 .search-buttons button {
     display: inline-block;
-    background-color: var(--color-info-light);
-    padding: var(--padding-btn);
+    background-color: rgb(190, 190, 200);
     border-radius: var(--border-radius-1);
-    cursor: pointer;
+
+    padding: var(--padding-btn);
     margin-right: 8px;
+    cursor: pointer;
+    border: 1px solid rgb(130, 130, 140);
+}
+
+.search-buttons button:hover {
+    background-color: var(--color-info-light);
+    transition-delay: 0.1s;
 }
 
 .search-buttons button:last-child {
     margin-right: 0px;
 }
 
-/* hier muss der code verbessert werden */
 .buttons-container .search-buttons button.clicked {
-    background-color: red;
+    background-color: rgb(255, 110, 110);
 }
 
+.buttons-container .search-buttons button.clicked:hover {
+    background-color: rgb(255, 150, 150);
+    transition-delay: 0.1s;
+}
 
 .WebsiteHeadline {
     margin-right: 30px;
@@ -221,12 +226,18 @@ b {
 .createInvoice-Btn,
 .createMonatlicheRechnungen-Btn {
     display: inline-block;
-    background-color: var(--color-info-light);
+    background-color: rgb(190, 190, 200);
     padding: var(--padding-btn);
     border-radius: var(--border-radius-1);
     cursor: pointer;
+    border: 1px solid rgb(130, 130, 140);
 }
 
+.createInvoice-Btn:hover,
+.createMonatlicheRechnungen-Btn:hover {
+    background-color: var(--color-info-light);
+    transition-delay: 0.1s;
+}
 
 /* ============== Modal ==============*/
 /* Form */
@@ -279,12 +290,15 @@ b {
     transition: top 0ms ease-in-out 200ms,
         opacity 200ms ease-in-out 0ms,
         transform 600ms ease-in-out 200ms;
+
+    border: 1px solid black;
 }
 
 .modal.active,
 .modal-MonatlicheRechnungen.active {
     top: 50%;
     opacity: 1;
+    z-index: 10;
     transform: translate(-50%, -50%) scale(1);
     transition: top 0ms ease-in-out 0ms, opacity 200ms ease-in-out 0ms, transform 20ms ease-in-out 0ms;
 }
