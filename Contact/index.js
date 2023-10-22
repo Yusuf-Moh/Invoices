@@ -95,6 +95,7 @@ if (organizationBtn.classList.contains('clicked')) {
 
         if (messageType == "edit") {
             personBtn.style.display = "none";
+            document.getElementById("rechnungsKuerzel_organization").setAttribute("disabled", "disabled");
             // updateOrganization = true;
             // updatePerson = false;
         }
@@ -119,6 +120,7 @@ if (personBtn.classList.contains('clicked')) {
 
         if (messageType == "edit") {
             organizationBtn.style.display = "none";
+            document.getElementById("rechnungsKuerzel_Person").setAttribute("disabled", "disabled");
             // updatePerson = true;
             // updateOrganization = false;
         }
