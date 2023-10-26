@@ -39,30 +39,46 @@ searchInput.addEventListener('keydown', function (event) {
 // ==================== START OF MODAL ====================
 
 // Modal open
+const modal = document.querySelector(".modal");
+const MonatlicheRechnungenModal = document.querySelector('.modal-MonatlicheRechnungen');
+const restoreDeletedInvoicesModal = document.querySelector('.modal-restoreDeletedInvoices');
 document.querySelector("#CreateInvoiceModal").addEventListener("click", function () {
-    const MonatlicheRechnungenModal = document.querySelector('.modal-MonatlicheRechnungen');
-    // When MonatlicheRechnungen is currently opened, the Modal shouldnt be opened
-    if (!MonatlicheRechnungenModal.classList.contains('active')) {
-        document.querySelector(".modal").classList.add("active");
+    // When MonatlicheRechnungen or restoreDeletedInvoicesModal is currently opened, the Modal shouldnt be opened
+    if (!MonatlicheRechnungenModal.classList.contains('active') && !restoreDeletedInvoicesModal.classList.contains('active')) {
+        modal.classList.add("active");
     }
 });
 // Modal close 
 document.querySelector(".modal .modal-header span").addEventListener("click", function () {
-    document.querySelector(".modal").classList.remove("active");
+    modal.classList.remove("active");
     window.location.replace('invoice.php');
 });
 
 // Modal MonatlicheRechnungen Open
 document.querySelector('#CreateMonatlicheRechnungenModal').addEventListener('click', function () {
-    const modal = document.querySelector(".modal");
-    // When Modal is currently opened, the MonatlicheRechnungenModal shouldnt be opened
-    if (!modal.classList.contains('active')) {
-        document.querySelector('.modal-MonatlicheRechnungen').classList.add('active');
+
+    // When Modal or restoreDeletedInvoicesModal is currently opened, the MonatlicheRechnungenModal shouldnt be opened
+    if (!modal.classList.contains('active') && !restoreDeletedInvoicesModal.classList.contains('active')) {
+        MonatlicheRechnungenModal.classList.add('active');
     }
 });
 // Modal MonatlicheRechnungen Close
 document.querySelector('.modal-MonatlicheRechnungen .modal-header span').addEventListener('click', function () {
-    document.querySelector('.modal-MonatlicheRechnungen').classList.remove('active');
+    MonatlicheRechnungenModal.classList.remove('active');
+    window.location.replace('invoice.php');
+});
+
+// Modal deletedInvoices open
+document.querySelector('#restoreDeletedInvoicesModal').addEventListener('click', function () {
+    // When Modal or MonatlicheRechnungsModal is currently opened, the restoreDeletedInvoicesModal shouldnt be opened
+    if (!modal.classList.contains('active') && !MonatlicheRechnungenModal.classList.contains('active')) {
+        restoreDeletedInvoicesModal.classList.add('active');
+    }
+});
+
+// Modal deletedInvoices close
+document.querySelector('.modal-restoreDeletedInvoices .modal-header span').addEventListener('click', function () {
+    restoreDeletedInvoicesModal.classList.remove('active');
     window.location.replace('invoice.php');
 });
 
@@ -110,6 +126,18 @@ document.addEventListener('click', function (event) {
 // Event listener to hide RechnungsInformationen when click occurs outside the modal-MonatlicheRechnung
 document.addEventListener('click', function (event) {
     const modalContainer = document.querySelector('.modal-MonatlicheRechnungen');
+    const rechnungsInformationenElements = document.getElementsByClassName('RechnungsInformationen');
+
+    if (!modalContainer.contains(event.target)) {
+        for (const element of rechnungsInformationenElements) {
+            element.style.display = 'none';
+        }
+    }
+});
+
+// Event listener to hide RechnungsInformationen when click occurs outside the modal-deletedInvoices
+document.addEventListener('click', function (event) {
+    const modalContainer = document.querySelector('.modal-restoreDeletedInvoices');
     const rechnungsInformationenElements = document.getElementsByClassName('RechnungsInformationen');
 
     if (!modalContainer.contains(event.target)) {
@@ -538,6 +566,14 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
     }
 
 });
+
+// function uncheck_AllCheckboxes(this) {
+
+// }
+
+// function check_AllCheckboxes(this) {
+
+// }
 
 // Uncheck every checked checkbox of monatlicheRechnung
 document.getElementById('uncheck_AllCheckboxes').addEventListener('click', function () {

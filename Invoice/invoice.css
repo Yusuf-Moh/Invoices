@@ -223,7 +223,8 @@ b {
 
 /* ============== Create new Contacts ============== */
 .createInvoice-Btn,
-.createMonatlicheRechnungen-Btn {
+.createMonatlicheRechnungen-Btn,
+.restoreDeletedInvoices-Btn {
     display: inline-block;
     background-color: rgb(190, 190, 200);
     padding: var(--padding-btn);
@@ -233,7 +234,8 @@ b {
 }
 
 .createInvoice-Btn:hover,
-.createMonatlicheRechnungen-Btn:hover {
+.createMonatlicheRechnungen-Btn:hover,
+.restoreDeletedInvoices-Btn:hover {
     background-color: var(--color-info-light);
     transition-delay: 0.1s;
 }
@@ -241,7 +243,8 @@ b {
 /* ============== Modal ==============*/
 /* Form */
 .sendNewInvoiceData-Btn,
-.sendMonatlicheRechnungData-Btn {
+.sendMonatlicheRechnungData-Btn,
+.sendRestoredDeletedInvoiceData-Btn {
     display: inline-block;
     padding: var(--padding-btn);
     background-color: var(--color-white);
@@ -273,7 +276,8 @@ b {
 }
 
 .modal,
-.modal-MonatlicheRechnungen {
+.modal-MonatlicheRechnungen,
+.modal-restoreDeletedInvoices {
     position: absolute;
     /* For JS to "popup"*/
     top: -150%;
@@ -297,7 +301,8 @@ b {
 }
 
 .modal.active,
-.modal-MonatlicheRechnungen.active {
+.modal-MonatlicheRechnungen.active,
+.modal-restoreDeletedInvoices.active {
     top: 50%;
     opacity: 1;
     z-index: 10;
@@ -306,14 +311,16 @@ b {
 }
 
 .modal .modal-header,
-.modal-MonatlicheRechnungen .modal-header {
+.modal-MonatlicheRechnungen .modal-header,
+.modal-restoreDeletedInvoices .modal-header {
     display: flex;
     justify-content: space-between;
     margin-bottom: 4px;
 }
 
 .modal .modal-header span,
-.modal-MonatlicheRechnungen .modal-header span {
+.modal-MonatlicheRechnungen .modal-header span,
+.modal-restoreDeletedInvoices .modal-header span {
     margin-top: 3px;
     cursor: pointer;
 }
@@ -365,7 +372,9 @@ b {
 
 /* ================= START OF Style for the Leistungen and Leistungsstraße Customer =========================*/
 
-.dienstleistungs-details {
+.dienstleistungs-details,
+.modal-restoreDeletedInvoices .ContentRestoreDeletedInvoices,
+.modal-MonatlicheRechnungen .ContentMonatlicheRechnungen {
     display: block;
     max-height: 30vh;
     overflow: auto;
@@ -451,13 +460,8 @@ b {
     margin-bottom: 0;
 }
 
-.ContentMonatlicheRechnungen,
-.monatlicheRechnung-Kunde {
-    display: contents;
-}
-
 .KundenName {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 4px;
     margin-top: 10px;

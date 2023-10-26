@@ -691,13 +691,6 @@ function changeBackgroundSearchButton($bool)
                                             </td>
                                         </tr>
                                     </tbody>
-                                    <!-- <tfoot>
-                                        <tr>
-                                            <td colspan="3" class="add-row">
-                                                <label onclick="addDienstleistungsRow()" id="add-row">+ Hinzufügen weitere Leistung</label>
-                                            </td>
-                                        </tr>
-                                    </tfoot> -->
                                 </table>
                             </div>
 
@@ -748,25 +741,26 @@ function changeBackgroundSearchButton($bool)
                                     <input type="date" name="RechnungsDatum-MonatlicheRechnungen" id="RechnungsDatum-MonatlicheRechnungen" required>
                                     <input type="month" name="RechnungsMonatJahr-MonatlicheRechnungen" id="RechnungsMonatJahr-MonatlicheRechnungen" required>
                                 </div>
+
                                 <div class="ContentMonatlicheRechnungen">
                                     <?php
                                     include('../dbPhp/dbOpenConnection.php'); // dbConnection open
 
                                     // One Table is combined by adding Monatliche_Rechnung with Kunde & Rechnung
                                     $sql_monatlicheRechnung = "SELECT MR.*,
-                                CASE
-                                    WHEN K.Organization = 1 THEN K.Firmenname
-                                    WHEN K.Person = 1 THEN K.Name_Ansprechpartner
-                                END AS KundenName,
-                                    R.Leistung,
-                                    R.Abrechnungsart,
-                                    R.NettoPreis
-                                FROM
-                                    Monatliche_rechnung MR
-                                INNER JOIN
-                                    Rechnung R ON MR.RechnungsID = R.RechnungsID
-                                INNER JOIN
-                                    Kunden K ON R.KundenID = K.KundenID;";
+                                    CASE
+                                        WHEN K.Organization = 1 THEN K.Firmenname
+                                        WHEN K.Person = 1 THEN K.Name_Ansprechpartner
+                                    END AS KundenName,
+                                        R.Leistung,
+                                        R.Abrechnungsart,
+                                        R.NettoPreis
+                                    FROM
+                                        Monatliche_rechnung MR
+                                    INNER JOIN
+                                        Rechnung R ON MR.RechnungsID = R.RechnungsID
+                                    INNER JOIN
+                                        Kunden K ON R.KundenID = K.KundenID;";
 
 
                                     $stmt = $conn->prepare($sql_monatlicheRechnung);
@@ -819,6 +813,80 @@ function changeBackgroundSearchButton($bool)
                 </div>
             </div>
 
+            <div class="deletedInvoices">
+                <button type="button" id="restoreDeletedInvoicesModal" class="restoreDeletedInvoices-Btn">Gelöschte Rechnung wiederherstellen</button>
+                <div class="modal-restoreDeletedInvoices">
+
+                    <div class="modal-header">
+                        <h2>Wiederherstell Rechnung</h2>
+                        <span class="material-icons-sharp">close</span>
+                    </div>
+
+                    <div class="form-container">
+                        <form method="POST" id="form-modal-restoreDeletedInvoices">
+                            <div class="ContentRestoreDeletedInvoices">
+                                <?php
+                                include('../dbPhp/dbOpenConnection.php'); // dbConnection open
+
+                                $sql_restoreDeletedInvoices = "SELECT DR.*,
+                                CASE
+                                    WHEN K.Organization = 1 THEN K.Firmenname
+                                    WHEN K.Person = 1 THEN K.Name_Ansprechpartner
+                                END AS KundenName
+                                FROM
+                                    deletedrechnung DR
+                                INNER JOIN
+                                    Kunden K ON DR.KundenID = K.KundenID;";
+                                $stmt = $conn->prepare($sql_restoreDeletedInvoices);
+                                $stmt->execute();
+                                $deletedInvoices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                foreach ($deletedInvoices as $row) {
+
+                                    $Leistung_deletedRechnung = unserialize($row['Leistung']);
+                                    $Abrechnungsart_deletedRechnung = unserialize($row['Abrechnungsart']);
+                                    $NettoPreis_deletedRechnung = unserialize($row['NettoPreis']);
+                                    $RechnungsNummer_deletedRechnung = $row['RechnungsNummer'];
+
+                                    $html = '';
+                                    $html .= '<div class="deletedRechnung-Kunde">';
+                                    $html .= '<div class="KundenName">';
+                                    $html .= '<input type="checkbox" value = "' . $RechnungsNummer_deletedRechnung . '" name="restoreDeletedInvoices[]" id = "restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '" onclick="toggleRechnungsInformationen(this)" checked>';
+                                    $html .= '<label for="restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '">' . $row['KundenName'] . " - " . $row['RechnungsKürzelNummer'] . '</label>';
+                                    $html .= '</div>';
+                                    $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
+
+                                    $html .= '<table class="RechnungsInformationen-Table">';
+                                    $html .= '<tbody>';
+
+                                    for ($i = 0; $i < count($Leistung_deletedRechnung); $i++) {
+                                        $html .= '<tr>';
+                                        $html .= '<td>' . $Leistung_deletedRechnung[$i] . '</td>';
+                                        $html .= '<td>' . $Abrechnungsart_deletedRechnung[$i] . '</td>';
+                                        $html .= '<td>' . $NettoPreis_deletedRechnung[$i] . '</td>';
+                                        $html .= '</tr>';
+                                    }
+
+                                    $html .= '</tbody>';
+                                    $html .= '</table>';
+
+                                    $html .= '</div>';
+                                    $html .= '</div>';
+                                    echo $html;
+                                }
+                                ?>
+                            </div>
+
+                            <div class="uncheck_check-AllCheckboxes">
+                                <button type="button" class="uncheck_AllCheckboxes" onclick="uncheck_AllCheckboxes(this)">Uncheck All</button>
+                                <button type="button" class="checkAllCheckboxes" onclick="check_AllCheckboxes(this)">Check All</button>
+                            </div>
+
+                            <button type="submit" class="sendRestoredDeletedInvoiceData-Btn">Senden</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- End of Create Contacts with Modal -->
 
