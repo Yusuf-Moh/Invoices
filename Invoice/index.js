@@ -567,31 +567,15 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
 
 });
 
-// function uncheck_AllCheckboxes(this) {
+// Toggle all Checkboxes
+function toggleCheckboxes(name, check) {
+    const checkboxes = document.getElementsByName(name);
 
-// }
+    for (var i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].checked = check;
+    }
+}
 
-// function check_AllCheckboxes(this) {
-
-// }
-
-// Uncheck every checked checkbox of monatlicheRechnung
-document.getElementById('uncheck_AllCheckboxes').addEventListener('click', function () {
-    let checkboxes = document.querySelectorAll('input[name="erstelleMonatlicheRechnung[]"]');
-
-    checkboxes.forEach(function (checkbox) {
-        checkbox.checked = false;
-    });
-});
-
-// Check every checkbox of monatlicheRechnung
-document.getElementById('checkAllCheckboxes').addEventListener('click', function () {
-    let checkboxes = document.querySelectorAll('input[name="erstelleMonatlicheRechnung[]"]');
-
-    checkboxes.forEach(function (checkbox) {
-        checkbox.checked = true;
-    });
-});
 // ==================== END OF MODAL ====================
 
 

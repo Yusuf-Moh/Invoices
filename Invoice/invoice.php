@@ -802,8 +802,8 @@ function changeBackgroundSearchButton($bool)
                                     ?>
                                 </div>
                                 <div class="uncheck_check-AllCheckboxes">
-                                    <button type="button" id="uncheck_AllCheckboxes" class="uncheck_AllCheckboxes">Uncheck All</button>
-                                    <button type="button" id="checkAllCheckboxes" class="checkAllCheckboxes">Check All</button>
+                                    <button type="button" class="uncheck_AllCheckboxes" onclick="toggleCheckboxes('erstelleMonatlicheRechnung[]', false)">Uncheck All</button>
+                                    <button type="button" class="checkAllCheckboxes" onclick="toggleCheckboxes('erstelleMonatlicheRechnung[]', true)">Check All</button>
                                 </div>
 
                                 <button type="submit" class="sendMonatlicheRechnungData-Btn">Senden</button>
@@ -878,8 +878,8 @@ function changeBackgroundSearchButton($bool)
                             </div>
 
                             <div class="uncheck_check-AllCheckboxes">
-                                <button type="button" class="uncheck_AllCheckboxes" onclick="uncheck_AllCheckboxes(this)">Uncheck All</button>
-                                <button type="button" class="checkAllCheckboxes" onclick="check_AllCheckboxes(this)">Check All</button>
+                                <button type="button" class="uncheck_AllCheckboxes" onclick="toggleCheckboxes('restoreDeletedInvoices[]', false)">Uncheck All</button>
+                                <button type="button" class="checkAllCheckboxes" onclick="toggleCheckboxes('restoreDeletedInvoices[]', true)">Check All</button>
                             </div>
 
                             <button type="submit" class="sendRestoredDeletedInvoiceData-Btn">Senden</button>
