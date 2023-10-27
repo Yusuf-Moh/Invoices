@@ -3,6 +3,7 @@
 const form_MonatlicheRechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/generate-monatlicheRechnung-pdf.php';
 const form_Rechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/generate-pdf.php';
 const form_editBezahlteRechnung_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/editBezahlteRechnung.php';
+const form_restoreDeletedInvoices_Path = '/Projekte/Invoices-main/Invoice/Generate-PDF/restoreDeletedRechnung.php';
 
 // Close Error/ Success Message 
 var closeBtn = document.querySelector(".message span");
@@ -123,33 +124,29 @@ document.addEventListener('click', function (event) {
     }
 });
 
-// Event listener to hide RechnungsInformationen when click occurs outside the modal-MonatlicheRechnung
+// Event listener to hide RechnungsInformationen when click occurs outside the modal-MonatlicheRechnung or modal-restoreDeletedInvoices
 document.addEventListener('click', function (event) {
-    const modalContainer = document.querySelector('.modal-MonatlicheRechnungen');
-    const rechnungsInformationenElements = document.getElementsByClassName('RechnungsInformationen');
+    const modalContainerMonatlicheRechnungen = document.querySelector('.modal-MonatlicheRechnungen');
+    const rechnungsInformationenElementsMonatlicheRechnungen = modalContainerMonatlicheRechnungen.querySelectorAll('.RechnungsInformationen');
 
-    if (!modalContainer.contains(event.target)) {
-        for (const element of rechnungsInformationenElements) {
+    const modalContainerRestoreDeletedInvoices = document.querySelector('.modal-restoreDeletedInvoices');
+    const rechnungsInformationenElementsRestoreDeletedInvoices = modalContainerRestoreDeletedInvoices.querySelectorAll('.RechnungsInformationen');
+
+    if (!modalContainerMonatlicheRechnungen.contains(event.target)) {
+        rechnungsInformationenElementsMonatlicheRechnungen.forEach(function (element) {
             element.style.display = 'none';
-        }
+        });
+    }
+
+    if (!modalContainerRestoreDeletedInvoices.contains(event.target)) {
+        rechnungsInformationenElementsRestoreDeletedInvoices.forEach(function (element) {
+            element.style.display = 'none';
+        });
     }
 });
 
-// Event listener to hide RechnungsInformationen when click occurs outside the modal-deletedInvoices
-document.addEventListener('click', function (event) {
-    const modalContainer = document.querySelector('.modal-restoreDeletedInvoices');
-    const rechnungsInformationenElements = document.getElementsByClassName('RechnungsInformationen');
-
-    if (!modalContainer.contains(event.target)) {
-        for (const element of rechnungsInformationenElements) {
-            element.style.display = 'none';
-        }
-    }
-});
-
-function toggleRechnungsInformationen(checkbox) {
-    const rechnungsInformationen = checkbox.closest(".monatlicheRechnung-Kunde").querySelector(".RechnungsInformationen");
-
+function toggleRechnungsInformationen(checkbox, className) {
+    const rechnungsInformationen = checkbox.closest("." + className).querySelector(".RechnungsInformationen");
     if (checkbox.checked) {
         rechnungsInformationen.style.display = "block";
     } else {
@@ -565,6 +562,45 @@ document.getElementById('form-modal-MonatlicheRechnung').addEventListener('submi
         messageDiv.classList.add('error');
     }
 
+});
+
+// Modal RestoreDeletedInvoices check submit button
+document.getElementById('form-modal-restoreDeletedInvoices').addEventListener('submit', function (event) {
+    // mindestens eins der chechboxen muss "gechecked" sein, sonst => nicht abschickend
+
+    const checkboxes = document.querySelectorAll('[name="restoreDeletedInvoices[]"]');
+    let anyCheckboxChecked = false;
+
+    for (const checkbox of checkboxes) {
+        if (checkbox.checked) {
+            anyCheckboxChecked = true;
+            break;
+        }
+    }
+
+    if (anyCheckboxChecked) {
+        // form action and target is added; the values from the form are given to the new windowtab invoiceMuster.php
+        const form_restoreDeletedInvoices = document.getElementById('form-modal-restoreDeletedInvoices');
+
+        // Neue Datei muss verwendet werden für wiederherstellen der Rechnungen
+        form_restoreDeletedInvoices.action = form_restoreDeletedInvoices_Path;
+
+        // Hier wird nochmal gefragt, ob man wirklick die Monatlichen Rechnungen erstellen möchte
+        var confirmation = confirm("Bist du dir sicher, dass du die Rechnungen wiederherstellen 6möchtest?")
+        if (!confirmation) {
+            event.preventDefault();
+        }
+
+    } else {
+        const messageDiv = document.getElementById('message');
+        const messageText = document.getElementById('messageText');
+        event.preventDefault();
+        // Error Message => Klick mindestens einen Checkbox an 
+        messageDiv.style.display = 'flex';
+        messageText.innerText = 'Mindestens eine Checkbox muss angeklickt sein';
+        // Error Message Style
+        messageDiv.classList.add('error');
+    }
 });
 
 // Toggle all Checkboxes
