@@ -754,7 +754,8 @@ function changeBackgroundSearchButton($bool)
                                     END AS KundenName,
                                         R.Leistung,
                                         R.Abrechnungsart,
-                                        R.NettoPreis
+                                        R.NettoPreis,
+                                        R.RechnungsKürzelNummer
                                     FROM
                                         Monatliche_rechnung MR
                                     INNER JOIN
@@ -766,6 +767,7 @@ function changeBackgroundSearchButton($bool)
                                     $stmt = $conn->prepare($sql_monatlicheRechnung);
                                     $stmt->execute();
                                     $customer = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                    $countRows = $stmt->rowCount();
 
                                     foreach ($customer as $row) {
                                         $monatlicheRechnugsID = $row['MonatlicheRechnungsID'];
@@ -777,7 +779,7 @@ function changeBackgroundSearchButton($bool)
                                         $html .= '<div class="monatlicheRechnung-Kunde">';
                                         $html .= '<div class="KundenName">';
                                         $html .= '<input type="checkbox" value = "' . $monatlicheRechnugsID . '" name="erstelleMonatlicheRechnung[]" id = "erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '" onclick="toggleRechnungsInformationen(this, \'monatlicheRechnung-Kunde\')" checked>';
-                                        $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . '</label>';
+                                        $html .= '<label for="erstelleMonatlicheRechnung-' . $monatlicheRechnugsID . '">' . $row['KundenName'] . " - " . $row['RechnungsKürzelNummer'] . '</label>';
                                         $html .= '</div>';
                                         $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
 
@@ -797,6 +799,14 @@ function changeBackgroundSearchButton($bool)
 
                                         $html .= '</div>';
                                         $html .= '</div>';
+                                        echo $html;
+                                    }
+
+                                    if ($countRows < 1) {
+                                        $html = '';
+                                        $html .= '<h2>';
+                                        $html .= 'Keine monatlichen Rechnungen vorhanden!';
+                                        $html .= '</h2>';
                                         echo $html;
                                     }
                                     ?>
@@ -840,6 +850,7 @@ function changeBackgroundSearchButton($bool)
                                 $stmt = $conn->prepare($sql_restoreDeletedInvoices);
                                 $stmt->execute();
                                 $deletedInvoices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                                $countRows = $stmt->rowCount();
 
                                 foreach ($deletedInvoices as $row) {
 
@@ -877,6 +888,13 @@ function changeBackgroundSearchButton($bool)
 
                                     $html .= '</div>';
                                     $html .= '</div>';
+                                    echo $html;
+                                }
+                                if ($countRows < 1) {
+                                    $html = '';
+                                    $html .= '<h2>';
+                                    $html .= 'Keine gelöschten Rechnungen vorhanden!';
+                                    $html .= '</h2>';
                                     echo $html;
                                 }
                                 ?>
