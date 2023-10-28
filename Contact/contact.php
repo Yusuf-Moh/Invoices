@@ -779,6 +779,28 @@ function changeBackgroundSearchButton($bool)
     }
 }
 
+// Existing Invoice for the certain Kunden means it is not possible to delete the Kundes
+function disableDeleteButton($KundenID)
+{
+    include('../dbPhp/dbOpenConnection.php'); // dbConnection öffnen
+    $sql = "SELECT COUNT(*) AS AnzahlRechnungen
+    FROM (
+      SELECT KundenID FROM rechnung WHERE KundenID = :KundenID
+      UNION ALL
+      SELECT KundenID FROM deletedrechnung WHERE KundenID = :KundenID
+    ) AS CombinedData;";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':KundenID', $KundenID);
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    $AnzahlRechnungen = $result['AnzahlRechnungen'];
+
+    if ($AnzahlRechnungen > 0) {
+        echo " disabled";
+    }
+    include('../dbPhp/dbCloseConnection.php'); // dbConnection schließen
+}
+
 ?>
 
 
@@ -990,7 +1012,7 @@ function changeBackgroundSearchButton($bool)
                                     <form method="post">
                                         <input type="hidden" name="KundenID" value=<?php echo htmlspecialchars($row['KundenID']); ?>>
                                         <button type="submit" class="CrudEdit" name="button" value="edit">Edit</button>
-                                        <button type="submit" class="CrudDelete" name="button" value="delete">Delete</button>
+                                        <button type="submit" class="CrudDelete" name="button" value="delete" <?php disableDeleteButton($row['KundenID']); ?>>Delete</button>
                                     </form>
                                 </td>
                             </tr>
