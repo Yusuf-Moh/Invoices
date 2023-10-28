@@ -36,11 +36,12 @@ $offeneRechnung = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Fällige Rechnungen
 $sql = "SELECT Monat_Jahr,
-        COUNT(*) AS AnzahlFaelligeRechnungen
-        FROM rechnung
-        WHERE Bezahlt = 0 AND DATEDIFF(NOW(), STR_TO_DATE(RechnungsDatum, '%d.%m.%Y')) > 10
-        GROUP BY Monat_Jahr
-        ORDER BY STR_TO_DATE(CONCAT('01 ', Monat_Jahr), '%d %M %Y') ASC;";
+    COUNT(*) AS AnzahlFaelligeRechnungen
+    FROM rechnung
+    WHERE Bezahlt = 0 AND DATEDIFF(NOW(), STR_TO_DATE(RechnungsDatum, '%d.%m.%Y')) > 10
+    GROUP BY Monat_Jahr
+    ORDER BY ConvertGermanDateToDate(Monat_Jahr) ASC;";
+
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 global $faelligeRechnungen;
