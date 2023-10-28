@@ -848,11 +848,12 @@ function changeBackgroundSearchButton($bool)
                                     $NettoPreis_deletedRechnung = unserialize($row['NettoPreis']);
                                     $RechnungsNummer_deletedRechnung = $row['RechnungsNummer'];
                                     $RechnungsDatum_deletedRechnung = $row['RechnungsDatum'];
+                                    $RechnungsID_deletedRechnung = $row['RechnungsID'];
 
                                     $html = '';
                                     $html .= '<div class="deletedRechnung-Kunde">';
                                     $html .= '<div class="KundenName">';
-                                    $html .= '<input type="checkbox" value = "' . $RechnungsNummer_deletedRechnung . '" name="restoreDeletedInvoices[]" id = "restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '" onclick="toggleRechnungsInformationen(this, \'deletedRechnung-Kunde\')" checked>';
+                                    $html .= '<input type="checkbox" value = "' . $RechnungsID_deletedRechnung . '" name="restoreDeletedInvoices[]" id = "restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '" onclick="toggleRechnungsInformationen(this, \'deletedRechnung-Kunde\')">';
                                     $html .= '<label for="restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '">' . $row['KundenName'] . " - " . $row['RechnungsKürzelNummer'] . '</label>';
                                     $html .= '</div>';
                                     $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';

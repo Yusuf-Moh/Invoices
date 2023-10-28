@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $checkedCheckboxes = $_POST['erstelleMonatlicheRechnung'];
     $countCheckedCheckboxes = count($checkedCheckboxes);
 
-    // Generated PDF-Filenames stored in a array to access the files in ajax later
+    // Generated PDF-Filenames stored in a array to access the files in javascript later
     $generatedFiles = [];
     $splitedRechnungsMonatJahr = explode(" ", $RechnungsMonatJahr_MonatlicheRechnungen);
     $Jahr = end($splitedRechnungsMonatJahr);
