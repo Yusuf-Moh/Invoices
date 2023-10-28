@@ -853,8 +853,8 @@ function changeBackgroundSearchButton($bool)
                                     $html = '';
                                     $html .= '<div class="deletedRechnung-Kunde">';
                                     $html .= '<div class="KundenName">';
-                                    $html .= '<input type="checkbox" value = "' . $RechnungsID_deletedRechnung . '" name="restoreDeletedInvoices[]" id = "restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '" onclick="toggleRechnungsInformationen(this, \'deletedRechnung-Kunde\')">';
-                                    $html .= '<label for="restoreDeletedInvoices-' . $RechnungsNummer_deletedRechnung . '">' . $row['KundenName'] . " - " . $row['RechnungsKürzelNummer'] . '</label>';
+                                    $html .= '<input type="checkbox" value = "' . $RechnungsID_deletedRechnung . '" name="restoreDeletedInvoices[]" id = "restoreDeletedInvoices-' . $RechnungsID_deletedRechnung . '" onclick="toggleRechnungsInformationen(this, \'deletedRechnung-Kunde\')">';
+                                    $html .= '<label for="restoreDeletedInvoices-' . $RechnungsID_deletedRechnung . '">' . $row['KundenName'] . " - " . $row['RechnungsKürzelNummer'] . '</label>';
                                     $html .= '</div>';
                                     $html .= '<div class="RechnungsInformationen" id="RechnungsInformationen">';
 

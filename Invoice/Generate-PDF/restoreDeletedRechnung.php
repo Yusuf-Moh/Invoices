@@ -21,13 +21,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Rechnung wiederherstellen
         // 1. PDF erstellen und im jeweiligen Ordner speichern
-        // 2. deletedrechnung =>  rechnung
-        // 3. monatliche Rechnung = 1; => monatliche_rechnung
-
         restoreDeletedInvoice($checkboxes);
+
+        // 2. deletedrechnung =>  rechnung
+        transferData_deletedrechnung_rechnung($checkboxes);
+
+        // 3. monatliche Rechnung = 1; => monatliche_rechnung
+        insertInvoiceIntoMonatlicheRechnung($checkboxes);
+
+        // 4. delete the record in the table "deletedrechnung" 
+        deleteRecord_deletedRechnung($checkboxes);
     }
 
-    // ============== Download the files from the serverside ==============
+    // ============== Download the PDF Invoice files from the serverside ==============
     echo '<script type = "text/javascript">';
     global $generatedFiles;
     for ($i = 0; $i < count($generatedFiles); $i++) {
@@ -36,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     echo '</script>';
 
-    // header("location: ../invoice.php");
+    header("location: ../invoice.php");
 } else {
     header("location: ../invoice.php");
 }
@@ -240,4 +246,58 @@ function createFolderIfNotExists($path)
     if (!is_dir($path)) {
         mkdir($path, 0777, true);
     }
+}
+
+function transferData_deletedrechnung_rechnung($RechnungsID)
+{
+    include('../../dbPhp/dbOpenConnection.php');
+
+    $sql = "INSERT INTO rechnung(Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, RechnungsID, MwSt, GesamtBetrag, Pfad, Bezahlt, UeberweisungsDatum, Zeitpunkt_Erstellung)
+    SELECT Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, RechnungsID, MwSt, GesamtBetrag, Pfad, Bezahlt, UeberweisungsDatum, Zeitpunkt_Erstellung
+    FROM deletedrechnung
+    WHERE RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($sql);
+
+    // Bind the values 
+    $stmt->bindParam(':RechnungsID', $RechnungsID);
+    $stmt->execute();
+
+    include('../../dbPhp/dbCloseConnection.php');
+}
+
+function insertInvoiceIntoMonatlicheRechnung($RechnungsID)
+{
+    include('../../dbPhp/dbOpenConnection.php');
+    $sql = "SELECT MonatlicheRechnungBool FROM rechnung WHERE RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($sql);
+
+    // Bind the values 
+    $stmt->bindParam(':RechnungsID', $RechnungsID);
+    $stmt->execute();
+
+    $result = [];
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $MonatlicheRechnungBool = $result['MonatlicheRechnungBool'];
+
+    if ($MonatlicheRechnungBool == "1") {
+        $sql = "INSERT INTO monatliche_rechnung (RechnungsID) VALUES (:RechnungsID);";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':RechnungsID', $RechnungsID);
+        $stmt->execute();
+    }
+
+    include('../../dbPhp/dbCloseConnection.php');
+}
+
+function deleteRecord_deletedRechnung($RechnungsID)
+{
+    include('../../dbPhp/dbOpenConnection.php');
+
+    $sql = "DELETE FROM deletedrechnung WHERE RechnungsID = :RechnungsID;";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':RechnungsID', $RechnungsID);
+    $stmt->execute();
+
+    include('../../dbPhp/dbCloseConnection.php');
 }
