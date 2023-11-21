@@ -170,15 +170,15 @@ function addColor($number)
                         <div class="AusgabenContainer">
                             <div class="AusgabenRow">
                                 <h3>Juni</h3>
-                                <h3>10.000 Euro</h3>
+                                <h3 class="Ausgabe">10.000 Euro</h3>
                             </div>
                             <div class="AusgabenRow">
                                 <h3>Juni</h3>
-                                <h3>10.000 Euro</h3>
+                                <h3 class="Ausgabe">10.000 Euro</h3>
                             </div>
                             <div class="AusgabenRow">
                                 <h3>Juni</h3>
-                                <h3>10.000 Euro</h3>
+                                <h3 class="Ausgabe">10.000 Euro</h3>
                             </div>
                         </div>
 
