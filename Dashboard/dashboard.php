@@ -263,6 +263,8 @@ function addColor($number)
 
             </div>
 
+            <div class="platzhalter"></div>
+
             <!-- Content of dashboard-bottom -->
             <div class="dashboard-bottom">
                 <div class="Umsatzentwicklung">

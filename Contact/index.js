@@ -95,7 +95,7 @@ if (organizationBtn.classList.contains('clicked')) {
 
         if (messageType == "edit") {
             personBtn.style.display = "none";
-            document.getElementById("rechnungsKuerzel_organization").setAttribute("disabled", "disabled");
+            document.getElementById("rechnungsKuerzel_organization").setAttribute("readonly", true);
             // updateOrganization = true;
             // updatePerson = false;
         }
@@ -120,7 +120,7 @@ if (personBtn.classList.contains('clicked')) {
 
         if (messageType == "edit") {
             organizationBtn.style.display = "none";
-            document.getElementById("rechnungsKuerzel_Person").setAttribute("disabled", "disabled");
+            document.getElementById("rechnungsKuerzel_Person").setAttribute("readonly", true);
             // updatePerson = true;
             // updateOrganization = false;
         }

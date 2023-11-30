@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $GesamtBetragArray = [];
         foreach ($NettoPreisArray as $nettoBetrag) {
             //always round up after the 2nd decimal places 
-            $MwSt = ceil($nettoBetrag * ($MwSt_Percentage / 100) * 100) / 100;
+            $MwSt = (float)(ceil((string)($nettoBetrag * ($MwSt_Percentage / 100) * 100)) / 100);
             $GesamtBetrag = $nettoBetrag + $MwSt;
             $MwStArray[] = $MwSt;
             $GesamtBetragArray[] = $GesamtBetrag;
@@ -124,14 +124,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $TABLE_ROWS .= AbrechnungsArtPauschalStundenGutschrift($AbrechnungsartArray[$m]);
             $TABLE_ROWS .= '<td>' . number_format($NettoPreisArray[$m], 2, ',', '.') . ' Euro</td>';
             $TABLE_ROWS .= '</tr>';
-            if ($AbrechnungsartList[$i] == 'Gutschrift') {
-                $gesamtNettoPreis -= $nettoPreis[$i];
-                $gesamtBetragMwSt -= $MwStArray[$i];
-                $gesamtBetragBrutto -= $GesamtBetragArray[$i];
+            if ($AbrechnungsartList[$m] == 'Gutschrift') {
+                $gesamtNettoPreis -= $NettoPreisArray[$m];
+                $gesamtBetragMwSt -= $MwStArray[$m];
+                $gesamtBetragBrutto -= $GesamtBetragArray[$m];
             } else {
-                $gesamtNettoPreis += $nettoPreis[$i];
-                $gesamtBetragMwSt += $MwStArray[$i];
-                $gesamtBetragBrutto += $GesamtBetragArray[$i];
+                $gesamtNettoPreis += $NettoPreisArray[$m];
+                $gesamtBetragMwSt += $MwStArray[$m];
+                $gesamtBetragBrutto += $GesamtBetragArray[$m];
             }
         }
         //format the number from for example, 1000 to 1.000,00
@@ -177,10 +177,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $dompdf->loadHtml($html);
         //Create PDF
         $dompdf->render();
-        // $dompdf->addInfo("Title", "An Example PDF");
 
-        //Open new Tab with PDF
-        // $dompdf->stream("invoice.pdf", ["Attachment" => 0]);
         if ($FirmenName != "") {
             $KundenName = $FirmenName;
         } elseif ($Ansprechpartner != "") {
@@ -210,7 +207,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         include('../../dbPhp/dbOpenConnection.php');
 
         $sql = "INSERT INTO rechnung (Leistung, Abrechnungsart, NettoPreis, KundenID, MonatlicheRechnungBool, RechnungsDatum, Monat_Jahr, RechnungsNummer, RechnungsKürzelNummer, MwSt, GesamtBetrag, Pfad)
-    VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag, :pfad)";
+        VALUES (:leistung, :abrechnungsart, :nettoPreis, :kundenID, :monatlicheRechnung, :rechnungsDatum, :rechnungsMonatJahr, :rechnungsNr, :rechnungsKuerzelNummer, :mwSt, :gesamtBetrag, :pfad)";
 
         $stmt = $conn->prepare($sql);
 

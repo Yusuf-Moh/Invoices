@@ -124,11 +124,19 @@ b {
 .dashboard-top,
 .dashboard-bottom {
     display: flex;
+    /* 
+    Navbar: 8vh
+    db top/-bottom: 40vh
+    */
+    height: 40vh;
+}
+
+.platzhalter {
+    height: calc(90vh - (40 * 2vh + 8vh));
 }
 
 .dashboard-bottom {
     margin-top: 16px;
-    height: 50vh;
 }
 
 .Umsatz-Ausgaben,

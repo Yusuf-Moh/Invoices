@@ -52,7 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $GesamtBetragArray = [];
     foreach ($nettoPreis as $nettoBetrag) {
         //always round up after the 2nd decimal places 
-        $MwSt = ceil($nettoBetrag * ($MwSt_Percentage / 100) * 100) / 100;
+        $MwSt = (float)(ceil((string)($nettoBetrag * ($MwSt_Percentage / 100) * 100)) / 100);
         $GesamtBetrag = $nettoBetrag + $MwSt;
         $MwStArray[] = $MwSt;
         $GesamtBetragArray[] = $GesamtBetrag;
@@ -169,11 +169,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $TABLE_ROWS .= AbrechnungsArtPauschalStundenGutschrift($AbrechnungsartList[$i]);
         $TABLE_ROWS .= '<td>' . number_format($nettoPreis[$i], 2, ',', '.') . ' Euro</td>';
         $TABLE_ROWS .= '</tr>';
-        if($AbrechnungsartList[$i]=='Gutschrift'){
+        if ($AbrechnungsartList[$i] == 'Gutschrift') {
             $gesamtNettoPreis -= $nettoPreis[$i];
             $gesamtBetragMwSt -= $MwStArray[$i];
             $gesamtBetragBrutto -= $GesamtBetragArray[$i];
-        }else{
+        } else {
             $gesamtNettoPreis += $nettoPreis[$i];
             $gesamtBetragMwSt += $MwStArray[$i];
             $gesamtBetragBrutto += $GesamtBetragArray[$i];
@@ -348,8 +348,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute();
         include('../../dbPhp/dbCloseConnection.php');
     }
-
-
 
     header("location: ../invoice.php");
 } else {
